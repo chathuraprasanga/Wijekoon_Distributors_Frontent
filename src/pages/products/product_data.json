@@ -1,0 +1,162 @@
+[
+  {
+    "name": "Laptop",
+    "code": "PROD001",
+    "size": "15.6 inch",
+    "unitPrice": 150000.00,
+    "status": true,
+    "supplier": "Tech Haven"
+  },
+  {
+    "name": "Office Chair",
+    "code": "PROD002",
+    "size": "Standard",
+    "unitPrice": 25000.00,
+    "status": true,
+    "supplier": "Classic Furniture Co."
+  },
+  {
+    "name": "LED Light",
+    "code": "PROD003",
+    "size": "20W",
+    "unitPrice": 1500.00,
+    "status": true,
+    "supplier": "Elegant Lighting"
+  },
+  {
+    "name": "Cotton Shirt",
+    "code": "PROD004",
+    "size": "Medium",
+    "unitPrice": 3500.00,
+    "status": true,
+    "supplier": "Luxury Textiles"
+  },
+  {
+    "name": "Mobile Phone",
+    "code": "PROD005",
+    "size": "6.1 inch",
+    "unitPrice": 120000.00,
+    "status": true,
+    "supplier": "Rapid IT Solutions"
+  },
+  {
+    "name": "Organic Fertilizer",
+    "code": "PROD006",
+    "size": "50kg",
+    "unitPrice": 2500.00,
+    "status": true,
+    "supplier": "Agro Solutions"
+  },
+  {
+    "name": "Printer",
+    "code": "PROD007",
+    "size": "Standard",
+    "unitPrice": 35000.00,
+    "status": true,
+    "supplier": "Tech Haven"
+  },
+  {
+    "name": "Dining Table",
+    "code": "PROD008",
+    "size": "6-Seater",
+    "unitPrice": 75000.00,
+    "status": true,
+    "supplier": "Classic Furniture Co."
+  },
+  {
+    "name": "Ceramic Mug",
+    "code": "PROD009",
+    "size": "350ml",
+    "unitPrice": 450.00,
+    "status": true,
+    "supplier": "Premium Glassware"
+  },
+  {
+    "name": "Wall Clock",
+    "code": "PROD010",
+    "size": "12 inch",
+    "unitPrice": 2000.00,
+    "status": true,
+    "supplier": "Oceanic Distributors"
+  },
+  {
+    "name": "Electric Kettle",
+    "code": "PROD011",
+    "size": "1.7L",
+    "unitPrice": 5500.00,
+    "status": true,
+    "supplier": "Bright Tools Pvt Ltd."
+  },
+  {
+    "name": "Air Conditioner",
+    "code": "PROD012",
+    "size": "1.5 Ton",
+    "unitPrice": 120000.00,
+    "status": true,
+    "supplier": "Elite Electronics"
+  },
+  {
+    "name": "Study Desk",
+    "code": "PROD013",
+    "size": "4 ft x 2 ft",
+    "unitPrice": 18000.00,
+    "status": true,
+    "supplier": "Classic Furniture Co."
+  },
+  {
+    "name": "Wheat Flour",
+    "code": "PROD014",
+    "size": "1kg",
+    "unitPrice": 200.00,
+    "status": true,
+    "supplier": "Green Valley Organics"
+  },
+  {
+    "name": "Water Bottle",
+    "code": "PROD015",
+    "size": "1L",
+    "unitPrice": 450.00,
+    "status": true,
+    "supplier": "Eco-Friendly Products"
+  },
+  {
+    "name": "Concrete Mix",
+    "code": "PROD016",
+    "size": "50kg",
+    "unitPrice": 650.00,
+    "status": true,
+    "supplier": "Master Builders"
+  },
+  {
+    "name": "LED TV",
+    "code": "PROD017",
+    "size": "55 inch",
+    "unitPrice": 250000.00,
+    "status": true,
+    "supplier": "Elite Electronics"
+  },
+  {
+    "name": "Notebook",
+    "code": "PROD018",
+    "size": "A4",
+    "unitPrice": 120.00,
+    "status": true,
+    "supplier": "ABC Trading Co."
+  },
+  {
+    "name": "Hand Sanitizer",
+    "code": "PROD019",
+    "size": "500ml",
+    "unitPrice": 650.00,
+    "status": true,
+    "supplier": "Alpha Pharma"
+  },
+  {
+    "name": "Power Drill",
+    "code": "PROD020",
+    "size": "13mm",
+    "unitPrice": 8500.00,
+    "status": true,
+    "supplier": "Bright Tools Pvt Ltd."
+  }
+]

@@ -1,0 +1,149 @@
+[
+    {
+        "name": "Amal Perera",
+        "email": "amal.perera@example.lk",
+        "phone": "+94-71-123-4567",
+        "address": "No. 123, Colombo 07, Western Province, Sri Lanka",
+        "status": true
+    },
+    {
+        "name": "Kamal Silva",
+        "email": "kamal.silva@example.lk",
+        "phone": "+94-77-234-5678",
+        "address": "No. 45, Kandy Road, Gampaha, Sri Lanka",
+        "status": false
+    },
+    {
+        "name": "Nimal Fernando",
+        "email": "nimal.fernando@example.lk",
+        "phone": "+94-75-345-6789",
+        "address": "No. 67, Main Street, Negombo, Sri Lanka",
+        "status": true
+    },
+    {
+        "name": "Samantha Wijesinghe",
+        "email": "samantha.wijesinghe@example.lk",
+        "phone": "+94-72-456-7890",
+        "address": "No. 89, Hill View, Nuwara Eliya, Sri Lanka",
+        "status": true
+    },
+    {
+        "name": "Kasun Rajapaksha",
+        "email": "kasun.rajapaksha@example.lk",
+        "phone": "+94-76-567-8901",
+        "address": "No. 101, Galle Road, Galle, Sri Lanka",
+        "status": false
+    },
+    {
+        "name": "Tharindu Herath",
+        "email": "tharindu.herath@example.lk",
+        "phone": "+94-78-678-9012",
+        "address": "No. 54, Temple Road, Kurunegala, Sri Lanka",
+        "status": true
+    },
+    {
+        "name": "Dilini Rathnayake",
+        "email": "dilini.rathnayake@example.lk",
+        "phone": "+94-70-789-0123",
+        "address": "No. 33, Lake Side, Anuradhapura, Sri Lanka",
+        "status": true
+    },
+    {
+        "name": "Gayan Madushanka",
+        "email": "gayan.madushanka@example.lk",
+        "phone": "+94-74-890-1234",
+        "address": "No. 98, Beach Road, Matara, Sri Lanka",
+        "status": false
+    },
+    {
+        "name": "Chathurika Abeysinghe",
+        "email": "chathurika.abeysinghe@example.lk",
+        "phone": "+94-77-901-2345",
+        "address": "No. 121, Queens Street, Kandy, Sri Lanka",
+        "status": true
+    },
+    {
+        "name": "Supun Weerasinghe",
+        "email": "supun.weerasinghe@example.lk",
+        "phone": "+94-76-012-3456",
+        "address": "No. 76, Garden Lane, Colombo 05, Sri Lanka",
+        "status": true
+    },
+    {
+        "name": "Sanduni Wickramasinghe",
+        "email": "sanduni.wickramasinghe@example.lk",
+        "phone": "+94-75-123-4567",
+        "address": "No. 5, Lotus Avenue, Battaramulla, Sri Lanka",
+        "status": false
+    },
+    {
+        "name": "Hiran Gunasekara",
+        "email": "hiran.gunasekara@example.lk",
+        "phone": "+94-71-234-5678",
+        "address": "No. 23, Ocean Drive, Hambantota, Sri Lanka",
+        "status": true
+    },
+    {
+        "name": "Nishantha Ekanayake",
+        "email": "nishantha.ekanayake@example.lk",
+        "phone": "+94-78-345-6789",
+        "address": "No. 12, Riverside, Badulla, Sri Lanka",
+        "status": false
+    },
+    {
+        "name": "Mahesha Dissanayake",
+        "email": "mahesha.dissanayake@example.lk",
+        "phone": "+94-70-456-7890",
+        "address": "No. 7, Park Street, Ratnapura, Sri Lanka",
+        "status": true
+    },
+    {
+        "name": "Lakshan Jayasinghe",
+        "email": "lakshan.jayasinghe@example.lk",
+        "phone": "+94-77-567-8901",
+        "address": "No. 43, Green Valley, Polonnaruwa, Sri Lanka",
+        "status": true
+    },
+    {
+        "name": "Ishara Kariyawasam",
+        "email": "ishara.kariyawasam@example.lk",
+        "phone": "+94-72-678-9012",
+        "address": "No. 88, City Center, Chilaw, Sri Lanka",
+        "status": false
+    },
+    {
+        "name": "Ruwanthi Perera",
+        "email": "ruwanthi.perera@example.lk",
+        "phone": "+94-76-789-0123",
+        "address": "No. 19, Lake Road, Trincomalee, Sri Lanka",
+        "status": true
+    },
+    {
+        "name": "Sajith Fernando",
+        "email": "sajith.fernando@example.lk",
+        "phone": "+94-71-890-1234",
+        "address": "No. 4, Sunrise Avenue, Jaffna, Sri Lanka",
+        "status": true
+    },
+    {
+        "name": "Madara Hettiarachchi",
+        "email": "madara.hettiarachchi@example.lk",
+        "phone": "+94-75-901-2345",
+        "address": "No. 67, Mountain Road, Bandarawela, Sri Lanka",
+        "status": false
+    },
+    {
+        "name": "Ajith Liyanage",
+        "email": "ajith.liyanage@example.lk",
+        "phone": "+94-70-012-3456",
+        "address": "No. 91, Cinnamon Gardens, Colombo 07, Sri Lanka",
+        "status": true
+    },
+    {
+        "name": "Shalini Rodrigo",
+        "email": "shalini.rodrigo@example.lk",
+        "phone": "+94-77-123-4567",
+        "address": "No. 13, Sunrise Street, Wattala, Sri Lanka",
+        "status": false
+    }
+]

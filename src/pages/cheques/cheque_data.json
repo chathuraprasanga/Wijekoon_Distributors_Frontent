@@ -1,0 +1,102 @@
+[
+  {
+    "customer": "Amal Perera",
+    "bank": "Bank of Ceylon",
+    "branch": "Colombo Main",
+    "chequeNumber": "123456",
+    "amount": 25000.00,
+    "depositDate": "2024-11-10",
+    "chequeStatus": "PENDING",
+    "status": true
+  },
+  {
+    "customer": "Kamal Silva",
+    "bank": "Commercial Bank",
+    "branch": "Kandy Branch",
+    "chequeNumber": "987654",
+    "amount": 15000.50,
+    "depositDate": "2024-11-12",
+    "chequeStatus": "DEPOSITED",
+    "status": true
+  },
+  {
+    "customer": "Nimal Fernando",
+    "bank": "People's Bank",
+    "branch": "Negombo Branch",
+    "chequeNumber": "345678",
+    "amount": 50000.00,
+    "depositDate": "2024-11-13",
+    "chequeStatus": "RETURNED",
+    "status": false
+  },
+  {
+    "customer": "Samantha Wijesinghe",
+    "bank": "Hatton National Bank",
+    "branch": "Kurunegala Branch",
+    "chequeNumber": "456789",
+    "amount": 75000.00,
+    "depositDate": "2024-11-14",
+    "chequeStatus": "COMPLETED",
+    "status": true
+  },
+  {
+    "customer": "Kasun Rajapaksha",
+    "bank": "Sampath Bank",
+    "branch": "Galle Branch",
+    "chequeNumber": "567890",
+    "amount": 12000.00,
+    "depositDate": "2024-11-15",
+    "chequeStatus": "PENDING",
+    "status": true
+  },
+  {
+    "customer": "Tharindu Herath",
+    "bank": "DFCC Bank",
+    "branch": "Matara Branch",
+    "chequeNumber": "678901",
+    "amount": 32000.00,
+    "depositDate": "2024-11-16",
+    "chequeStatus": "DEPOSITED",
+    "status": true
+  },
+  {
+    "customer": "Dilini Rathnayake",
+    "bank": "Seylan Bank",
+    "branch": "Anuradhapura Branch",
+    "chequeNumber": "789012",
+    "amount": 48000.75,
+    "depositDate": "2024-11-17",
+    "chequeStatus": "RETURNED",
+    "status": false
+  },
+  {
+    "customer": "Gayan Madushanka",
+    "bank": "National Savings Bank",
+    "branch": "Batticaloa Branch",
+    "chequeNumber": "890123",
+    "amount": 65000.00,
+    "depositDate": "2024-11-18",
+    "chequeStatus": "COMPLETED",
+    "status": true
+  },
+  {
+    "customer": "Chathurika Abeysinghe",
+    "bank": "Union Bank",
+    "branch": "Colombo 05 Branch",
+    "chequeNumber": "901234",
+    "amount": 20000.00,
+    "depositDate": "2024-11-19",
+    "chequeStatus": "PENDING",
+    "status": true
+  },
+  {
+    "customer": "Supun Weerasinghe",
+    "bank": "Bank of Ceylon",
+    "branch": "Ratnapura Branch",
+    "chequeNumber": "112233",
+    "amount": 35000.00,
+    "depositDate": "2024-11-20",
+    "chequeStatus": "DEPOSITED",
+    "status": true
+  }
+]

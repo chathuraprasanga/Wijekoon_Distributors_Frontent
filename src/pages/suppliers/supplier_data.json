@@ -1,0 +1,122 @@
+[
+  {
+    "name": "ABC Trading Co.",
+    "phone": "+94-71-234-5678",
+    "email": "abc.trading@example.lk",
+    "address": "No. 12, Main Street, Colombo 11, Sri Lanka"
+  },
+  {
+    "name": "XYZ Suppliers",
+    "phone": "+94-77-345-6789",
+    "email": "xyz.suppliers@example.lk",
+    "address": "No. 45, Industrial Zone, Gampaha, Sri Lanka"
+  },
+  {
+    "name": "Global Imports",
+    "phone": "+94-75-456-7890",
+    "email": "global.imports@example.lk",
+    "address": "No. 78, Harbour Road, Negombo, Sri Lanka"
+  },
+  {
+    "name": "Oceanic Distributors",
+    "phone": "+94-72-567-8901",
+    "email": "oceanic.distro@example.lk",
+    "address": "No. 90, Sea Avenue, Galle, Sri Lanka"
+  },
+  {
+    "name": "Fresh Produce Ltd.",
+    "phone": "+94-76-678-9012",
+    "email": "fresh.produce@example.lk",
+    "address": "No. 21, Market Street, Kandy, Sri Lanka"
+  },
+  {
+    "name": "Elite Electronics",
+    "phone": "+94-74-789-0123",
+    "email": "elite.electronics@example.lk",
+    "address": "No. 56, High-Tech Park, Colombo 05, Sri Lanka"
+  },
+  {
+    "name": "Royal Fabrics",
+    "phone": "+94-78-890-1234",
+    "email": "royal.fabrics@example.lk",
+    "address": "No. 32, Textile Lane, Ratnapura, Sri Lanka"
+  },
+  {
+    "name": "Bright Tools Pvt Ltd.",
+    "phone": "+94-71-901-2345",
+    "email": "bright.tools@example.lk",
+    "address": "No. 98, Workman Road, Kurunegala, Sri Lanka"
+  },
+  {
+    "name": "Agro Solutions",
+    "phone": "+94-77-012-3456",
+    "email": "agro.solutions@example.lk",
+    "address": "No. 14, Field Avenue, Anuradhapura, Sri Lanka"
+  },
+  {
+    "name": "Tech Haven",
+    "phone": "+94-75-123-4567",
+    "email": "tech.haven@example.lk",
+    "address": "No. 23, Innovation Street, Matara, Sri Lanka"
+  },
+  {
+    "name": "Speedy Logistics",
+    "phone": "+94-76-234-5678",
+    "email": "speedy.logistics@example.lk",
+    "address": "No. 56, Expressway Road, Hambantota, Sri Lanka"
+  },
+  {
+    "name": "Green Valley Organics",
+    "phone": "+94-74-345-6789",
+    "email": "green.valley@example.lk",
+    "address": "No. 81, Eco Lane, Nuwara Eliya, Sri Lanka"
+  },
+  {
+    "name": "Master Builders",
+    "phone": "+94-78-456-7890",
+    "email": "master.builders@example.lk",
+    "address": "No. 34, Cement Road, Trincomalee, Sri Lanka"
+  },
+  {
+    "name": "Classic Furniture Co.",
+    "phone": "+94-71-567-8901",
+    "email": "classic.furniture@example.lk",
+    "address": "No. 11, Wood Street, Chilaw, Sri Lanka"
+  },
+  {
+    "name": "Elegant Lighting",
+    "phone": "+94-77-678-9012",
+    "email": "elegant.lighting@example.lk",
+    "address": "No. 29, Bright Lane, Polonnaruwa, Sri Lanka"
+  },
+  {
+    "name": "Alpha Pharma",
+    "phone": "+94-75-789-0123",
+    "email": "alpha.pharma@example.lk",
+    "address": "No. 16, Medical Street, Jaffna, Sri Lanka"
+  },
+  {
+    "name": "Luxury Textiles",
+    "phone": "+94-76-890-1234",
+    "email": "luxury.textiles@example.lk",
+    "address": "No. 72, Silk Road, Colombo 02, Sri Lanka"
+  },
+  {
+    "name": "Rapid IT Solutions",
+    "phone": "+94-74-901-2345",
+    "email": "rapid.it@example.lk",
+    "address": "No. 88, Tech Zone, Battaramulla, Sri Lanka"
+  },
+  {
+    "name": "Eco-Friendly Products",
+    "phone": "+94-78-012-3456",
+    "email": "eco.products@example.lk",
+    "address": "No. 49, Green Circle, Badulla, Sri Lanka"
+  },
+  {
+    "name": "Premium Glassware",
+    "phone": "+94-71-123-4567",
+    "email": "premium.glass@example.lk",
+    "address": "No. 101, Crystal Avenue, Vavuniya, Sri Lanka"
+  }
+]
