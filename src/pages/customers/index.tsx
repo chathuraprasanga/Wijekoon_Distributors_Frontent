@@ -1,16 +1,43 @@
 import { Badge, Button, Group, Menu, Pagination, Table } from "@mantine/core";
 import { IconDatabaseOff, IconDotsVertical } from "@tabler/icons-react";
-import customers from "./customer_data.json";
-import { useState } from "react";
+// import customers from "./customer_data.json";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../../store/store.ts";
+import { getCustomers } from "../../store/customerSlice/customerSlice.ts";
+import { useLoading } from "../../helpers/loadingContext.tsx";
 
 const Customers = () => {
+    const { setLoading } = useLoading();
     const navigate = useNavigate();
+    const dispatch = useDispatch<AppDispatch | any>();
     const [currentPage, setCurrentPage] = useState(1);
     const pageSize = 5;
+    const customers = useSelector(
+        (state: RootState) => state.customer.customers
+    );
 
-    const totalPages = Math.ceil(customers.length / pageSize);
-    const paginatedData: any = customers.slice(
+
+    useEffect(() => {
+        fetchCustomers();
+        setPage();
+    }, []);
+
+    const setPage =() => {
+        setCurrentPage(Number(sessionStorage.getItem("pageIndex") || 1));
+        console.log(Number(sessionStorage.getItem("pageIndex")));
+        sessionStorage.clear()
+    }
+
+    const fetchCustomers = async () => {
+        setLoading(true);
+        await dispatch(getCustomers({}));
+        setLoading(false);
+    };
+
+    const totalPages = Math.ceil(customers?.length / pageSize);
+    const paginatedData: any = customers?.slice(
         (currentPage - 1) * pageSize,
         currentPage * pageSize
     );
@@ -52,32 +79,50 @@ const Customers = () => {
                         </Table.Tr>
                     </Table.Thead>
                     <Table.Tbody>
-                        {paginatedData.length !== 0 ? (
-                            paginatedData.map((c: any, i: number) => (
+                        {paginatedData?.length !== 0 ? (
+                            paginatedData?.map((c: any, i: number) => (
                                 <Table.Tr key={i}>
                                     <Table.Td>{c.name}</Table.Td>
                                     <Table.Td>{c.phone}</Table.Td>
-                                    <Table.Td>{c.email}</Table.Td>
-                                    <Table.Td>{c.address}</Table.Td>
+                                    <Table.Td>{c.email || "-"}</Table.Td>
+                                    <Table.Td>{c.address || "-"}</Table.Td>
                                     <Table.Td>
-                                        <Badge color={c.status ? "green" : "red"} size="sm" radius="xs">
+                                        <Badge
+                                            color={c.status ? "green" : "red"}
+                                            size="sm"
+                                            radius="xs"
+                                        >
                                             {c.status ? "ACTIVE" : "INACTIVE"}
                                         </Badge>
                                     </Table.Td>
                                     <Table.Td>
                                         <Menu width={150}>
                                             <Menu.Target>
-                                                <IconDotsVertical size="16" className="cursor-pointer" />
+                                                <IconDotsVertical
+                                                    size="16"
+                                                    className="cursor-pointer"
+                                                />
                                             </Menu.Target>
                                             <Menu.Dropdown>
                                                 <Menu.Label>Actions</Menu.Label>
                                                 <Menu.Item>View</Menu.Item>
-                                                <Menu.Item>Edit</Menu.Item>
+                                                <Menu.Item
+                                                    onClick={() => {
+                                                        navigate(`/app/customers/edit-customer/${c._id}`);
+                                                        sessionStorage.setItem("pageIndex", String(currentPage));
+                                                    }}
+                                                >
+                                                    Edit
+                                                </Menu.Item>
                                                 <Menu.Item>
                                                     {c.status ? (
-                                                        <span className="text-red-700">Deactivate</span>
+                                                        <span className="text-red-700">
+                                                            Deactivate
+                                                        </span>
                                                     ) : (
-                                                        <span className="text-green-700">Activate</span>
+                                                        <span className="text-green-700">
+                                                            Activate
+                                                        </span>
                                                     )}
                                                 </Menu.Item>
                                             </Menu.Dropdown>
@@ -105,8 +150,8 @@ const Customers = () => {
 
             {/* Mobile Table */}
             <div className="block lg:hidden mx-4 my-4">
-                {paginatedData.length !== 0 ? (
-                    paginatedData.map((c: any, i: number) => (
+                {paginatedData?.length !== 0 ? (
+                    paginatedData?.map((c: any, i: number) => (
                         <div
                             key={i}
                             className="border border-gray-300 rounded-md mb-4 p-4 bg-white shadow-sm"
@@ -124,32 +169,45 @@ const Customers = () => {
                                 {c.status ? "ACTIVE" : "INACTIVE"}
                             </Badge>
                             <div className="mt-2">
-                            <Menu width={150} >
-                                <Menu.Target>
-                                    <IconDotsVertical size="16" className="cursor-pointer" />
-                                </Menu.Target>
-                                <Menu.Dropdown>
-                                    <Menu.Label>Actions</Menu.Label>
-                                    <Menu.Item>View</Menu.Item>
-                                    <Menu.Item>Edit</Menu.Item>
-                                    <Menu.Item>
-                                        {c.status ? (
-                                            <span className="text-red-700">Deactivate</span>
-                                        ) : (
-                                            <span className="text-green-700">Activate</span>
-                                        )}
-                                    </Menu.Item>
-                                </Menu.Dropdown>
-                            </Menu>
+                                <Menu width={150}>
+                                    <Menu.Target>
+                                        <IconDotsVertical
+                                            size="16"
+                                            className="cursor-pointer"
+                                        />
+                                    </Menu.Target>
+                                    <Menu.Dropdown>
+                                        <Menu.Label>Actions</Menu.Label>
+                                        <Menu.Item>View</Menu.Item>
+                                        <Menu.Item
+                                            onClick={() => {
+                                                navigate(`/app/customers/edit-customer/${c._id}`);
+                                                sessionStorage.setItem("pageIndex", String(currentPage));
+                                            }}
+                                        >
+                                            Edit
+                                        </Menu.Item>
+                                        <Menu.Item>
+                                            {c.status ? (
+                                                <span className="text-red-700">
+                                                    Deactivate
+                                                </span>
+                                            ) : (
+                                                <span className="text-green-700">
+                                                    Activate
+                                                </span>
+                                            )}
+                                        </Menu.Item>
+                                    </Menu.Dropdown>
+                                </Menu>
                             </div>
                         </div>
                     ))
                 ) : (
-                    <div className="text-center">
+                    <div className="flex items-center">
                         <IconDatabaseOff
                             color="red"
                             size="24"
-                            className="mr-2 self-center"
                         />
                         <p>No data available</p>
                     </div>

@@ -20,7 +20,7 @@ export const addCustomer = createAsyncThunk(
     async (payload: any, {rejectWithValue}) => {
         try {
             const response = await axiosInstance.post(
-                `api/v1/customers/customer`,
+                `/customers/customer`,
                 payload,
             );
             return response.data;
@@ -35,7 +35,35 @@ export const getCustomers = createAsyncThunk(
     async (payload:any, {rejectWithValue}) => {
         try {
             const response = await axiosInstance.post(
-                `api/v1/customers/customers`, payload,
+                `/customers/customers`, payload,
+            );
+            return response.data;
+        } catch (err: any) {
+            throw rejectWithValue(err.response.data);
+        }
+    },
+);
+
+export const getCustomer = createAsyncThunk(
+    "customer/getCustomer",
+    async (id:any, {rejectWithValue}) => {
+        try {
+            const response = await axiosInstance.get(
+                `/customers/customer/${id}`,
+            );
+            return response.data;
+        } catch (err: any) {
+            throw rejectWithValue(err.response.data);
+        }
+    },
+);
+
+export const updateCustomer = createAsyncThunk(
+    "customer/updateCustomer",
+    async (payload:any, {rejectWithValue}) => {
+        try {
+            const response = await axiosInstance.put(
+                `/customers/customer/${payload.id}`,payload.values
             );
             return response.data;
         } catch (err: any) {
@@ -49,12 +77,23 @@ const customerSlice = createSlice({
     initialState,
     reducers: {},
     extraReducers: (builder) => {
-        builder.addCase(addCustomer.fulfilled, (_, action: PayloadAction<any>) => {
-            return action.payload.result;
+        builder.addCase(addCustomer.fulfilled, (state:Draft<CustomerState>, action: PayloadAction<any>) => {
+            const customer = action.payload.result;
+            state.customers.push(customer);
+            return action.payload;
         })
         builder.addCase(getCustomers.fulfilled, (state: Draft<CustomerState>, action: PayloadAction<any>) => {
             state.customers = action.payload.result;
-        });
+        })
+        builder.addCase(getCustomer.fulfilled, (state: Draft<CustomerState>, action: PayloadAction<any>) => {
+            state.selectedCustomer = action.payload.result;
+        })
+        builder.addCase(updateCustomer.fulfilled, (state: Draft<CustomerState>, action: PayloadAction<any>) => {
+            state.customers = state.customers.map((customer:any) =>
+                customer._id === action.payload.result._id ? action.payload.result : customer
+            );
+            state.selectedCustomer = null;
+        })
     },
 });
 

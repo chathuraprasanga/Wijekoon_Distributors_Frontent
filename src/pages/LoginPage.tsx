@@ -47,6 +47,7 @@ const LoginPage = () => {
             switch (payload.type) {
                 case "auth/login/rejected": {
                     const error = payload.payload.error;
+                    console.log("error", error);
                     setLoading(false)
                     toNotify("Login Error", `${error}`, "ERROR");
                     break;

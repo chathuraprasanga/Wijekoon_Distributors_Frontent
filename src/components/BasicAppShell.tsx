@@ -34,6 +34,7 @@ const BasicAppShell = () => {
                 collapsed: { mobile: !mobileOpened, desktop: !desktopOpened },
             }}
             padding="md"
+            zIndex={1}
         >
             <AppShell.Header>
                 <Group h="100%" px="md" justify="space-between">

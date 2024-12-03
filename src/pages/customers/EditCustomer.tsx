@@ -4,15 +4,15 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store/store.ts";
 import { useLoading } from "../../helpers/loadingContext.tsx";
 import {
-    addCustomer,
     getCustomer,
+    updateCustomer,
 } from "../../store/customerSlice/customerSlice.ts";
 import toNotify from "../../helpers/toNotify.tsx";
 import { useNavigate, useParams } from "react-router";
 import { useForm } from "@mantine/form";
 import { useEffect } from "react";
 
-const AddCustomer = () => {
+const EditCustomer = () => {
     const { setLoading } = useLoading();
     const navigate = useNavigate();
     const dispatch = useDispatch<AppDispatch | any>();
@@ -25,10 +25,11 @@ const AddCustomer = () => {
         if (id) {
             fetchSelectedCustomer();
         }
-    }, [dispatch]);
+    }, [dispatch, id]);
 
     useEffect(() => {
-        customerAddForm.setValues(customer);
+        customerEditForm.setValues(customer);
+        customerEditForm.resetDirty();
     }, [customer]);
 
     const fetchSelectedCustomer = async () => {
@@ -37,7 +38,7 @@ const AddCustomer = () => {
         setLoading(false);
     };
 
-    const customerAddForm = useForm({
+    const customerEditForm = useForm({
         mode: "uncontrolled",
         initialValues: {
             name: "",
@@ -64,15 +65,17 @@ const AddCustomer = () => {
         },
     });
 
-    const handleAddCustomer = async (values: typeof customerAddForm.values) => {
+    const handleUpdateCustomer = async (
+        values: typeof customerEditForm.values
+    ) => {
         setLoading(true);
-        const response = await dispatch(addCustomer(values));
+        const response = await dispatch(updateCustomer({ id, values }));
         console.log(response);
-        if (response.type === "customer/addCustomer/fulfilled"){
+        if (response.type === "customer/updateCustomer/fulfilled"){
             setLoading(false);
-            toNotify("Success", "Customer created successfully", "SUCCESS");
+            toNotify("Success", "Customer updated successfully", "SUCCESS");
             navigate("/app/customers");
-        } else if (response.type === "customer/addCustomer/rejected"){
+        } else if (response.type === "customer/updateCustomer/rejected"){
             setLoading(false);
             toNotify("Success", `${response.payload.error}`, "ERROR");
         } else {
@@ -95,31 +98,33 @@ const AddCustomer = () => {
                 </div>
             </div>
             <div className="mx-4 my-4 lg:w-1/2">
-                <form onSubmit={customerAddForm.onSubmit(handleAddCustomer)}>
+                <form
+                    onSubmit={customerEditForm.onSubmit(handleUpdateCustomer)}
+                >
                     <TextInput
                         label="Name"
                         withAsterisk
                         placeholder="Enter Customer Name"
-                        {...customerAddForm.getInputProps("name")}
+                        {...customerEditForm.getInputProps("name")}
                     />
                     <TextInput
                         label="Phone"
                         withAsterisk
                         placeholder="Enter Customer Phone Number"
-                        {...customerAddForm.getInputProps("phone")}
+                        {...customerEditForm.getInputProps("phone")}
                     />
                     <TextInput
                         label="Email"
                         placeholder="Enter Customer Email"
-                        {...customerAddForm.getInputProps("email")}
+                        {...customerEditForm.getInputProps("email")}
                     />
                     <Textarea
                         label="Address"
                         placeholder="Enter Customer Address"
-                        {...customerAddForm.getInputProps("address")}
+                        {...customerEditForm.getInputProps("address")}
                     />
                     <div className="mt-4 flex justify-end">
-                        <Button size="xs" color="dark" type="submit">
+                        <Button size="xs" color="dark"  disabled={!customerEditForm.isDirty()} type="submit">
                             Submit
                         </Button>
                     </div>
@@ -129,4 +134,4 @@ const AddCustomer = () => {
     );
 };
 
-export default AddCustomer;
+export default EditCustomer;

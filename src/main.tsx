@@ -1,4 +1,4 @@
-import React, { StrictMode, Suspense } from "react";
+import React, { Suspense } from "react";
 import { createRoot } from "react-dom/client";
 import "./index.css";
 import {
@@ -49,6 +49,7 @@ const AddSupplier = React.lazy(
 );
 const AddCheque = React.lazy(() => import("./pages/cheques/AddCheque.tsx"));
 const AddInvoice = React.lazy(() => import("./pages/invoices/AddInvoice.tsx"));
+const EditCustomer = React.lazy(() => import("./pages/customers/EditCustomer.tsx"));
 
 const router = createBrowserRouter([
     {
@@ -100,6 +101,10 @@ const router = createBrowserRouter([
                 path: "invoices/add-invoice",
                 element: <AddInvoice />,
             },
+            {
+                path: "customers/edit-customer/:id",
+                element: <EditCustomer />,
+            },
         ],
     },
     {
@@ -118,9 +123,9 @@ createRoot(document.getElementById("root")!).render(
             <Suspense fallback={<Loading />}>
                 <LoadingProvider>
                     <Notifications position="top-right" mt={50} />
-                    <StrictMode>
+                    {/*<StrictMode>*/}
                         <RouterProvider router={router} />
-                    </StrictMode>
+                    {/*</StrictMode>*/}
                 </LoadingProvider>
             </Suspense>
         </MantineProvider>
