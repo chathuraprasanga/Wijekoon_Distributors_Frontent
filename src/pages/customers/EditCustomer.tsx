@@ -92,7 +92,7 @@ const EditCustomer = () => {
                         onClick={() => history.back()}
                     />
                     <span className="text-lg font-semibold ml-4">
-                        Add Customer
+                        Edit Customer
                     </span>
                 </div>
             </div>

@@ -15,7 +15,8 @@ import "@mantine/charts/styles.css";
 import "@mantine/notifications/styles.css";
 import { AuthLoaderChecker } from "./utils/authChecker.ts";
 import { Notifications } from "@mantine/notifications";
-import Loading from "./components/Loading.tsx";
+// import Loading from "./components/Loading.tsx";
+const Loading = React.lazy(() => import("./components/Loading.tsx"))
 import { LoadingProvider } from "./helpers/loadingContext.tsx";
 
 // import LoginPage from "./pages/LoginPage.tsx";
@@ -43,6 +44,9 @@ const Invoices = React.lazy(() => import("./pages/invoices"));
 const AddCustomer = React.lazy(
     () => import("./pages/customers/AddCustomer.tsx")
 );
+const ViewCustomer = React.lazy(
+    () => import("./pages/customers/ViewCustomer.tsx")
+);
 const AddProduct = React.lazy(() => import("./pages/products/AddProduct.tsx"));
 const AddSupplier = React.lazy(
     () => import("./pages/suppliers/AddSupplier.tsx")
@@ -55,6 +59,7 @@ const EditCustomer = React.lazy(
 const EditProduct = React.lazy(
     () => import("./pages/products/EditProduct.tsx")
 );
+
 
 const router = createBrowserRouter([
     {
@@ -109,6 +114,10 @@ const router = createBrowserRouter([
             {
                 path: "customers/edit-customer/:id",
                 element: <EditCustomer />,
+            },
+            {
+                path: "customers/view-customer/:id",
+                element: <ViewCustomer />,
             },
             {
                 path: "products/edit-product/:id",

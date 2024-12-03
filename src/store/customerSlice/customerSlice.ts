@@ -79,6 +79,21 @@ export const updateCustomer = createAsyncThunk(
     }
 );
 
+export const changeStatusCustomer = createAsyncThunk(
+    "customer/changeStatus",
+    async (payload: any, { rejectWithValue }) => {
+        try {
+            const response = await axiosInstance.put(
+                `/customers/customer/${payload.id}`,
+                payload.values
+            );
+            return response.data;
+        } catch (err: any) {
+            throw rejectWithValue(err.response.data);
+        }
+    }
+);
+
 const customerSlice = createSlice({
     name: "customer",
     initialState,
@@ -113,7 +128,18 @@ const customerSlice = createSlice({
                 );
                 state.selectedCustomer = null;
             }
-        );
+        )
+        builder.addCase(
+            changeStatusCustomer.fulfilled,
+            (state: Draft<CustomerState>, action: PayloadAction<any>) => {
+                state.customers = state.customers.map((customer: any) =>
+                    customer._id === action.payload.result._id
+                        ? action.payload.result
+                        : customer
+                );
+                state.selectedCustomer = null;
+            }
+        )
     },
 });
 

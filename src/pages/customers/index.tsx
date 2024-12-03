@@ -5,8 +5,12 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store/store.ts";
-import { getCustomers } from "../../store/customerSlice/customerSlice.ts";
+import {
+    changeStatusCustomer,
+    getCustomers,
+} from "../../store/customerSlice/customerSlice.ts";
 import { useLoading } from "../../helpers/loadingContext.tsx";
+import toNotify from "../../helpers/toNotify.tsx";
 
 const Customers = () => {
     const { setLoading } = useLoading();
@@ -18,16 +22,15 @@ const Customers = () => {
         (state: RootState) => state.customer.customers
     );
 
-
     useEffect(() => {
         fetchCustomers();
         setPage();
     }, []);
 
-    const setPage =() => {
+    const setPage = () => {
         setCurrentPage(Number(sessionStorage.getItem("pageIndex") || 1));
-        sessionStorage.clear()
-    }
+        sessionStorage.clear();
+    };
 
     const fetchCustomers = async () => {
         setLoading(true);
@@ -40,6 +43,35 @@ const Customers = () => {
         (currentPage - 1) * pageSize,
         currentPage * pageSize
     );
+
+    const handleChangeStatus = async (customer: any) => {
+        setLoading(true);
+        const response = await dispatch(
+            changeStatusCustomer({
+                id: customer._id,
+                values: { status: !customer.status },
+            })
+        );
+        if (response.type === "customer/changeStatus/fulfilled") {
+            dispatch(getCustomers({}));
+            setLoading(false);
+            toNotify(
+                "Success",
+                "Customer status changed successfully",
+                "SUCCESS"
+            );
+        } else if (response.type === "customer/changeStatus/rejected") {
+            setLoading(false);
+            toNotify("Error", `${response.payload.error}`, "ERROR");
+        } else {
+            setLoading(false);
+            toNotify(
+                "Something went wrong",
+                `Please contact system admin`,
+                "WARNING"
+            );
+        }
+    };
 
     return (
         <>
@@ -104,16 +136,38 @@ const Customers = () => {
                                             </Menu.Target>
                                             <Menu.Dropdown>
                                                 <Menu.Label>Actions</Menu.Label>
-                                                <Menu.Item>View</Menu.Item>
                                                 <Menu.Item
                                                     onClick={() => {
-                                                        navigate(`/app/customers/edit-customer/${c._id}`);
-                                                        sessionStorage.setItem("pageIndex", String(currentPage));
+                                                        navigate(
+                                                            `/app/customers/view-customer/${c._id}`
+                                                        );
+                                                        sessionStorage.setItem(
+                                                            "pageIndex",
+                                                            String(currentPage)
+                                                        );
+                                                    }}
+                                                >
+                                                    View
+                                                </Menu.Item>
+                                                <Menu.Item
+                                                    onClick={() => {
+                                                        navigate(
+                                                            `/app/customers/edit-customer/${c._id}`
+                                                        );
+                                                        sessionStorage.setItem(
+                                                            "pageIndex",
+                                                            String(currentPage)
+                                                        );
                                                     }}
                                                 >
                                                     Edit
                                                 </Menu.Item>
-                                                <Menu.Item>
+                                                <Menu.Item
+                                                    color={c.status ? "red" : "green"}
+                                                    onClick={() =>
+                                                        handleChangeStatus(c)
+                                                    }
+                                                >
                                                     {c.status ? (
                                                         <span className="text-red-700">
                                                             Deactivate
@@ -177,16 +231,38 @@ const Customers = () => {
                                     </Menu.Target>
                                     <Menu.Dropdown>
                                         <Menu.Label>Actions</Menu.Label>
-                                        <Menu.Item>View</Menu.Item>
                                         <Menu.Item
                                             onClick={() => {
-                                                navigate(`/app/customers/edit-customer/${c._id}`);
-                                                sessionStorage.setItem("pageIndex", String(currentPage));
+                                                navigate(
+                                                    `/app/customers/view-customer/${c._id}`
+                                                );
+                                                sessionStorage.setItem(
+                                                    "pageIndex",
+                                                    String(currentPage)
+                                                );
+                                            }}
+                                        >
+                                            View
+                                        </Menu.Item>
+                                        <Menu.Item
+                                            onClick={() => {
+                                                navigate(
+                                                    `/app/customers/edit-customer/${c._id}`
+                                                );
+                                                sessionStorage.setItem(
+                                                    "pageIndex",
+                                                    String(currentPage)
+                                                );
                                             }}
                                         >
                                             Edit
                                         </Menu.Item>
-                                        <Menu.Item>
+                                        <Menu.Item
+                                            color={c.status ? "red" : "green"}
+                                            onClick={() =>
+                                                handleChangeStatus(c)
+                                            }
+                                        >
                                             {c.status ? (
                                                 <span className="text-red-700">
                                                     Deactivate
@@ -204,10 +280,7 @@ const Customers = () => {
                     ))
                 ) : (
                     <div className="flex items-center">
-                        <IconDatabaseOff
-                            color="red"
-                            size="24"
-                        />
+                        <IconDatabaseOff color="red" size="24" />
                         <p>No data available</p>
                     </div>
                 )}
