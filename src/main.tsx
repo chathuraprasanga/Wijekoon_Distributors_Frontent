@@ -3,7 +3,7 @@ import { createRoot } from "react-dom/client";
 import "./index.css";
 import {
     createBrowserRouter,
-    Navigate,
+    Navigate, redirect,
     RouterProvider,
 } from "react-router-dom";
 import { Provider } from "react-redux";
@@ -18,6 +18,14 @@ import { Notifications } from "@mantine/notifications";
 // import Loading from "./components/Loading.tsx";
 const Loading = React.lazy(() => import("./components/Loading.tsx"))
 import { LoadingProvider } from "./helpers/loadingContext.tsx";
+
+const authChecker = async () => {
+    const isAuthenticated = Boolean(localStorage.getItem("ACCESS_TOKEN"));
+    if (isAuthenticated) {
+        return redirect("/app/dashboard"); // Redirect if already logged in
+    }
+    return null;
+};
 
 // import LoginPage from "./pages/LoginPage.tsx";
 // import AppLayout from "./layouts/AppLayout.tsx";
@@ -58,6 +66,9 @@ const EditCustomer = React.lazy(
 );
 const EditProduct = React.lazy(
     () => import("./pages/products/EditProduct.tsx")
+);
+const ViewProduct = React.lazy(
+    () => import("./pages/products/ViewProduct.tsx")
 );
 
 
@@ -124,6 +135,10 @@ const router = createBrowserRouter([
                 element: <EditProduct />,
             },
             {
+                path: "products/view-product/:id",
+                element: <ViewProduct />,
+            },
+            {
                 path: "*",
                 element: <Navigate to="/app/dashboard" replace />,
             },
@@ -136,6 +151,7 @@ const router = createBrowserRouter([
     {
         path: "login",
         element: <LoginPage />,
+        loader: authChecker,
     },
 ]);
 

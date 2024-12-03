@@ -105,7 +105,19 @@ const Products = () => {
                                             </Menu.Target>
                                             <Menu.Dropdown>
                                                 <Menu.Label>Actions</Menu.Label>
-                                                <Menu.Item>View</Menu.Item>
+                                                <Menu.Item
+                                                    onClick={() => {
+                                                        navigate(
+                                                            `/app/products/view-product/${c._id}`
+                                                        );
+                                                        sessionStorage.setItem(
+                                                            "pageIndex",
+                                                            String(currentPage)
+                                                        );
+                                                    }}
+                                                >
+                                                    View
+                                                </Menu.Item>
                                                 <Menu.Item
                                                     onClick={() => {
                                                         navigate(
@@ -183,7 +195,19 @@ const Products = () => {
                                     </Menu.Target>
                                     <Menu.Dropdown>
                                         <Menu.Label>Actions</Menu.Label>
-                                        <Menu.Item>View</Menu.Item>
+                                        <Menu.Item
+                                            onClick={() => {
+                                                navigate(
+                                                    `/app/products/view-product/${c._id}`
+                                                );
+                                                sessionStorage.setItem(
+                                                    "pageIndex",
+                                                    String(currentPage)
+                                                );
+                                            }}
+                                        >
+                                            View
+                                        </Menu.Item>
                                         <Menu.Item
                                             onClick={() => {
                                                 navigate(
