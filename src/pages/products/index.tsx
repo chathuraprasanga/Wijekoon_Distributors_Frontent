@@ -1,16 +1,41 @@
 import { Badge, Button, Group, Menu, Pagination, Table } from "@mantine/core";
 import { IconDatabaseOff, IconDotsVertical } from "@tabler/icons-react";
 import { useNavigate } from "react-router";
-import { useState } from "react";
-import products from "../products/product_data.json";
+import { useEffect, useState } from "react";
+// import products from "../products/product_data.json";
+import { useLoading } from "../../helpers/loadingContext.tsx";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../../store/store.ts";
+import { getProducts } from "../../store/productSlice/productSlice.ts";
 
 const Products = () => {
+    const { setLoading } = useLoading();
+    const dispatch = useDispatch<AppDispatch | any>();
     const navigate = useNavigate();
     const [currentPage, setCurrentPage] = useState(1);
     const pageSize = 5;
 
-    const totalPages = Math.ceil(products.length / pageSize);
-    const paginatedData: any = products.slice(
+    const products = useSelector((state: RootState) => state.product.products);
+
+    useEffect(() => {
+        fetchProducts();
+        setPage();
+    }, []);
+
+    const setPage = () => {
+        setCurrentPage(Number(sessionStorage.getItem("pageIndex") || 1));
+        console.log(Number(sessionStorage.getItem("pageIndex")));
+        sessionStorage.clear();
+    };
+
+    const fetchProducts = async () => {
+        setLoading(true);
+        await dispatch(getProducts({}));
+        setLoading(false);
+    };
+
+    const totalPages = Math.ceil(products?.length / pageSize);
+    const paginatedData: any = products?.slice(
         (currentPage - 1) * pageSize,
         currentPage * pageSize
     );
@@ -52,13 +77,15 @@ const Products = () => {
                         </Table.Tr>
                     </Table.Thead>
                     <Table.Tbody>
-                        {paginatedData.length !== 0 ? (
-                            paginatedData.map((c: any, i: number) => (
+                        {paginatedData?.length !== 0 ? (
+                            paginatedData?.map((c: any, i: number) => (
                                 <Table.Tr key={i}>
                                     <Table.Td>{c.name}</Table.Td>
                                     <Table.Td>{c.productCode}</Table.Td>
                                     <Table.Td>{c.size}</Table.Td>
-                                    <Table.Td>{c.unitPrice}</Table.Td>
+                                    <Table.Td>
+                                        RS. {c.unitPrice.toFixed(2)}
+                                    </Table.Td>
                                     <Table.Td>
                                         <Badge
                                             color={c.status ? "green" : "red"}
@@ -79,7 +106,19 @@ const Products = () => {
                                             <Menu.Dropdown>
                                                 <Menu.Label>Actions</Menu.Label>
                                                 <Menu.Item>View</Menu.Item>
-                                                <Menu.Item>Edit</Menu.Item>
+                                                <Menu.Item
+                                                    onClick={() => {
+                                                        navigate(
+                                                            `/app/products/edit-product/${c._id}`
+                                                        );
+                                                        sessionStorage.setItem(
+                                                            "pageIndex",
+                                                            String(currentPage)
+                                                        );
+                                                    }}
+                                                >
+                                                    Edit
+                                                </Menu.Item>
                                                 <Menu.Item>
                                                     {c.status ? (
                                                         <span className="text-red-700">
@@ -116,8 +155,8 @@ const Products = () => {
 
             {/* Mobile Cards */}
             <div className="block lg:hidden mx-4 my-4">
-                {paginatedData.length !== 0 ? (
-                    paginatedData.map((c: any, i: number) => (
+                {paginatedData?.length !== 0 ? (
+                    paginatedData?.map((c: any, i: number) => (
                         <div
                             key={i}
                             className="border border-gray-300 rounded-md mb-4 p-4 bg-white shadow-sm"
@@ -145,7 +184,19 @@ const Products = () => {
                                     <Menu.Dropdown>
                                         <Menu.Label>Actions</Menu.Label>
                                         <Menu.Item>View</Menu.Item>
-                                        <Menu.Item>Edit</Menu.Item>
+                                        <Menu.Item
+                                            onClick={() => {
+                                                navigate(
+                                                    `/app/products/edit-product/${c._id}`
+                                                );
+                                                sessionStorage.setItem(
+                                                    "pageIndex",
+                                                    String(currentPage)
+                                                );
+                                            }}
+                                        >
+                                            Edit
+                                        </Menu.Item>
                                         <Menu.Item>
                                             {c.status ? (
                                                 <span className="text-red-700">

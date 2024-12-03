@@ -49,7 +49,12 @@ const AddSupplier = React.lazy(
 );
 const AddCheque = React.lazy(() => import("./pages/cheques/AddCheque.tsx"));
 const AddInvoice = React.lazy(() => import("./pages/invoices/AddInvoice.tsx"));
-const EditCustomer = React.lazy(() => import("./pages/customers/EditCustomer.tsx"));
+const EditCustomer = React.lazy(
+    () => import("./pages/customers/EditCustomer.tsx")
+);
+const EditProduct = React.lazy(
+    () => import("./pages/products/EditProduct.tsx")
+);
 
 const router = createBrowserRouter([
     {
@@ -105,6 +110,14 @@ const router = createBrowserRouter([
                 path: "customers/edit-customer/:id",
                 element: <EditCustomer />,
             },
+            {
+                path: "products/edit-product/:id",
+                element: <EditProduct />,
+            },
+            {
+                path: "*",
+                element: <Navigate to="/app/dashboard" replace />,
+            },
         ],
     },
     {
@@ -124,7 +137,7 @@ createRoot(document.getElementById("root")!).render(
                 <LoadingProvider>
                     <Notifications position="top-right" mt={50} />
                     {/*<StrictMode>*/}
-                        <RouterProvider router={router} />
+                    <RouterProvider router={router} />
                     {/*</StrictMode>*/}
                 </LoadingProvider>
             </Suspense>

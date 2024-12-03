@@ -70,14 +70,13 @@ const EditCustomer = () => {
     ) => {
         setLoading(true);
         const response = await dispatch(updateCustomer({ id, values }));
-        console.log(response);
         if (response.type === "customer/updateCustomer/fulfilled"){
             setLoading(false);
             toNotify("Success", "Customer updated successfully", "SUCCESS");
             navigate("/app/customers");
         } else if (response.type === "customer/updateCustomer/rejected"){
             setLoading(false);
-            toNotify("Success", `${response.payload.error}`, "ERROR");
+            toNotify("Error", `${response.payload.error}`, "ERROR");
         } else {
             setLoading(false);
             toNotify("Something went wrong", `Please contact system admin`, "WARNING");

@@ -26,7 +26,6 @@ const Customers = () => {
 
     const setPage =() => {
         setCurrentPage(Number(sessionStorage.getItem("pageIndex") || 1));
-        console.log(Number(sessionStorage.getItem("pageIndex")));
         sessionStorage.clear()
     }
 

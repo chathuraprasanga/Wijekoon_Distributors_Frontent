@@ -74,7 +74,7 @@ const AddCustomer = () => {
             navigate("/app/customers");
         } else if (response.type === "customer/addCustomer/rejected"){
             setLoading(false);
-            toNotify("Success", `${response.payload.error}`, "ERROR");
+            toNotify("Error", `${response.payload.error}`, "ERROR");
         } else {
             setLoading(false);
             toNotify("Something went wrong", `Please contact system admin`, "WARNING");
