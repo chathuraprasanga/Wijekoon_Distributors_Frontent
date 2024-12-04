@@ -84,7 +84,7 @@ export const changeStatusCustomer = createAsyncThunk(
     async (payload: any, { rejectWithValue }) => {
         try {
             const response = await axiosInstance.put(
-                `/customers/customer/${payload.id}`,
+                `/customers/change-status/${payload.id}`,
                 payload.values
             );
             return response.data;
@@ -101,8 +101,7 @@ const customerSlice = createSlice({
     extraReducers: (builder) => {
         builder.addCase(
             addCustomer.fulfilled,
-            (state: Draft<CustomerState>, action: PayloadAction<any>) => {
-                state.customers.push(action.payload.result);
+            (_, action: PayloadAction<any>) => {
                 return action.payload;
             }
         );

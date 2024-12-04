@@ -6,7 +6,8 @@ import { useEffect, useState } from "react";
 import { useLoading } from "../../helpers/loadingContext.tsx";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store/store.ts";
-import { getProducts } from "../../store/productSlice/productSlice.ts";
+import { changeStatusProduct, getProducts } from "../../store/productSlice/productSlice.ts";
+import toNotify from "../../helpers/toNotify.tsx";
 
 const Products = () => {
     const { setLoading } = useLoading();
@@ -39,6 +40,35 @@ const Products = () => {
         (currentPage - 1) * pageSize,
         currentPage * pageSize
     );
+
+    const handleChangeStatus = async (product: any) => {
+        setLoading(true);
+        const response = await dispatch(
+            changeStatusProduct({
+                id: product._id,
+                values: { status: !product.status },
+            })
+        );
+        if (response.type === "product/changeStatus/fulfilled") {
+            dispatch(getProducts({}));
+            setLoading(false);
+            toNotify(
+                "Success",
+                "Product status changed successfully",
+                "SUCCESS"
+            );
+        } else if (response.type === "product/changeStatus/rejected") {
+            setLoading(false);
+            toNotify("Error", `${response.payload.error}`, "ERROR");
+        } else {
+            setLoading(false);
+            toNotify(
+                "Something went wrong",
+                `Please contact system admin`,
+                "WARNING"
+            );
+        }
+    };
 
     return (
         <>
@@ -131,7 +161,12 @@ const Products = () => {
                                                 >
                                                     Edit
                                                 </Menu.Item>
-                                                <Menu.Item>
+                                                <Menu.Item
+                                                    color={c.status ? "red" : "green"}
+                                                    onClick={() =>
+                                                        handleChangeStatus(c)
+                                                    }
+                                                >
                                                     {c.status ? (
                                                         <span className="text-red-700">
                                                             Deactivate
@@ -221,15 +256,20 @@ const Products = () => {
                                         >
                                             Edit
                                         </Menu.Item>
-                                        <Menu.Item>
+                                        <Menu.Item
+                                            color={c.status ? "red" : "green"}
+                                            onClick={() =>
+                                                handleChangeStatus(c)
+                                            }
+                                        >
                                             {c.status ? (
                                                 <span className="text-red-700">
-                                                    Deactivate
-                                                </span>
+                                                            Deactivate
+                                                        </span>
                                             ) : (
                                                 <span className="text-green-700">
-                                                    Activate
-                                                </span>
+                                                            Activate
+                                                        </span>
                                             )}
                                         </Menu.Item>
                                     </Menu.Dropdown>

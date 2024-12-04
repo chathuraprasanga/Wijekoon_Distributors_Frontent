@@ -6,26 +6,26 @@ import {
 } from "@reduxjs/toolkit";
 import axiosInstance from "../../interceptors/axiosInterceptor.ts";
 
-interface ProductState {
-    products: any;
-    selectedProduct: any;
+interface SupplierState {
+    suppliers: any;
+    selectedSupplier: any;
     status: string;
     error: string;
 }
 
-const initialState: ProductState = {
-    products: [],
-    selectedProduct: {},
+const initialState: SupplierState = {
+    suppliers: [],
+    selectedSupplier: {},
     status: "idle",
     error: "",
 };
 
-export const getProducts = createAsyncThunk(
-    "product/getProducts",
+export const addSupplier = createAsyncThunk(
+    "supplier/addSupplier",
     async (payload: any, { rejectWithValue }) => {
         try {
             const response = await axiosInstance.post(
-                "/products/products",
+                `/suppliers/supplier`,
                 payload
             );
             return response.data;
@@ -35,12 +35,12 @@ export const getProducts = createAsyncThunk(
     }
 );
 
-export const addProduct = createAsyncThunk(
-    "product/addProduct",
+export const getSuppliers = createAsyncThunk(
+    "supplier/getSuppliers",
     async (payload: any, { rejectWithValue }) => {
         try {
             const response = await axiosInstance.post(
-                "/products/product",
+                `/suppliers/suppliers`,
                 payload
             );
             return response.data;
@@ -50,12 +50,12 @@ export const addProduct = createAsyncThunk(
     }
 );
 
-export const getProduct = createAsyncThunk(
-    "product/getProduct",
+export const getSupplier = createAsyncThunk(
+    "supplier/getSupplier",
     async (id: any, { rejectWithValue }) => {
         try {
             const response = await axiosInstance.get(
-                `/products/product/${id}`
+                `/suppliers/supplier/${id}`
             );
             return response.data;
         } catch (err: any) {
@@ -64,26 +64,12 @@ export const getProduct = createAsyncThunk(
     }
 );
 
-export const updateProduct = createAsyncThunk(
-    "product/updateProduct",
+export const updateSupplier = createAsyncThunk(
+    "supplier/updateSupplier",
     async (payload: any, { rejectWithValue }) => {
         try {
             const response = await axiosInstance.put(
-                `/products/product/${payload.id}`, payload.values
-            );
-            return response.data;
-        } catch (err: any) {
-            throw rejectWithValue(err.response.data);
-        }
-    }
-);
-
-export const changeStatusProduct = createAsyncThunk(
-    "product/changeStatus",
-    async (payload: any, { rejectWithValue }) => {
-        try {
-            const response = await axiosInstance.put(
-                `/products/change-status/${payload.id}`,
+                `/suppliers/supplier/${payload.id}`,
                 payload.values
             );
             return response.data;
@@ -93,52 +79,67 @@ export const changeStatusProduct = createAsyncThunk(
     }
 );
 
-const productSlice = createSlice({
-    name: "product",
+export const changeStatusSupplier = createAsyncThunk(
+    "supplier/changeStatus",
+    async (payload: any, { rejectWithValue }) => {
+        try {
+            const response = await axiosInstance.put(
+                `/suppliers/change-status/${payload.id}`,
+                payload.values
+            );
+            return response.data;
+        } catch (err: any) {
+            throw rejectWithValue(err.response.data);
+        }
+    }
+);
+
+const supplierSlice = createSlice({
+    name: "supplier",
     initialState,
     reducers: {},
     extraReducers: (builder) => {
         builder.addCase(
-            getProducts.fulfilled,
-            (state: Draft<ProductState>, action: PayloadAction<any>) => {
-                state.products = action.payload.result;
-            }
-        );
-        builder.addCase(
-            addProduct.fulfilled,
+            addSupplier.fulfilled,
             (_, action: PayloadAction<any>) => {
                 return action.payload;
             }
         );
         builder.addCase(
-            getProduct.fulfilled,
-            (state: Draft<ProductState>, action: PayloadAction<any>) => {
-                state.selectedProduct = action.payload.result;
+            getSuppliers.fulfilled,
+            (state: Draft<SupplierState>, action: PayloadAction<any>) => {
+                state.suppliers = action.payload.result;
             }
-        )
+        );
         builder.addCase(
-            updateProduct.fulfilled,
-            (state: Draft<ProductState>, action: PayloadAction<any>) => {
-                state.products = state.products.map((product: any) =>
-                    product._id === action.payload.result._id
-                        ? action.payload.result
-                        : product
-                );
-                state.selectedProduct = null;
+            getSupplier.fulfilled,
+            (state: Draft<SupplierState>, action: PayloadAction<any>) => {
+                state.selectedSupplier = action.payload.result;
             }
-        )
+        );
         builder.addCase(
-            changeStatusProduct.fulfilled,
-            (state: Draft<ProductState>, action: PayloadAction<any>) => {
-                state.products = state.products.map((product: any) =>
-                    product._id === action.payload.result._id
+            updateSupplier.fulfilled,
+            (state: Draft<SupplierState>, action: PayloadAction<any>) => {
+                state.suppliers = state.suppliers.map((supplier: any) =>
+                    supplier._id === action.payload.result._id
                         ? action.payload.result
-                        : product
+                        : supplier
                 );
-                state.selectedProduct = null;
+                state.selectedSupplier = null;
             }
-        )
+        );
+        builder.addCase(
+            changeStatusSupplier.fulfilled,
+            (state: Draft<SupplierState>, action: PayloadAction<any>) => {
+                state.suppliers = state.suppliers.map((supplier: any) =>
+                    supplier._id === action.payload.result._id
+                        ? action.payload.result
+                        : supplier
+                );
+                state.selectedSupplier = null;
+            }
+        );
     },
 });
 
-export default productSlice.reducer;
+export default supplierSlice.reducer;
