@@ -21,9 +21,9 @@ const BasicAppShell = () => {
     const [mobileOpened, { toggle: toggleMobile }] = useDisclosure(false);
     const [desktopOpened, { toggle: toggleDesktop }] = useDisclosure(true);
 
-    const greetingName = userDetails.username.split(" ")[0];
+    const greetingName = userDetails?.username?.split(" ")[0];
 
-    const activePath = location.pathname.split("/")[2];
+    const activePath = location?.pathname?.split("/")[2];
 
     return (
         <AppShell

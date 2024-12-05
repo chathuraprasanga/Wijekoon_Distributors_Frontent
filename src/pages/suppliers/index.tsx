@@ -1,19 +1,73 @@
 import { useNavigate } from "react-router";
-import { useState } from "react";
-import suppliers from "./supplier_data.json";
+import { useEffect, useState } from "react";
 import { Badge, Button, Group, Menu, Pagination, Table } from "@mantine/core";
 import { IconDatabaseOff, IconDotsVertical } from "@tabler/icons-react";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../../store/store.ts";
+import { useLoading } from "../../helpers/loadingContext.tsx";
+import { changeStatusSupplier, getSuppliers } from "../../store/supplierSlice/supplierSlice.ts";
+import toNotify from "../../helpers/toNotify.tsx";
 
 const Suppliers = () => {
+    const { setLoading } = useLoading();
+    const dispatch = useDispatch<AppDispatch | any>();
     const navigate = useNavigate();
     const [currentPage, setCurrentPage] = useState(1);
     const pageSize = 5;
+    const suppliers = useSelector(
+        (state: RootState) => state.supplier.suppliers
+    );
 
-    const totalPages = Math.ceil(suppliers.length / pageSize);
-    const paginatedData: any = suppliers.slice(
+    useEffect(() => {
+        fetchSuppliers();
+        setPage();
+    }, []);
+
+    const setPage = () => {
+        setCurrentPage(Number(sessionStorage.getItem("pageIndex") || 1));
+        sessionStorage.clear();
+    };
+
+    const fetchSuppliers = async () => {
+        setLoading(true);
+        await dispatch(getSuppliers({}));
+        setLoading(false);
+    };
+
+    const totalPages = Math.ceil(suppliers?.length / pageSize);
+    const paginatedData: any = suppliers?.slice(
         (currentPage - 1) * pageSize,
         currentPage * pageSize
     );
+
+    const handleChangeStatus = async (supplier: any) => {
+        setLoading(true);
+        const response = await dispatch(
+            changeStatusSupplier({
+                id: supplier._id,
+                values: { status: !supplier.status },
+            })
+        );
+        if (response.type === "supplier/changeStatus/fulfilled") {
+            dispatch(getSuppliers({}));
+            setLoading(false);
+            toNotify(
+                "Success",
+                "Supplier status changed successfully",
+                "SUCCESS"
+            );
+        } else if (response.type === "supplier/changeStatus/rejected") {
+            setLoading(false);
+            toNotify("Error", `${response.payload.error}`, "ERROR");
+        } else {
+            setLoading(false);
+            toNotify(
+                "Something went wrong",
+                `Please contact system admin`,
+                "WARNING"
+            );
+        }
+    };
 
     return (
         <>
@@ -52,8 +106,8 @@ const Suppliers = () => {
                         </Table.Tr>
                     </Table.Thead>
                     <Table.Tbody>
-                        {paginatedData.length !== 0 ? (
-                            paginatedData.map((c: any, i: number) => (
+                        {paginatedData?.length !== 0 ? (
+                            paginatedData?.map((c: any, i: number) => (
                                 <Table.Tr key={i}>
                                     <Table.Td>{c.name}</Table.Td>
                                     <Table.Td>{c.phone}</Table.Td>
@@ -78,9 +132,42 @@ const Suppliers = () => {
                                             </Menu.Target>
                                             <Menu.Dropdown>
                                                 <Menu.Label>Actions</Menu.Label>
-                                                <Menu.Item>View</Menu.Item>
-                                                <Menu.Item>Edit</Menu.Item>
-                                                <Menu.Item>
+                                                <Menu.Item
+                                                    onClick={() => {
+                                                        navigate(
+                                                            `/app/suppliers/view-supplier/${c._id}`
+                                                        );
+                                                        sessionStorage.setItem(
+                                                            "pageIndex",
+                                                            String(currentPage)
+                                                        );
+                                                    }}
+                                                >
+                                                    View
+                                                </Menu.Item>
+                                                <Menu.Item
+                                                    onClick={() => {
+                                                        navigate(
+                                                            `/app/suppliers/edit-supplier/${c._id}`
+                                                        );
+                                                        sessionStorage.setItem(
+                                                            "pageIndex",
+                                                            String(currentPage)
+                                                        );
+                                                    }}
+                                                >
+                                                    Edit
+                                                </Menu.Item>
+                                                <Menu.Item
+                                                    color={
+                                                        c.status
+                                                            ? "red"
+                                                            : "green"
+                                                    }
+                                                    onClick={() =>
+                                                        handleChangeStatus(c)
+                                                    }
+                                                >
                                                     {c.status ? (
                                                         <span className="text-red-700">
                                                             Deactivate
@@ -116,8 +203,8 @@ const Suppliers = () => {
 
             {/* Mobile Cards */}
             <div className="block lg:hidden mx-4 my-4">
-                {paginatedData.length !== 0 ? (
-                    paginatedData.map((c: any, i: number) => (
+                {paginatedData?.length !== 0 ? (
+                    paginatedData?.map((c: any, i: number) => (
                         <div
                             key={i}
                             className="border border-gray-300 rounded-md mb-4 p-4 bg-white shadow-sm"
@@ -144,9 +231,38 @@ const Suppliers = () => {
                                     </Menu.Target>
                                     <Menu.Dropdown>
                                         <Menu.Label>Actions</Menu.Label>
-                                        <Menu.Item>View</Menu.Item>
-                                        <Menu.Item>Edit</Menu.Item>
-                                        <Menu.Item>
+                                        <Menu.Item
+                                            onClick={() => {
+                                                navigate(
+                                                    `/app/suppliers/view-supplier/${c._id}`
+                                                );
+                                                sessionStorage.setItem(
+                                                    "pageIndex",
+                                                    String(currentPage)
+                                                );
+                                            }}
+                                        >
+                                            View
+                                        </Menu.Item>
+                                        <Menu.Item
+                                            onClick={() => {
+                                                navigate(
+                                                    `/app/suppliers/edit-supplier/${c._id}`
+                                                );
+                                                sessionStorage.setItem(
+                                                    "pageIndex",
+                                                    String(currentPage)
+                                                );
+                                            }}
+                                        >
+                                            Edit
+                                        </Menu.Item>
+                                        <Menu.Item
+                                            color={c.status ? "red" : "green"}
+                                            onClick={() =>
+                                                handleChangeStatus(c)
+                                            }
+                                        >
                                             {c.status ? (
                                                 <span className="text-red-700">
                                                     Deactivate

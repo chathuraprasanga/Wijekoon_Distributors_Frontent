@@ -3,7 +3,8 @@ import { createRoot } from "react-dom/client";
 import "./index.css";
 import {
     createBrowserRouter,
-    Navigate, redirect,
+    Navigate,
+    redirect,
     RouterProvider,
 } from "react-router-dom";
 import { Provider } from "react-redux";
@@ -16,7 +17,7 @@ import "@mantine/notifications/styles.css";
 import { AuthLoaderChecker } from "./utils/authChecker.ts";
 import { Notifications } from "@mantine/notifications";
 // import Loading from "./components/Loading.tsx";
-const Loading = React.lazy(() => import("./components/Loading.tsx"))
+const Loading = React.lazy(() => import("./components/Loading.tsx"));
 import { LoadingProvider } from "./helpers/loadingContext.tsx";
 
 const authChecker = async () => {
@@ -67,10 +68,15 @@ const EditCustomer = React.lazy(
 const EditProduct = React.lazy(
     () => import("./pages/products/EditProduct.tsx")
 );
+const EditSupplier = React.lazy(
+    () => import("./pages/suppliers/EditSupplier.tsx")
+);
 const ViewProduct = React.lazy(
     () => import("./pages/products/ViewProduct.tsx")
 );
-
+const ViewSupplier = React.lazy(
+    () => import("./pages/suppliers/ViewSupplier.tsx")
+);
 
 const router = createBrowserRouter([
     {
@@ -137,6 +143,14 @@ const router = createBrowserRouter([
             {
                 path: "products/view-product/:id",
                 element: <ViewProduct />,
+            },
+            {
+                path: "suppliers/edit-supplier/:id",
+                element: <EditSupplier />,
+            },
+            {
+                path: "suppliers/view-supplier/:id",
+                element: <ViewSupplier />,
             },
             {
                 path: "*",

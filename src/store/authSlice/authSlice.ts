@@ -68,8 +68,9 @@ const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    logOut: (state) => {
+    logOut: (state: Draft<AuthState>) => {
       state.user = {};
+      localStorage.clear();
       localStorage.setItem("ACCESS_TOKEN", "");
       localStorage.setItem("REFRESH_TOKEN", "");
     },
