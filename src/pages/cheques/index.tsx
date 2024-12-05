@@ -1,19 +1,70 @@
 import { useNavigate } from "react-router";
-import { useState } from "react";
-import cheques from "./cheque_data.json";
+import { useEffect, useState } from "react";
 import { Badge, Button, Group, Menu, Pagination, Table } from "@mantine/core";
 import { IconDatabaseOff, IconDotsVertical } from "@tabler/icons-react";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../../store/store.ts";
+import { useLoading } from "../../helpers/loadingContext.tsx";
+import { changeStatusCheque, getCheques } from "../../store/chequeSlice/chequeSlice.ts";
+import toNotify from "../../helpers/toNotify.tsx";
 
 const Cheques = () => {
+    const {setLoading} = useLoading();
+    const dispatch = useDispatch<AppDispatch|any>();
     const navigate = useNavigate();
     const [currentPage, setCurrentPage] = useState(1);
     const pageSize = 5;
+    const cheques = useSelector(
+        (state: RootState) => state.cheque.cheques
+    );
 
-    const totalPages = Math.ceil(cheques.length / pageSize);
-    const paginatedData: any = cheques.slice(
+    useEffect(() => {
+        fetchCheques();
+        setPage();
+    }, []);
+
+    const setPage = () => {
+        setCurrentPage(Number(sessionStorage.getItem("pageIndex") || 1));
+        sessionStorage.clear();
+    };
+
+    const fetchCheques = async () => {
+        setLoading(true);
+        await dispatch(getCheques({}));
+        setLoading(false);
+    };
+
+
+    const totalPages = Math.ceil(cheques?.length / pageSize);
+    const paginatedData: any = cheques?.slice(
         (currentPage - 1) * pageSize,
         currentPage * pageSize
     );
+
+    const chequeStatusUpdate = async ( id: string,status: string) => {
+        setLoading(true);
+        const payload = {
+            id,
+            values: { chequeStatus: status },
+        };
+        const response = await dispatch(changeStatusCheque(payload));
+        if (response.type === "cheque/changeStatus/fulfilled") {
+            await fetchCheques();
+            setLoading(false);
+            toNotify("Success", "Cheque status changed successfully", "SUCCESS");
+        } else if (response.type === "cheque/changeStatus/rejected") {
+            const error: any = response.payload.error;
+            setLoading(false);
+            toNotify("Error", `${error}`, "ERROR");
+        } else {
+            setLoading(false);
+            toNotify(
+                "Something went wrong",
+                `Please contact system admin`,
+                "WARNING"
+            );
+        }
+    };
 
     return (
         <>
@@ -53,11 +104,11 @@ const Cheques = () => {
                         </Table.Tr>
                     </Table.Thead>
                     <Table.Tbody>
-                        {paginatedData.length !== 0 ? (
-                            paginatedData.map((c: any, i: number) => (
+                        {paginatedData?.length !== 0 ? (
+                            paginatedData?.map((c: any, i: number) => (
                                 <Table.Tr key={i}>
                                     <Table.Td>{c.customer}</Table.Td>
-                                    <Table.Td>{c.chequeNumber}</Table.Td>
+                                    <Table.Td>{c.number}</Table.Td>
                                     <Table.Td>{c.bank}</Table.Td>
                                     <Table.Td>{c.amount}</Table.Td>
                                     <Table.Td>{c.depositDate}</Table.Td>
@@ -90,31 +141,49 @@ const Cheques = () => {
                                             </Menu.Target>
                                             <Menu.Dropdown>
                                                 <Menu.Label>Actions</Menu.Label>
-                                                <Menu.Item>View</Menu.Item>
+                                                <Menu.Item
+                                                    onClick={() => {
+                                                        navigate(
+                                                            `/app/cheques/view-cheque/${c._id}`
+                                                        );
+                                                        sessionStorage.setItem(
+                                                            "pageIndex",
+                                                            String(currentPage)
+                                                        );
+                                                    }}
+                                                >
+                                                    View
+                                                </Menu.Item>
                                                 <Menu.Item
                                                     disabled={
                                                         c.chequeStatus !==
                                                         "PENDING"
                                                     }
+                                                    onClick={() => {
+                                                        navigate(
+                                                            `/app/cheques/edit-cheque/${c._id}`
+                                                        );
+                                                        sessionStorage.setItem(
+                                                            "pageIndex",
+                                                            String(currentPage)
+                                                        );
+                                                    }}
                                                 >
                                                     Edit
                                                 </Menu.Item>
-                                                {c.chequeStatus ===
-                                                    "PENDING" && (
-                                                    <Menu.Item color="blue">
-                                                        <span>Deposit</span>
-                                                    </Menu.Item>
-                                                )}
-                                                {c.chequeStatus ===
-                                                    "DEPOSITED" && (
+                                                {c.chequeStatus !== "COMPLETED" && c.chequeStatus !== "RETURNED" && (
                                                     <>
-                                                        <Menu.Item color="green">
-                                                            <span>
-                                                                Complete
-                                                            </span>
+                                                        <Menu.Item
+                                                            color="green"
+                                                            onClick={() => chequeStatusUpdate(c._id, "COMPLETED")}
+                                                        >
+                                                            <span>Completed</span>
                                                         </Menu.Item>
-                                                        <Menu.Item color="red">
-                                                            <span>Return</span>
+                                                        <Menu.Item
+                                                            color="red"
+                                                            onClick={() => chequeStatusUpdate(c._id, "RETURNED")}
+                                                        >
+                                                            <span>Returned</span>
                                                         </Menu.Item>
                                                     </>
                                                 )}
@@ -143,8 +212,8 @@ const Cheques = () => {
 
             {/* Mobile Cards */}
             <div className="block lg:hidden mx-4 my-4">
-                {paginatedData.length !== 0 ? (
-                    paginatedData.map((c: any, i: number) => (
+                {paginatedData?.length !== 0 ? (
+                    paginatedData?.map((c: any, i: number) => (
                         <div
                             key={i}
                             className="border border-gray-300 rounded-md mb-4 p-4 bg-white shadow-sm"
@@ -182,26 +251,49 @@ const Cheques = () => {
                                     </Menu.Target>
                                     <Menu.Dropdown>
                                         <Menu.Label>Actions</Menu.Label>
-                                        <Menu.Item>View</Menu.Item>
+                                        <Menu.Item
+                                            onClick={() => {
+                                                navigate(
+                                                    `/app/cheques/view-cheque/${c._id}`
+                                                );
+                                                sessionStorage.setItem(
+                                                    "pageIndex",
+                                                    String(currentPage)
+                                                );
+                                            }}
+                                        >
+                                            View
+                                        </Menu.Item>
                                         <Menu.Item
                                             disabled={
-                                                c.chequeStatus !== "PENDING"
+                                                c.chequeStatus !==
+                                                "PENDING"
                                             }
+                                            onClick={() => {
+                                                navigate(
+                                                    `/app/cheques/edit-cheque/${c._id}`
+                                                );
+                                                sessionStorage.setItem(
+                                                    "pageIndex",
+                                                    String(currentPage)
+                                                );
+                                            }}
                                         >
                                             Edit
                                         </Menu.Item>
-                                        {c.chequeStatus === "PENDING" && (
-                                            <Menu.Item color="blue">
-                                                <span>Deposit</span>
-                                            </Menu.Item>
-                                        )}
-                                        {c.chequeStatus === "DEPOSITED" && (
+                                        {c.chequeStatus !== "COMPLETED" && c.chequeStatus !== "RETURNED" && (
                                             <>
-                                                <Menu.Item color="green">
-                                                    <span>Complete</span>
+                                                <Menu.Item
+                                                    color="green"
+                                                    onClick={() => chequeStatusUpdate(c._id, "COMPLETED")}
+                                                >
+                                                    <span>Completed</span>
                                                 </Menu.Item>
-                                                <Menu.Item color="red">
-                                                    <span>Return</span>
+                                                <Menu.Item
+                                                    color="red"
+                                                    onClick={() => chequeStatusUpdate(c._id, "RETURNED")}
+                                                >
+                                                    <span>Returned</span>
                                                 </Menu.Item>
                                             </>
                                         )}

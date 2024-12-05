@@ -71,12 +71,14 @@ const EditProduct = React.lazy(
 const EditSupplier = React.lazy(
     () => import("./pages/suppliers/EditSupplier.tsx")
 );
+const EditCheque = React.lazy(() => import("./pages/cheques/EditCheque.tsx"));
 const ViewProduct = React.lazy(
     () => import("./pages/products/ViewProduct.tsx")
 );
 const ViewSupplier = React.lazy(
     () => import("./pages/suppliers/ViewSupplier.tsx")
 );
+const ViewCheque = React.lazy(() => import("./pages/cheques/ViewCheque.tsx"));
 
 const router = createBrowserRouter([
     {
@@ -149,8 +151,16 @@ const router = createBrowserRouter([
                 element: <EditSupplier />,
             },
             {
+                path: "cheques/edit-cheque/:id",
+                element: <EditCheque />,
+            },
+            {
                 path: "suppliers/view-supplier/:id",
                 element: <ViewSupplier />,
+            },
+            {
+                path: "cheques/view-cheque/:id",
+                element: <ViewCheque />,
             },
             {
                 path: "*",

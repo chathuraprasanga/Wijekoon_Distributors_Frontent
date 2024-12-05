@@ -12,6 +12,7 @@ const AddSupplier = () => {
     const { setLoading } = useLoading();
     const dispatch = useDispatch<AppDispatch | any>();
     const navigate = useNavigate();
+
     const supplierAddForm = useForm({
         mode: "uncontrolled",
         initialValues: {

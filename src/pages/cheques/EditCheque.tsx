@@ -1,19 +1,42 @@
 import { Button, NumberInput, TextInput } from "@mantine/core";
 import { IconArrowLeft } from "@tabler/icons-react";
 import { useLoading } from "../../helpers/loadingContext.tsx";
-import { useDispatch } from "react-redux";
-import { AppDispatch } from "../../store/store.ts";
-import { useNavigate } from "react-router";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../../store/store.ts";
+import { useNavigate, useParams } from "react-router";
 import { isNotEmpty, useForm } from "@mantine/form";
 import toNotify from "../../helpers/toNotify.tsx";
-import { addCheque } from "../../store/chequeSlice/chequeSlice.ts";
+import {
+    getCheque,
+    updateCheque,
+} from "../../store/chequeSlice/chequeSlice.ts";
+import { useEffect } from "react";
 
-const AddCheque = () => {
+const EditCheque = () => {
     const { setLoading } = useLoading();
     const dispatch = useDispatch<AppDispatch | any>();
+    const id = useParams().id;
     const navigate = useNavigate();
+    const selectedCheque = useSelector(
+        (state: RootState) => state.cheque.selectedCheque
+    );
 
-    const chequeAddForm = useForm({
+    useEffect(() => {
+        fetchCheque();
+    }, [dispatch, id]);
+
+    useEffect(() => {
+        chequeEditForm.setValues(selectedCheque);
+        chequeEditForm.resetDirty();
+    }, [selectedCheque]);
+
+    const fetchCheque = async () => {
+        setLoading(false);
+        await dispatch(getCheque(id));
+        setLoading(false);
+    };
+
+    const chequeEditForm = useForm({
         mode: "uncontrolled",
         initialValues: {
             customer: "",
@@ -41,14 +64,14 @@ const AddCheque = () => {
         },
     });
 
-    const handleChequeAdd = async (values: typeof chequeAddForm.values) => {
+    const handleChequeEdit = async (values: typeof chequeEditForm.values) => {
         setLoading(true);
-        const response = await dispatch(addCheque(values));
-        if (response.type === "cheque/addCheque/fulfilled") {
+        const response = await dispatch(updateCheque({ id, values }));
+        if (response.type === "cheque/updateCheque/fulfilled") {
             setLoading(false);
-            toNotify("Success", "Cheque added successfully", "SUCCESS");
+            toNotify("Success", "Cheque updated successfully", "SUCCESS");
             navigate("/app/cheques");
-        } else if (response.type === "cheque/addCheque/rejected") {
+        } else if (response.type === "cheque/updateCheque/rejected") {
             const error: any = response.payload.error;
             setLoading(false);
             toNotify("Error", `${error}`, "ERROR");
@@ -76,32 +99,32 @@ const AddCheque = () => {
                 </div>
             </div>
             <div className="mx-4 my-4 lg:w-1/2">
-                <form onSubmit={chequeAddForm.onSubmit(handleChequeAdd)}>
+                <form onSubmit={chequeEditForm.onSubmit(handleChequeEdit)}>
                     <TextInput
                         label="Name"
                         withAsterisk
                         placeholder="Enter Customer Name"
-                        key={chequeAddForm.key("customer")}
-                        {...chequeAddForm.getInputProps("customer")}
+                        key={chequeEditForm.key("customer")}
+                        {...chequeEditForm.getInputProps("customer")}
                     />
                     <TextInput
                         label="Cheque Number"
                         placeholder="Enter Branch Code"
-                        key={chequeAddForm.key("number")}
-                        {...chequeAddForm.getInputProps("number")}
+                        key={chequeEditForm.key("number")}
+                        {...chequeEditForm.getInputProps("number")}
                     />
                     <TextInput
                         label="Bank"
                         withAsterisk
                         placeholder="Enter Customer Bank Name"
-                        key={chequeAddForm.key("bank")}
-                        {...chequeAddForm.getInputProps("bank")}
+                        key={chequeEditForm.key("bank")}
+                        {...chequeEditForm.getInputProps("bank")}
                     />
                     <TextInput
                         label="Branch"
                         placeholder="Enter Customer Bank Branch Code"
-                        key={chequeAddForm.key("branch")}
-                        {...chequeAddForm.getInputProps("branch")}
+                        key={chequeEditForm.key("branch")}
+                        {...chequeEditForm.getInputProps("branch")}
                     />
                     <NumberInput
                         hideControls
@@ -112,17 +135,22 @@ const AddCheque = () => {
                         decimalScale={2}
                         fixedDecimalScale
                         placeholder="Enter Cheque Amount"
-                        key={chequeAddForm.key("amount")}
-                        {...chequeAddForm.getInputProps("amount")}
+                        key={chequeEditForm.key("amount")}
+                        {...chequeEditForm.getInputProps("amount")}
                     />
                     <TextInput
                         label="Deposit Date"
                         placeholder="Enter Deposit Date"
-                        key={chequeAddForm.key("depositDate")}
-                        {...chequeAddForm.getInputProps("depositDate")}
+                        key={chequeEditForm.key("depositDate")}
+                        {...chequeEditForm.getInputProps("depositDate")}
                     />
                     <div className="mt-4 flex justify-end">
-                        <Button size="xs" color="dark" type="submit">
+                        <Button
+                            size="xs"
+                            color="dark"
+                            type="submit"
+                            disabled={!chequeEditForm.isDirty()}
+                        >
                             Submit
                         </Button>
                     </div>
@@ -132,4 +160,4 @@ const AddCheque = () => {
     );
 };
 
-export default AddCheque;
+export default EditCheque;
