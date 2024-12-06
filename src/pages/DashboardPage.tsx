@@ -1,7 +1,44 @@
-import { IconCashBanknote, IconInvoice, IconPackages, IconUsersGroup } from "@tabler/icons-react";
+import {
+    IconCashBanknote,
+    IconInvoice,
+    IconPackages,
+    IconUsersGroup,
+} from "@tabler/icons-react";
 import { BarChart } from "@mantine/charts";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../store/store.ts";
+import { useEffect } from "react";
+import { useLoading } from "../helpers/loadingContext.tsx";
+import { getDashboardDetails } from "../store/dashboardSlice/dashboardSlice.ts";
+import toNotify from "../helpers/toNotify.tsx";
 
 const DashboardPage = () => {
+    const { setLoading } = useLoading();
+    const dispatch = useDispatch<AppDispatch | any>();
+    const user = useSelector((state: RootState) => state.auth.user);
+    const dashboardDetails = useSelector((state: RootState) => state.dashboard);
+
+    useEffect(() => {
+        fetchDashboardDetails();
+    }, [dispatch]);
+
+    const fetchDashboardDetails = async () => {
+        setLoading(true);
+        const response = await dispatch(
+            getDashboardDetails({ userId: user._id })
+        );
+        if (response.type === "dashboard/getDetails/fulfilled") {
+            setLoading(false);
+        } else {
+            setLoading(false);
+            toNotify(
+                "Warning",
+                "Something went wrong, Please contact Admin",
+                "WARNING"
+            );
+        }
+    };
+
     const data = [
         {
             month: "January",
@@ -56,7 +93,9 @@ const DashboardPage = () => {
                     </div>
                     <div>
                         <div className="text-lg font-semibold">Cheques</div>
-                        <div className="text-sm"># 155</div>
+                        <div className="text-sm">
+                            # {dashboardDetails?.chequesCount}
+                        </div>
                     </div>
                 </div>
 
@@ -66,7 +105,9 @@ const DashboardPage = () => {
                     </div>
                     <div>
                         <div className="text-lg font-semibold">Invoices</div>
-                        <div className="text-sm"># 155</div>
+                        <div className="text-sm">
+                            # {dashboardDetails?.invoicesCount}
+                        </div>
                     </div>
                 </div>
 
@@ -76,7 +117,9 @@ const DashboardPage = () => {
                     </div>
                     <div>
                         <div className="text-lg font-semibold">Customers</div>
-                        <div className="text-sm"># 155</div>
+                        <div className="text-sm">
+                            # {dashboardDetails?.customersCount}
+                        </div>
                     </div>
                 </div>
 
@@ -86,7 +129,9 @@ const DashboardPage = () => {
                     </div>
                     <div>
                         <div className="text-lg font-semibold">Products</div>
-                        <div className="text-sm"># 155</div>
+                        <div className="text-sm">
+                            # {dashboardDetails?.productsCount}
+                        </div>
                     </div>
                 </div>
             </div>
@@ -101,7 +146,10 @@ const DashboardPage = () => {
                             { name: "Keshara Super Lime", color: "lime.6" },
                             { name: "Keshara Skim Coat", color: "gray.6" },
                             { name: "Keshara Tile Master", color: "orange.6" },
-                            { name: "Keshara Dollamite Fertilizer", color: "green.6" },
+                            {
+                                name: "Keshara Dollamite Fertilizer",
+                                color: "green.6",
+                            },
                         ]}
                         tickLine="y"
                     />
@@ -109,12 +157,9 @@ const DashboardPage = () => {
 
                 {/* Second Chart */}
                 <div className="w-full lg:w-1/2 p-4">
-                    <div>
-
-                    </div>
+                    <div></div>
                 </div>
             </div>
-
         </div>
     );
 };
