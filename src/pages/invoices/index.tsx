@@ -1,19 +1,74 @@
 import { useNavigate } from "react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Badge, Button, Group, Menu, Pagination, Table } from "@mantine/core";
 import { IconDatabaseOff, IconDotsVertical } from "@tabler/icons-react";
-import invoices from "./invoice_data.json";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../../store/store.ts";
+import { useLoading } from "../../helpers/loadingContext.tsx";
+import {
+    changeStatusInvoice,
+    getInvoices,
+} from "../../store/invoiceSlice/invoiceSlice.ts";
+import toNotify from "../../helpers/toNotify.tsx";
 
 const Invoices = () => {
+    const { setLoading } = useLoading();
+    const dispatch = useDispatch<AppDispatch | any>();
     const navigate = useNavigate();
     const [currentPage, setCurrentPage] = useState(1);
     const pageSize = 5;
+    const invoices = useSelector((state: RootState) => state.invoice.invoices);
 
-    const totalPages = Math.ceil(invoices.length / pageSize);
-    const paginatedData: any = invoices.slice(
+    useEffect(() => {
+        fetchInvoices();
+        setPage();
+    }, []);
+
+    const setPage = () => {
+        setCurrentPage(Number(sessionStorage.getItem("pageIndex") || 1));
+        sessionStorage.clear();
+    };
+
+    const fetchInvoices = async () => {
+        setLoading(true);
+        await dispatch(getInvoices({}));
+        setLoading(false);
+    };
+
+    const totalPages = Math.ceil(invoices?.length / pageSize);
+    const paginatedData: any = invoices?.slice(
         (currentPage - 1) * pageSize,
         currentPage * pageSize
     );
+
+    const invoiceStatusUpdate = async (id: string, status: string) => {
+        setLoading(true);
+        const payload = {
+            id,
+            values: { invoiceStatus: status },
+        };
+        const response = await dispatch(changeStatusInvoice(payload));
+        if (response.type === "invoice/changeStatus/fulfilled") {
+            await fetchInvoices();
+            setLoading(false);
+            toNotify(
+                "Success",
+                "Invoice status changed successfully",
+                "SUCCESS"
+            );
+        } else if (response.type === "invoice/changeStatus/rejected") {
+            const error: any = response.payload.error;
+            setLoading(false);
+            toNotify("Error", `${error}`, "ERROR");
+        } else {
+            setLoading(false);
+            toNotify(
+                "Something went wrong",
+                `Please contact system admin`,
+                "WARNING"
+            );
+        }
+    };
 
     return (
         <>
@@ -52,8 +107,8 @@ const Invoices = () => {
                         </Table.Tr>
                     </Table.Thead>
                     <Table.Tbody>
-                        {paginatedData.length !== 0 ? (
-                            paginatedData.map((c: any, i: number) => (
+                        {paginatedData?.length !== 0 ? (
+                            paginatedData?.map((c: any, i: number) => (
                                 <Table.Tr key={i}>
                                     <Table.Td>{c.supplier}</Table.Td>
                                     <Table.Td>{c.invoiceDate}</Table.Td>
@@ -82,21 +137,48 @@ const Invoices = () => {
                                             </Menu.Target>
                                             <Menu.Dropdown>
                                                 <Menu.Label>Actions</Menu.Label>
-                                                <Menu.Item>
-                                                    <span>View</span>
+                                                <Menu.Item
+                                                    onClick={() => {
+                                                        navigate(
+                                                            `/app/invoices/view-invoice/${c._id}`
+                                                        );
+                                                        sessionStorage.setItem(
+                                                            "pageIndex",
+                                                            String(currentPage)
+                                                        );
+                                                    }}
+                                                >
+                                                    View
                                                 </Menu.Item>
                                                 <Menu.Item
                                                     disabled={
                                                         c.invoiceStatus ===
                                                         "PAID"
                                                     }
+                                                    onClick={() => {
+                                                        navigate(
+                                                            `/app/invoices/edit-invoice/${c._id}`
+                                                        );
+                                                        sessionStorage.setItem(
+                                                            "pageIndex",
+                                                            String(currentPage)
+                                                        );
+                                                    }}
                                                 >
                                                     Edit
                                                 </Menu.Item>
                                                 {c.invoiceStatus ===
                                                     "NOT PAID" && (
-                                                    <Menu.Item color="green">
-                                                        Payment Done
+                                                    <Menu.Item
+                                                        color="green"
+                                                        onClick={() =>
+                                                            invoiceStatusUpdate(
+                                                                c._id,
+                                                                "PAID"
+                                                            )
+                                                        }
+                                                    >
+                                                        Paid
                                                     </Menu.Item>
                                                 )}
                                             </Menu.Dropdown>
@@ -124,8 +206,8 @@ const Invoices = () => {
 
             {/* Mobile Cards */}
             <div className="block lg:hidden mx-4 my-4">
-                {paginatedData.length !== 0 ? (
-                    paginatedData.map((c: any, i: number) => (
+                {paginatedData?.length !== 0 ? (
+                    paginatedData?.map((c: any, i: number) => (
                         <div
                             key={i}
                             className="border border-gray-300 rounded-md mb-4 p-4 bg-white shadow-sm"
@@ -156,17 +238,46 @@ const Invoices = () => {
                                     </Menu.Target>
                                     <Menu.Dropdown>
                                         <Menu.Label>Actions</Menu.Label>
-                                        <Menu.Item>View</Menu.Item>
+                                        <Menu.Item
+                                            onClick={() => {
+                                                navigate(
+                                                    `/app/invoices/view-invoice/${c._id}`
+                                                );
+                                                sessionStorage.setItem(
+                                                    "pageIndex",
+                                                    String(currentPage)
+                                                );
+                                            }}
+                                        >
+                                            View
+                                        </Menu.Item>
                                         <Menu.Item
                                             disabled={
                                                 c.invoiceStatus === "PAID"
                                             }
+                                            onClick={() => {
+                                                navigate(
+                                                    `/app/invoices/edit-invoice/${c._id}`
+                                                );
+                                                sessionStorage.setItem(
+                                                    "pageIndex",
+                                                    String(currentPage)
+                                                );
+                                            }}
                                         >
                                             Edit
                                         </Menu.Item>
                                         {c.invoiceStatus === "NOT PAID" && (
-                                            <Menu.Item color="green">
-                                                Payment Done
+                                            <Menu.Item
+                                                color="green"
+                                                onClick={() =>
+                                                    invoiceStatusUpdate(
+                                                        c._id,
+                                                        "PAID"
+                                                    )
+                                                }
+                                            >
+                                                Paid
                                             </Menu.Item>
                                         )}
                                     </Menu.Dropdown>

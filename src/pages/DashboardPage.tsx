@@ -1,7 +1,5 @@
 import { IconCashBanknote, IconInvoice, IconPackages, IconUsersGroup } from "@tabler/icons-react";
 import { BarChart } from "@mantine/charts";
-import { Button, Group } from "@mantine/core";
-import toNotify from "../helpers/toNotify.tsx";
 
 const DashboardPage = () => {
     const data = [
@@ -112,32 +110,7 @@ const DashboardPage = () => {
                 {/* Second Chart */}
                 <div className="w-full lg:w-1/2 p-4">
                     <div>
-                        <Group mt="xl">
-                            <Button
-                                color="green"
-                                onClick={() => toNotify("Success", "This is a success message", "SUCCESS")}
-                            >
-                                Show Success
-                            </Button>
-                            <Button
-                                color="red"
-                                onClick={() => toNotify("Error", "This is an error message", "ERROR")}
-                            >
-                                Show Error
-                            </Button>
-                            <Button
-                                color="blue"
-                                onClick={() => toNotify("Loading", "Loading in progress...", "LOADING")}
-                            >
-                                Show Loading
-                            </Button>
-                            <Button
-                                color="yellow"
-                                onClick={() => toNotify("Warning", "This is a warning message", "WARNING")}
-                            >
-                                Show Warning
-                            </Button>
-                        </Group>
+
                     </div>
                 </div>
             </div>

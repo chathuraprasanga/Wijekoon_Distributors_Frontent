@@ -72,6 +72,7 @@ const EditSupplier = React.lazy(
     () => import("./pages/suppliers/EditSupplier.tsx")
 );
 const EditCheque = React.lazy(() => import("./pages/cheques/EditCheque.tsx"));
+const EditInvoice = React.lazy(() => import("./pages/invoices/EditInvoice.tsx"));
 const ViewProduct = React.lazy(
     () => import("./pages/products/ViewProduct.tsx")
 );
@@ -79,6 +80,7 @@ const ViewSupplier = React.lazy(
     () => import("./pages/suppliers/ViewSupplier.tsx")
 );
 const ViewCheque = React.lazy(() => import("./pages/cheques/ViewCheque.tsx"));
+const ViewInvoice = React.lazy(() => import("./pages/invoices/ViewInvoice.tsx"));
 
 const router = createBrowserRouter([
     {
@@ -153,6 +155,9 @@ const router = createBrowserRouter([
             {
                 path: "cheques/edit-cheque/:id",
                 element: <EditCheque />,
+            },{
+                path: "invoices/edit-invoice/:id",
+                element: <EditInvoice />,
             },
             {
                 path: "suppliers/view-supplier/:id",
@@ -161,6 +166,9 @@ const router = createBrowserRouter([
             {
                 path: "cheques/view-cheque/:id",
                 element: <ViewCheque />,
+            },{
+                path: "invoices/view-invoice/:id",
+                element: <ViewInvoice />,
             },
             {
                 path: "*",

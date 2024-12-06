@@ -87,6 +87,7 @@ const AddCheque = () => {
                     <TextInput
                         label="Cheque Number"
                         placeholder="Enter Branch Code"
+                        withAsterisk
                         key={chequeAddForm.key("number")}
                         {...chequeAddForm.getInputProps("number")}
                     />
@@ -100,12 +101,14 @@ const AddCheque = () => {
                     <TextInput
                         label="Branch"
                         placeholder="Enter Customer Bank Branch Code"
+                        withAsterisk
                         key={chequeAddForm.key("branch")}
                         {...chequeAddForm.getInputProps("branch")}
                     />
                     <NumberInput
                         hideControls
                         allowNegative={false}
+                        withAsterisk
                         prefix="Rs. "
                         label="Cheque Amount"
                         decimalSeparator="."
@@ -118,6 +121,7 @@ const AddCheque = () => {
                     <TextInput
                         label="Deposit Date"
                         placeholder="Enter Deposit Date"
+                        withAsterisk
                         key={chequeAddForm.key("depositDate")}
                         {...chequeAddForm.getInputProps("depositDate")}
                     />

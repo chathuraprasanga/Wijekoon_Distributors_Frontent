@@ -110,6 +110,7 @@ const EditCheque = () => {
                     <TextInput
                         label="Cheque Number"
                         placeholder="Enter Branch Code"
+                        withAsterisk
                         key={chequeEditForm.key("number")}
                         {...chequeEditForm.getInputProps("number")}
                     />
@@ -123,6 +124,7 @@ const EditCheque = () => {
                     <TextInput
                         label="Branch"
                         placeholder="Enter Customer Bank Branch Code"
+                        withAsterisk
                         key={chequeEditForm.key("branch")}
                         {...chequeEditForm.getInputProps("branch")}
                     />
@@ -131,6 +133,7 @@ const EditCheque = () => {
                         allowNegative={false}
                         prefix="Rs. "
                         label="Cheque Amount"
+                        withAsterisk
                         decimalSeparator="."
                         decimalScale={2}
                         fixedDecimalScale
@@ -141,6 +144,7 @@ const EditCheque = () => {
                     <TextInput
                         label="Deposit Date"
                         placeholder="Enter Deposit Date"
+                        withAsterisk
                         key={chequeEditForm.key("depositDate")}
                         {...chequeEditForm.getInputProps("depositDate")}
                     />
