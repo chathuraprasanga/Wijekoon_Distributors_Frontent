@@ -1,7 +1,14 @@
 import { useNavigate } from "react-router";
 import { useEffect, useState } from "react";
 import { Badge, Button, Group, Menu, Pagination, Table } from "@mantine/core";
-import { IconDatabaseOff, IconDotsVertical } from "@tabler/icons-react";
+import {
+    IconCertificate,
+    IconCertificateOff,
+    IconDatabaseOff,
+    IconDotsVertical,
+    IconEdit,
+    IconEye,
+} from "@tabler/icons-react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store/store.ts";
 import { useLoading } from "../../helpers/loadingContext.tsx";
@@ -95,27 +102,29 @@ const Cheques = () => {
                 >
                     <Table.Thead>
                         <Table.Tr>
-                            <Table.Th>Customer</Table.Th>
-                            <Table.Th>Cheque Number</Table.Th>
-                            <Table.Th>Bank</Table.Th>
-                            <Table.Th>Amount</Table.Th>
-                            <Table.Th>Deposit Date</Table.Th>
-                            <Table.Th>Cheque Status</Table.Th>
-                            <Table.Th></Table.Th>
+                            <Table.Th style={{width: "20%"}}>Customer</Table.Th>
+                            <Table.Th style={{width: "15%"}}>Cheque Number</Table.Th>
+                            <Table.Th style={{width: "15%"}}>Bank</Table.Th>
+                            <Table.Th style={{width: "10%"}}>Branch</Table.Th>
+                            <Table.Th style={{width: "15%"}}>Amount</Table.Th>
+                            <Table.Th style={{width: "10%"}}>Deposit Date</Table.Th>
+                            <Table.Th style={{width: "10%"}}>Cheque Status</Table.Th>
+                            <Table.Th style={{width: "5%"}}></Table.Th>
                         </Table.Tr>
                     </Table.Thead>
                     <Table.Tbody>
                         {paginatedData?.length !== 0 ? (
                             paginatedData?.map((c: any, i: number) => (
                                 <Table.Tr key={i}>
-                                    <Table.Td>{c.customer}</Table.Td>
-                                    <Table.Td>{c.number}</Table.Td>
-                                    <Table.Td>{c.bank}</Table.Td>
-                                    <Table.Td>{c.amount}</Table.Td>
-                                    <Table.Td>{datePreview(c.depositDate)}</Table.Td>
-                                    <Table.Td>
+                                    <Table.Td style={{width: "20%"}}>{c.customer}</Table.Td>
+                                    <Table.Td style={{width: "15%"}}>{c.number}</Table.Td>
+                                    <Table.Td style={{width: "15%"}}>{c.bank}</Table.Td>
+                                    <Table.Td style={{width: "10%"}}>{c.branch}</Table.Td>
+                                    <Table.Td style={{width: "15%"}}>Rs. {c.amount.toFixed(2)}</Table.Td>
+                                    <Table.Td style={{width: "10%"}}>{datePreview(c.depositDate)}</Table.Td>
+                                    <Table.Td style={{width: "10%"}}>
                                         <Badge
-                                            size="md"
+                                            size="sm"
                                             radius="xs"
                                             color={
                                                 c.chequeStatus === "PENDING"
@@ -132,7 +141,7 @@ const Cheques = () => {
                                             {c.chequeStatus}
                                         </Badge>
                                     </Table.Td>
-                                    <Table.Td>
+                                    <Table.Td style={{width: "5%"}}>
                                         <Menu width={150}>
                                             <Menu.Target>
                                                 <IconDotsVertical
@@ -152,6 +161,7 @@ const Cheques = () => {
                                                             String(currentPage)
                                                         );
                                                     }}
+                                                    rightSection={<IconEye size={16}/>}
                                                 >
                                                     View
                                                 </Menu.Item>
@@ -169,6 +179,7 @@ const Cheques = () => {
                                                             String(currentPage)
                                                         );
                                                     }}
+                                                    rightSection={<IconEdit size={16}/>}
                                                 >
                                                     Edit
                                                 </Menu.Item>
@@ -177,12 +188,14 @@ const Cheques = () => {
                                                         <Menu.Item
                                                             color="green"
                                                             onClick={() => chequeStatusUpdate(c._id, "COMPLETED")}
+                                                            rightSection={<IconCertificate size={16}/>}
                                                         >
                                                             <span>Completed</span>
                                                         </Menu.Item>
                                                         <Menu.Item
                                                             color="red"
                                                             onClick={() => chequeStatusUpdate(c._id, "RETURNED")}
+                                                            rightSection={<IconCertificateOff size={16}/>}
                                                         >
                                                             <span>Returned</span>
                                                         </Menu.Item>
@@ -224,10 +237,11 @@ const Cheques = () => {
                             </p>
                             <p>Cheque Number: {c.chequeNumber}</p>
                             <p>Bank: {c.bank}</p>
-                            <p>Amount: {c.amount}</p>
+                            <p>Branch: {c.branch}</p>
+                            <p>Amount: Rs. {c.amount.toFixed(2)}</p>
                             <p>Deposit Date: {datePreview(c.depositDate)}</p>
                             <Badge
-                                size="md"
+                                size="sm"
                                 radius="xs"
                                 color={
                                     c.chequeStatus === "PENDING"
@@ -262,6 +276,7 @@ const Cheques = () => {
                                                     String(currentPage)
                                                 );
                                             }}
+                                            rightSection={<IconEye size={16}/>}
                                         >
                                             View
                                         </Menu.Item>
@@ -279,6 +294,7 @@ const Cheques = () => {
                                                     String(currentPage)
                                                 );
                                             }}
+                                            rightSection={<IconEdit size={16}/>}
                                         >
                                             Edit
                                         </Menu.Item>

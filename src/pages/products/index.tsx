@@ -1,5 +1,12 @@
 import { Badge, Button, Group, Menu, Pagination, Table } from "@mantine/core";
-import { IconDatabaseOff, IconDotsVertical } from "@tabler/icons-react";
+import {
+    IconDatabaseOff,
+    IconDotsVertical,
+    IconEdit,
+    IconEye,
+    IconMobiledata,
+    IconMobiledataOff,
+} from "@tabler/icons-react";
 import { useNavigate } from "react-router";
 import { useEffect, useState } from "react";
 // import products from "../products/product_data.json";
@@ -97,25 +104,25 @@ const Products = () => {
                 >
                     <Table.Thead>
                         <Table.Tr>
-                            <Table.Th>Name</Table.Th>
-                            <Table.Th>Product Code</Table.Th>
-                            <Table.Th>Size</Table.Th>
-                            <Table.Th>Unit Price</Table.Th>
-                            <Table.Th>Status</Table.Th>
-                            <Table.Th></Table.Th>
+                            <Table.Th style={{width: "30%"}}>Name</Table.Th>
+                            <Table.Th style={{width: "25%"}}>Product Code</Table.Th>
+                            <Table.Th style={{width: "15%"}}>Size</Table.Th>
+                            <Table.Th style={{width: "15%"}}>Unit Price</Table.Th>
+                            <Table.Th style={{width: "10%"}}>Status</Table.Th>
+                            <Table.Th style={{width: "5%"}}></Table.Th>
                         </Table.Tr>
                     </Table.Thead>
                     <Table.Tbody>
                         {paginatedData?.length !== 0 ? (
                             paginatedData?.map((c: any, i: number) => (
                                 <Table.Tr key={i}>
-                                    <Table.Td>{c.name}</Table.Td>
-                                    <Table.Td>{c.productCode}</Table.Td>
-                                    <Table.Td>{c.size}</Table.Td>
-                                    <Table.Td>
+                                    <Table.Td style={{width: "30%"}}>{c.name}</Table.Td>
+                                    <Table.Td style={{width: "25%"}}>{c.productCode}</Table.Td>
+                                    <Table.Td style={{width: "15%"}}>{c.size}</Table.Td>
+                                    <Table.Td style={{width: "15%"}}>
                                         RS. {c.unitPrice.toFixed(2)}
                                     </Table.Td>
-                                    <Table.Td>
+                                    <Table.Td style={{width: "10%"}}>
                                         <Badge
                                             color={c.status ? "green" : "red"}
                                             size="sm"
@@ -124,7 +131,7 @@ const Products = () => {
                                             {c.status ? "ACTIVE" : "INACTIVE"}
                                         </Badge>
                                     </Table.Td>
-                                    <Table.Td>
+                                    <Table.Td style={{width: "5%"}}>
                                         <Menu width={150}>
                                             <Menu.Target>
                                                 <IconDotsVertical
@@ -144,6 +151,7 @@ const Products = () => {
                                                             String(currentPage)
                                                         );
                                                     }}
+                                                    rightSection={<IconEye size={16}/>}
                                                 >
                                                     View
                                                 </Menu.Item>
@@ -157,6 +165,7 @@ const Products = () => {
                                                             String(currentPage)
                                                         );
                                                     }}
+                                                    rightSection={<IconEdit size={16}/>}
                                                 >
                                                     Edit
                                                 </Menu.Item>
@@ -165,6 +174,7 @@ const Products = () => {
                                                     onClick={() =>
                                                         handleChangeStatus(c)
                                                     }
+                                                    rightSection={c.status ? <IconMobiledataOff size={16} /> : <IconMobiledata size={16}/> }
                                                 >
                                                     {c.status ? (
                                                         <span className="text-red-700">
@@ -239,6 +249,7 @@ const Products = () => {
                                                     String(currentPage)
                                                 );
                                             }}
+                                            rightSection={<IconEye size={16}/>}
                                         >
                                             View
                                         </Menu.Item>
@@ -252,6 +263,7 @@ const Products = () => {
                                                     String(currentPage)
                                                 );
                                             }}
+                                            rightSection={<IconEdit size={16}/>}
                                         >
                                             Edit
                                         </Menu.Item>
@@ -260,6 +272,7 @@ const Products = () => {
                                             onClick={() =>
                                                 handleChangeStatus(c)
                                             }
+                                            rightSection={c.status ? <IconMobiledataOff size={16} /> : <IconMobiledata size={16}/> }
                                         >
                                             {c.status ? (
                                                 <span className="text-red-700">

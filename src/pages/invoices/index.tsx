@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router";
 import { useEffect, useState } from "react";
 import { Badge, Button, Group, Menu, Pagination, Table } from "@mantine/core";
-import { IconDatabaseOff, IconDotsVertical } from "@tabler/icons-react";
+import { IconCertificate, IconDatabaseOff, IconDotsVertical, IconEdit, IconEye } from "@tabler/icons-react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store/store.ts";
 import { useLoading } from "../../helpers/loadingContext.tsx";
@@ -98,25 +98,25 @@ const Invoices = () => {
                 >
                     <Table.Thead>
                         <Table.Tr>
-                            <Table.Th>Supplier</Table.Th>
-                            <Table.Th>Invoiced Date</Table.Th>
-                            <Table.Th>Invoice Number</Table.Th>
-                            <Table.Th>Amount</Table.Th>
-                            <Table.Th>Invoice Status</Table.Th>
-                            <Table.Th></Table.Th>
+                            <Table.Th style={{width: "30%"}}>Supplier</Table.Th>
+                            <Table.Th style={{width: "15%"}}>Invoiced Date</Table.Th>
+                            <Table.Th style={{width: "20%"}}>Invoice Number</Table.Th>
+                            <Table.Th style={{width: "20%"}}>Amount</Table.Th>
+                            <Table.Th style={{width: "10%"}}>Invoice Status</Table.Th>
+                            <Table.Th style={{width: "5%"}}></Table.Th>
                         </Table.Tr>
                     </Table.Thead>
                     <Table.Tbody>
                         {paginatedData?.length !== 0 ? (
                             paginatedData?.map((c: any, i: number) => (
                                 <Table.Tr key={i}>
-                                    <Table.Td>{c.supplier}</Table.Td>
-                                    <Table.Td>{c.invoiceDate}</Table.Td>
-                                    <Table.Td>{c.invoiceNumber}</Table.Td>
-                                    <Table.Td>{c.amount}</Table.Td>
-                                    <Table.Td>
+                                    <Table.Td style={{width: "30%"}}>{c.supplier}</Table.Td>
+                                    <Table.Td style={{width: "15%"}}>{c.invoiceDate}</Table.Td>
+                                    <Table.Td style={{width: "20%"}}>{c.invoiceNumber}</Table.Td>
+                                    <Table.Td style={{width: "20%"}}>{c.amount}</Table.Td>
+                                    <Table.Td style={{width: "10%"}}>
                                         <Badge
-                                            size="md"
+                                            size="sm"
                                             radius="xs"
                                             color={
                                                 c.invoiceStatus === "PAID"
@@ -127,7 +127,7 @@ const Invoices = () => {
                                             {c.invoiceStatus}
                                         </Badge>
                                     </Table.Td>
-                                    <Table.Td>
+                                    <Table.Td style={{width: "5%"}}>
                                         <Menu width={150}>
                                             <Menu.Target>
                                                 <IconDotsVertical
@@ -147,6 +147,7 @@ const Invoices = () => {
                                                             String(currentPage)
                                                         );
                                                     }}
+                                                    rightSection={<IconEye size={16}/>}
                                                 >
                                                     View
                                                 </Menu.Item>
@@ -164,6 +165,7 @@ const Invoices = () => {
                                                             String(currentPage)
                                                         );
                                                     }}
+                                                    rightSection={<IconEdit size={16}/>}
                                                 >
                                                     Edit
                                                 </Menu.Item>
@@ -177,6 +179,7 @@ const Invoices = () => {
                                                                 "PAID"
                                                             )
                                                         }
+                                                        rightSection={<IconCertificate size={16}/>}
                                                     >
                                                         Paid
                                                     </Menu.Item>
@@ -219,7 +222,7 @@ const Invoices = () => {
                             <p>Invoice Number: {c.invoiceNumber}</p>
                             <p>Amount: {c.amount}</p>
                             <Badge
-                                size="md"
+                                size="sm"
                                 radius="xs"
                                 color={
                                     c.invoiceStatus === "PAID" ? "green" : "red"
@@ -248,6 +251,7 @@ const Invoices = () => {
                                                     String(currentPage)
                                                 );
                                             }}
+                                            rightSection={<IconEye size={16}/>}
                                         >
                                             View
                                         </Menu.Item>
@@ -264,6 +268,7 @@ const Invoices = () => {
                                                     String(currentPage)
                                                 );
                                             }}
+                                            rightSection={<IconEdit size={16}/>}
                                         >
                                             Edit
                                         </Menu.Item>
@@ -276,6 +281,7 @@ const Invoices = () => {
                                                         "PAID"
                                                     )
                                                 }
+                                                rightSection={<IconCertificate size={16}/>}
                                             >
                                                 Paid
                                             </Menu.Item>

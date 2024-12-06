@@ -5,7 +5,7 @@ export const isValidEmail = (email: string): boolean => {
 };
 
 export const isValidPhone = (phone: string): boolean => {
-    const phoneRegex = /^07[0-9]\d{7}$/;
+    const phoneRegex = /^0\d{9}$/; // Matches numbers starting with 0 and exactly 10 digits
     return phoneRegex.test(phone);
 };
 

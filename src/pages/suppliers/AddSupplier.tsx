@@ -47,11 +47,11 @@ const AddSupplier = () => {
         if (response.type === "supplier/addSupplier/fulfilled") {
             setLoading(false);
             toNotify("Successs", "Supplier added successfully", "SUCCESS");
+            navigate("/app/suppliers")
         } else if (response.type === "supplier/addSupplier/rejected") {
             const error: any = response.payload.error;
             setLoading(false);
             toNotify("Error", `${error}`, "ERROR");
-            navigate("/app/suppliers")
         } else {
             setLoading(false);
             toNotify("Something went wrong", `Please contact system admin`, "WARNING");

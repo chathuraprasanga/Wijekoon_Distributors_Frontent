@@ -102,7 +102,7 @@ const AddCheque = () => {
                     />
                     <TextInput
                         label="Cheque Number"
-                        placeholder="Enter Branch Code"
+                        placeholder="Enter Cheque Number"
                         withAsterisk
                         key={chequeAddForm.key("number")}
                         {...chequeAddForm.getInputProps("number")}
