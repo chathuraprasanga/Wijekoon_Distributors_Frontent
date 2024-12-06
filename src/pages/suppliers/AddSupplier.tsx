@@ -7,6 +7,7 @@ import { AppDispatch } from "../../store/store.ts";
 import { addSupplier } from "../../store/supplierSlice/supplierSlice.ts";
 import toNotify from "../../helpers/toNotify.tsx";
 import { useNavigate } from "react-router";
+import { isValidEmail, isValidPhone } from "../../utils/inputValidators.ts";
 
 const AddSupplier = () => {
     const { setLoading } = useLoading();
@@ -23,7 +24,20 @@ const AddSupplier = () => {
         },
         validate: {
             name: isNotEmpty("Supplier name is required"),
-            phone: isNotEmpty("Supplier phone number is required"),
+            phone: (value: string) => {
+                if (!value || !value.trim()) {
+                    return "Phone number is required";
+                }
+                return isValidPhone(value)
+                    ? null
+                    : "Enter a valid phone number";
+            },
+            email: (value) => {
+                if (!value.trim()) return null;
+                return isValidEmail(value)
+                    ? null
+                    : "Enter a valid email address";
+            },
         },
     });
 

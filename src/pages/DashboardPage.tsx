@@ -90,14 +90,7 @@ const DashboardPage = () => {
                 </div>
             </div>
             <div className="w-full h-full mt-12 flex flex-col lg:flex-row">
-                {/* First Chart */}
-                <div className="w-full lg:w-1/2 p-4 shadow">
 
-                </div>
-                {/* Second Chart */}
-                <div className="w-full lg:w-1/2 p-4">
-                    <div></div>
-                </div>
             </div>
         </div>
     );

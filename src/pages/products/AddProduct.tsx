@@ -18,15 +18,15 @@ const AddProduct = () => {
         initialValues: {
             name: "",
             productCode: "",
-            size: "",
+            size: 0,
             unitPrice: 0.00,
         },
         validate: {
             name: (value) => (value.trim() ? null : "Product name is required"),
             productCode: (value) => (value.trim() ? null : "Product code is required"),
-            size: (value) => (value.trim() ? null : "Product size is required"),
+            size: (value) => (value > 0 ? null : "Product size must be greater than 0 KG"),
             unitPrice: (value) =>
-                value > 0 ? null : "Product price must be greater than 0",
+                value > 0 ? null : "Product price must be greater than Rs. 0",
         },
     });
 
@@ -76,10 +76,12 @@ const AddProduct = () => {
                         key={productAddForm.key("productCode")}
                         {...productAddForm.getInputProps("productCode")}
                     />
-                    <TextInput
+                    <NumberInput
                         label="Size"
                         placeholder="Enter Product Size"
                         withAsterisk
+                        hideControls
+                        allowNegative={false}
                         rightSection={"KG"}
                         key={productAddForm.key("size")}
                         {...productAddForm.getInputProps("size")}

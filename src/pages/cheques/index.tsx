@@ -7,6 +7,7 @@ import { AppDispatch, RootState } from "../../store/store.ts";
 import { useLoading } from "../../helpers/loadingContext.tsx";
 import { changeStatusCheque, getCheques } from "../../store/chequeSlice/chequeSlice.ts";
 import toNotify from "../../helpers/toNotify.tsx";
+import datePreview from "../../helpers/datePreview.tsx";
 
 const Cheques = () => {
     const {setLoading} = useLoading();
@@ -111,7 +112,7 @@ const Cheques = () => {
                                     <Table.Td>{c.number}</Table.Td>
                                     <Table.Td>{c.bank}</Table.Td>
                                     <Table.Td>{c.amount}</Table.Td>
-                                    <Table.Td>{c.depositDate}</Table.Td>
+                                    <Table.Td>{datePreview(c.depositDate)}</Table.Td>
                                     <Table.Td>
                                         <Badge
                                             size="md"
@@ -224,7 +225,7 @@ const Cheques = () => {
                             <p>Cheque Number: {c.chequeNumber}</p>
                             <p>Bank: {c.bank}</p>
                             <p>Amount: {c.amount}</p>
-                            <p>Deposit Date: {c.depositDate}</p>
+                            <p>Deposit Date: {datePreview(c.depositDate)}</p>
                             <Badge
                                 size="md"
                                 radius="xs"

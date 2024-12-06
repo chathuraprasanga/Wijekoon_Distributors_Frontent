@@ -11,6 +11,11 @@ import {
     updateCheque,
 } from "../../store/chequeSlice/chequeSlice.ts";
 import { useEffect } from "react";
+import {
+    isValidBankCode,
+    isValidBranchCode,
+    isValidChequeNumber,
+} from "../../utils/inputValidators.ts";
 
 const EditCheque = () => {
     const { setLoading } = useLoading();
@@ -26,8 +31,11 @@ const EditCheque = () => {
     }, [dispatch, id]);
 
     useEffect(() => {
-        chequeEditForm.setValues(selectedCheque);
-        chequeEditForm.resetDirty();
+        if (selectedCheque) {
+            chequeEditForm.setValues(selectedCheque);
+
+            chequeEditForm.resetDirty();
+        }
     }, [selectedCheque]);
 
     const fetchCheque = async () => {
@@ -48,15 +56,34 @@ const EditCheque = () => {
         },
         validate: {
             customer: isNotEmpty("Customer name is required"),
-            number: isNotEmpty("Cheque number is required"),
-            bank: isNotEmpty("Bank is required"),
-            branch: isNotEmpty("Branch code is required"),
+            number: (value) => {
+                if (!value || !value.trim()) {
+                    return "Cheque number is required";
+                }
+                return isValidChequeNumber(value)
+                    ? null
+                    : "Enter valid cheque number";
+            },
+            bank: (value) => {
+                if (!value || !value.trim()) {
+                    return "Bank code is required";
+                }
+                return isValidBankCode(value) ? null : "Enter valid bank code";
+            },
+            branch: (value) => {
+                if (!value || !value.trim()) {
+                    return "Branch code is required";
+                }
+                return isValidBranchCode(value)
+                    ? null
+                    : "Enter valid branch code";
+            },
             amount: (value) => {
                 if (!value) {
-                    return "Amount is required";
+                    return "Cheque amount is required";
                 }
                 if (value <= 0) {
-                    return "Amount should be greater than 0";
+                    return "Cheque amount should be greater than Rs. 0";
                 }
                 return null;
             },
@@ -66,7 +93,7 @@ const EditCheque = () => {
 
     const handleChequeEdit = async (values: typeof chequeEditForm.values) => {
         setLoading(true);
-        const response = await dispatch(updateCheque({ id, values }));
+        const response = await dispatch(updateCheque({ id, values}));
         if (response.type === "cheque/updateCheque/fulfilled") {
             setLoading(false);
             toNotify("Success", "Cheque updated successfully", "SUCCESS");
@@ -145,6 +172,7 @@ const EditCheque = () => {
                         label="Deposit Date"
                         placeholder="Enter Deposit Date"
                         withAsterisk
+                        type="date"
                         key={chequeEditForm.key("depositDate")}
                         {...chequeEditForm.getInputProps("depositDate")}
                     />

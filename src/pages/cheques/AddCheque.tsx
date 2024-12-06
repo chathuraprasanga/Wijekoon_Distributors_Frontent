@@ -7,6 +7,7 @@ import { useNavigate } from "react-router";
 import { isNotEmpty, useForm } from "@mantine/form";
 import toNotify from "../../helpers/toNotify.tsx";
 import { addCheque } from "../../store/chequeSlice/chequeSlice.ts";
+import { isValidBankCode, isValidBranchCode, isValidChequeNumber } from "../../utils/inputValidators.ts";
 
 const AddCheque = () => {
     const { setLoading } = useLoading();
@@ -25,15 +26,30 @@ const AddCheque = () => {
         },
         validate: {
             customer: isNotEmpty("Customer name is required"),
-            number: isNotEmpty("Cheque number is required"),
-            bank: isNotEmpty("Bank is required"),
-            branch: isNotEmpty("Branch code is required"),
+            number: (value) => {
+                if (!value || !value.trim()){
+                    return "Cheque number is required"
+                }
+                return isValidChequeNumber(value) ? null : "Enter valid cheque number";
+            },
+            bank: (value) => {
+                if (!value || !value.trim()){
+                    return "Bank code is required"
+                }
+                return isValidBankCode(value) ? null : "Enter valid bank code";
+            },
+            branch: (value) => {
+                if (!value || !value.trim()){
+                    return "Branch code is required"
+                }
+                return isValidBranchCode(value) ? null : "Enter valid branch code";
+            },
             amount: (value) => {
                 if (!value) {
-                    return "Amount is required";
+                    return "Cheque amount is required";
                 }
                 if (value <= 0) {
-                    return "Amount should be greater than 0";
+                    return "Cheque amount should be greater than Rs. 0";
                 }
                 return null;
             },
@@ -121,12 +137,13 @@ const AddCheque = () => {
                     <TextInput
                         label="Deposit Date"
                         placeholder="Enter Deposit Date"
+                        type="date"
                         withAsterisk
                         key={chequeAddForm.key("depositDate")}
                         {...chequeAddForm.getInputProps("depositDate")}
                     />
                     <div className="mt-4 flex justify-end">
-                        <Button size="xs" color="dark" type="submit">
+                        <Button size="xs" color="dark" type="submit" onClick={() => console.log(chequeAddForm.values)}>
                             Submit
                         </Button>
                     </div>

@@ -15,7 +15,7 @@ import toNotify from "../../helpers/toNotify.tsx";
 interface productEditValues {
     name: string,
     productCode: string,
-    size: string,
+    size: number,
     unitPrice: number,
 }
 
@@ -48,15 +48,15 @@ const EditProduct = () => {
         initialValues: {
             name: "",
             productCode: "",
-            size: "",
-            unitPrice: 0,
+            size: 0,
+            unitPrice: 0.00,
         },
         validate: {
             name: isNotEmpty("Product name is required"),
             productCode: isNotEmpty("Product code is required"),
-            size: isNotEmpty("Product size is required"),
+            size: (value) => (value > 0 ? null : "Product size must be greater than 0 KG"),
             unitPrice: (value) =>
-                value > 0 ? null : "Product price must be greater than 0",
+                value > 0 ? null : "Product price must be greater than Rs. 0",
         },
     });
 
@@ -111,10 +111,12 @@ const EditProduct = () => {
                         key={productEditForm.key("productCode")}
                         {...productEditForm.getInputProps("productCode")}
                     />
-                    <TextInput
+                    <NumberInput
                         label="Size"
                         placeholder="Enter Product Size"
                         withAsterisk
+                        hideControls
+                        allowNegative={false}
                         rightSection={"KG"}
                         key={productEditForm.key("size")}
                         {...productEditForm.getInputProps("size")}
@@ -129,7 +131,7 @@ const EditProduct = () => {
                         hideControls
                         type="text"
                         allowNegative={false}
-                        prefix="Rs."
+                        prefix="Rs. "
                         key={productEditForm.key("unitPrice")}
                         {...productEditForm.getInputProps("unitPrice")}
                     />

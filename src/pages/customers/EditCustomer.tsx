@@ -11,6 +11,7 @@ import toNotify from "../../helpers/toNotify.tsx";
 import { useNavigate, useParams } from "react-router";
 import { useForm } from "@mantine/form";
 import { useEffect } from "react";
+import { isValidEmail, isValidPhone } from "../../utils/inputValidators.ts";
 
 const EditCustomer = () => {
     const { setLoading } = useLoading();
@@ -48,17 +49,17 @@ const EditCustomer = () => {
         },
         validate: {
             name: (value) => (value.trim() ? null : "Name is required"),
-            phone: (value) => {
-                if (!value.trim()) return "Phone is required";
-                const phoneRegex = /^[0-9]+$/; // Only digits
-                return phoneRegex.test(value)
+            phone: (value: string) => {
+                if (!value || !value.trim()) {
+                    return "Phone number is required";
+                }
+                return isValidPhone(value)
                     ? null
-                    : "Phone must contain only numbers";
+                    : "Enter a valid phone number";
             },
             email: (value) => {
-                if (!value.trim()) return null; // Skip validation if email is empty
-                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                return emailRegex.test(value)
+                if (!value.trim()) return null;
+                return isValidEmail(value)
                     ? null
                     : "Enter a valid email address";
             },

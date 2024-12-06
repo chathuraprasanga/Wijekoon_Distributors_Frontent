@@ -5,7 +5,6 @@ import {
     PayloadAction,
 } from "@reduxjs/toolkit";
 import axiosInstance from "../../interceptors/axiosInterceptor.ts";
-import cheques from "../../pages/cheques";
 
 interface ChequeState {
     cheques: any;
@@ -121,8 +120,8 @@ const chequeSlice = createSlice({
         builder.addCase(
             updateCheque.fulfilled,
             (state: Draft<ChequeState>, action: PayloadAction<any>) => {
-                state.cheques = state.cheques.map((supplier: any) =>
-                    supplier._id === action.payload.result._id
+                state.cheques = state.cheques.map((cheques: any) =>
+                    cheques._id === action.payload.result._id
                         ? action.payload.result
                         : cheques
                 );

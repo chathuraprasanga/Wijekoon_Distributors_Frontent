@@ -23,17 +23,17 @@ const AddInvoice = () => {
         },
         validate: {
             supplier: isNotEmpty("Supplier name is required"),
-            invoiceNumber: isNotEmpty("Cheque number is required"),
+            invoiceNumber: isNotEmpty("Invoice number is required"),
             amount: (value) => {
                 if (!value) {
                     return "Amount is required";
                 }
                 if (value <= 0) {
-                    return "Amount should be greater than 0";
+                    return "Amount should be greater than Rs. 0";
                 }
                 return null;
             },
-            invoiceDate: isNotEmpty("Deposit date is required"),
+            invoiceDate: isNotEmpty("Invoice date is required"),
         },
     });
 
@@ -83,6 +83,7 @@ const AddInvoice = () => {
                     <TextInput
                         label="Invoice Date"
                         withAsterisk
+                        type="date"
                         placeholder="Enter Invoice Date"
                         key={invoiceAddFrom.key("invoiceDate")}
                         {...invoiceAddFrom.getInputProps("invoiceDate")}

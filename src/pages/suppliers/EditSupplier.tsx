@@ -11,6 +11,7 @@ import {
 import toNotify from "../../helpers/toNotify.tsx";
 import { useNavigate, useParams } from "react-router";
 import { useEffect } from "react";
+import { isValidEmail, isValidPhone } from "../../utils/inputValidators.ts";
 
 const EditSupplier = () => {
     const { setLoading } = useLoading();
@@ -47,8 +48,21 @@ const EditSupplier = () => {
         },
         validate: {
             name: isNotEmpty("Supplier name is required"),
-            phone: isNotEmpty("Supplier phone number is required"),
-        },
+            phone: (value: string) => {
+                if (!value || !value.trim()) {
+                    return "Phone number is required";
+                }
+                return isValidPhone(value)
+                    ? null
+                    : "Enter a valid phone number";
+            },
+            email: (value) => {
+                if (!value.trim()) return null;
+                return isValidEmail(value)
+                    ? null
+                    : "Enter a valid email address";
+            },
+        }
     });
 
     const handleSupplierEdit = async (
