@@ -1,4 +1,4 @@
-import { Button, NumberInput, TextInput } from "@mantine/core";
+import { Button, NumberInput, Select, TextInput } from "@mantine/core";
 import { IconArrowLeft } from "@tabler/icons-react";
 import { useLoading } from "../../helpers/loadingContext.tsx";
 import { useDispatch } from "react-redux";
@@ -7,12 +7,42 @@ import { useNavigate } from "react-router";
 import { isNotEmpty, useForm } from "@mantine/form";
 import toNotify from "../../helpers/toNotify.tsx";
 import { addCheque } from "../../store/chequeSlice/chequeSlice.ts";
-import { isValidBankCode, isValidBranchCode, isValidChequeNumber } from "../../utils/inputValidators.ts";
+import {
+    isValidBankCode,
+    isValidBranchCode,
+    isValidChequeNumber,
+} from "../../utils/inputValidators.ts";
+import { useEffect, useState } from "react";
+import { getCustomers } from "../../store/customerSlice/customerSlice.ts";
 
 const AddCheque = () => {
     const { setLoading } = useLoading();
     const dispatch = useDispatch<AppDispatch | any>();
     const navigate = useNavigate();
+    const [selectableCustomers, setSelectableCustomers] = useState<any[]>([])
+    const customerData =  selectableCustomers.map((data:any) => {return {label: data.name, value: data._id }})
+
+    useEffect(() => {
+        fetchCustomers();
+    }, [dispatch]);
+
+    const fetchCustomers = async () => {
+        setLoading(true);
+        const response = await dispatch(
+            getCustomers({ filters: { status: true } })
+        );
+        if (response.type === "customer/getCustomers/fulfilled") {
+            setLoading(false);
+            setSelectableCustomers(response.payload.result);
+        } else {
+            setLoading(false);
+            toNotify(
+                "Something went wrong",
+                `Please contact system admin`,
+                "WARNING"
+            );
+        }
+    };
 
     const chequeAddForm = useForm({
         mode: "uncontrolled",
@@ -27,22 +57,26 @@ const AddCheque = () => {
         validate: {
             customer: isNotEmpty("Customer name is required"),
             number: (value) => {
-                if (!value || !value.trim()){
-                    return "Cheque number is required"
+                if (!value || !value.trim()) {
+                    return "Cheque number is required";
                 }
-                return isValidChequeNumber(value) ? null : "Enter valid cheque number";
+                return isValidChequeNumber(value)
+                    ? null
+                    : "Enter valid cheque number";
             },
             bank: (value) => {
-                if (!value || !value.trim()){
-                    return "Bank code is required"
+                if (!value || !value.trim()) {
+                    return "Bank code is required";
                 }
                 return isValidBankCode(value) ? null : "Enter valid bank code";
             },
             branch: (value) => {
-                if (!value || !value.trim()){
-                    return "Branch code is required"
+                if (!value || !value.trim()) {
+                    return "Branch code is required";
                 }
-                return isValidBranchCode(value) ? null : "Enter valid branch code";
+                return isValidBranchCode(value)
+                    ? null
+                    : "Enter valid branch code";
             },
             amount: (value) => {
                 if (!value) {
@@ -93,10 +127,12 @@ const AddCheque = () => {
             </div>
             <div className="mx-4 my-4 lg:w-1/2">
                 <form onSubmit={chequeAddForm.onSubmit(handleChequeAdd)}>
-                    <TextInput
-                        label="Name"
+                    <Select
+                        label="Customer"
                         withAsterisk
-                        placeholder="Enter Customer Name"
+                        placeholder="Select Customer"
+                        searchable
+                        data={customerData}
                         key={chequeAddForm.key("customer")}
                         {...chequeAddForm.getInputProps("customer")}
                     />
@@ -143,7 +179,12 @@ const AddCheque = () => {
                         {...chequeAddForm.getInputProps("depositDate")}
                     />
                     <div className="mt-4 flex justify-end">
-                        <Button size="xs" color="dark" type="submit" onClick={() => console.log(chequeAddForm.values)}>
+                        <Button
+                            size="xs"
+                            color="dark"
+                            type="submit"
+                            onClick={() => console.log(chequeAddForm.values)}
+                        >
                             Submit
                         </Button>
                     </div>

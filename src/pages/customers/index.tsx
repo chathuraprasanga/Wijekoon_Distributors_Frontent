@@ -120,7 +120,7 @@ const Customers = () => {
                         {paginatedData?.length !== 0 ? (
                             paginatedData?.map((c: any, i: number) => (
                                 <Table.Tr key={i}>
-                                    <Table.Td style={{width: "20%"}}>{c.name}</Table.Td>
+                                    <Table.Td style={{width: "20%"}}>{c?.name}</Table.Td>
                                     <Table.Td style={{width: "15%"}}>{c.phone}</Table.Td>
                                     <Table.Td style={{width: "25%"}}>{c.email || "-"}</Table.Td>
                                     <Table.Td style={{width: "25%"}}>{c.address || "-"}</Table.Td>

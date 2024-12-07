@@ -1,4 +1,4 @@
-import { Button, NumberInput, TextInput } from "@mantine/core";
+import { Button, NumberInput, Select, TextInput } from "@mantine/core";
 import { IconArrowLeft } from "@tabler/icons-react";
 import { useLoading } from "../../helpers/loadingContext.tsx";
 import { useDispatch, useSelector } from "react-redux";
@@ -10,12 +10,13 @@ import {
     getCheque,
     updateCheque,
 } from "../../store/chequeSlice/chequeSlice.ts";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import {
     isValidBankCode,
     isValidBranchCode,
     isValidChequeNumber,
 } from "../../utils/inputValidators.ts";
+import { getCustomers } from "../../store/customerSlice/customerSlice.ts";
 
 const EditCheque = () => {
     const { setLoading } = useLoading();
@@ -25,6 +26,32 @@ const EditCheque = () => {
     const selectedCheque = useSelector(
         (state: RootState) => state.cheque.selectedCheque
     );
+    const [selectableCustomers, setSelectableCustomers] = useState<any[]>([]);
+    const customerData = selectableCustomers.map((data: any) => {
+        return { label: data.name, value: data._id };
+    });
+
+    useEffect(() => {
+        fetchCustomers();
+    }, [dispatch]);
+
+    const fetchCustomers = async () => {
+        setLoading(true);
+        const response = await dispatch(
+            getCustomers({ filters: { status: true } })
+        );
+        if (response.type === "customer/getCustomers/fulfilled") {
+            setLoading(false);
+            setSelectableCustomers(response.payload.result);
+        } else {
+            setLoading(false);
+            toNotify(
+                "Something went wrong",
+                `Please contact system admin`,
+                "WARNING"
+            );
+        }
+    };
 
     useEffect(() => {
         fetchCheque();
@@ -32,8 +59,10 @@ const EditCheque = () => {
 
     useEffect(() => {
         if (selectedCheque) {
-            chequeEditForm.setValues(selectedCheque);
-
+            chequeEditForm.setValues({
+                ...selectedCheque,
+                customer: selectedCheque.customer?._id || "", // Use only the customer ID
+            });
             chequeEditForm.resetDirty();
         }
     }, [selectedCheque]);
@@ -93,7 +122,7 @@ const EditCheque = () => {
 
     const handleChequeEdit = async (values: typeof chequeEditForm.values) => {
         setLoading(true);
-        const response = await dispatch(updateCheque({ id, values}));
+        const response = await dispatch(updateCheque({ id, values }));
         if (response.type === "cheque/updateCheque/fulfilled") {
             setLoading(false);
             toNotify("Success", "Cheque updated successfully", "SUCCESS");
@@ -121,16 +150,18 @@ const EditCheque = () => {
                         onClick={() => history.back()}
                     />
                     <span className="text-lg font-semibold ml-4">
-                        Add Cheque
+                        Edit Cheque
                     </span>
                 </div>
             </div>
             <div className="mx-4 my-4 lg:w-1/2">
                 <form onSubmit={chequeEditForm.onSubmit(handleChequeEdit)}>
-                    <TextInput
-                        label="Name"
+                    <Select
+                        label="Customer"
                         withAsterisk
-                        placeholder="Enter Customer Name"
+                        placeholder="Select Customer"
+                        searchable
+                        data={customerData}
                         key={chequeEditForm.key("customer")}
                         {...chequeEditForm.getInputProps("customer")}
                     />

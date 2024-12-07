@@ -83,7 +83,7 @@ const ViewCheque = () => {
                 <Card shadow="md" withBorder>
                     <div className="flex flex-row">
                         <div className="w-2/4 lg:w-1/4">Customer:</div>
-                        <div>{cheque?.customer}</div>
+                        <div>{cheque?.customer?.name}</div>
                     </div>
                     <div className="flex flex-row">
                         <div className="w-2/4 lg:w-1/4">Bank:</div>

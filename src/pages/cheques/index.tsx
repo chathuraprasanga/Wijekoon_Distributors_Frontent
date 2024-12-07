@@ -116,7 +116,7 @@ const Cheques = () => {
                         {paginatedData?.length !== 0 ? (
                             paginatedData?.map((c: any, i: number) => (
                                 <Table.Tr key={i}>
-                                    <Table.Td style={{width: "20%"}}>{c.customer}</Table.Td>
+                                    <Table.Td style={{width: "20%"}}>{c.customer.name}</Table.Td>
                                     <Table.Td style={{width: "15%"}}>{c.number}</Table.Td>
                                     <Table.Td style={{width: "15%"}}>{c.bank}</Table.Td>
                                     <Table.Td style={{width: "10%"}}>{c.branch}</Table.Td>
@@ -233,7 +233,7 @@ const Cheques = () => {
                             className="border border-gray-300 rounded-md mb-4 p-4 bg-white shadow-sm"
                         >
                             <p className="font-semibold">
-                                Customer: {c.customer}
+                                Customer: {c.customer.name}
                             </p>
                             <p>Cheque Number: {c.chequeNumber}</p>
                             <p>Bank: {c.bank}</p>
@@ -303,12 +303,14 @@ const Cheques = () => {
                                                 <Menu.Item
                                                     color="green"
                                                     onClick={() => chequeStatusUpdate(c._id, "COMPLETED")}
+                                                    rightSection={<IconCertificate size={16}/>}
                                                 >
                                                     <span>Completed</span>
                                                 </Menu.Item>
                                                 <Menu.Item
                                                     color="red"
                                                     onClick={() => chequeStatusUpdate(c._id, "RETURNED")}
+                                                    rightSection={<IconCertificateOff size={16}/>}
                                                 >
                                                     <span>Returned</span>
                                                 </Menu.Item>

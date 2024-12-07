@@ -18,12 +18,17 @@ const BasicAppShell = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const userDetails = useSelector((state: RootState) => state.auth.user);
-    const [mobileOpened, { toggle: toggleMobile }] = useDisclosure(false);
+    const [mobileOpened, { toggle: toggleMobile, close: closeMobile }] =
+        useDisclosure(false);
     const [desktopOpened, { toggle: toggleDesktop }] = useDisclosure(true);
 
     const greetingName = userDetails?.username?.split(" ")[0];
-
     const activePath = location?.pathname?.split("/")[2];
+
+    const handleNavLinkClick = (path:any) => {
+        navigate(path);
+        closeMobile(); // Close the mobile navbar when a NavLink is clicked
+    };
 
     return (
         <AppShell
@@ -65,7 +70,7 @@ const BasicAppShell = () => {
             </AppShell.Header>
             <AppShell.Navbar>
                 <NavLink
-                    onClick={() => navigate("dashboard")}
+                    onClick={() => handleNavLinkClick("dashboard")}
                     label="Dashboard"
                     leftSection={
                         <IconLayoutDashboard size="1rem" stroke={1.5} />
@@ -75,7 +80,7 @@ const BasicAppShell = () => {
                     active={activePath === "dashboard"}
                 />
                 <NavLink
-                    onClick={() => navigate("customers")}
+                    onClick={() => handleNavLinkClick("customers")}
                     label="Customers"
                     leftSection={<IconUsersGroup size="1rem" stroke={1.5} />}
                     variant="filled"
@@ -83,7 +88,7 @@ const BasicAppShell = () => {
                     active={activePath === "customers"}
                 />
                 <NavLink
-                    onClick={() => navigate("products")}
+                    onClick={() => handleNavLinkClick("products")}
                     label="Products"
                     leftSection={<IconPackages size="1rem" stroke={1.5} />}
                     variant="filled"
@@ -91,7 +96,7 @@ const BasicAppShell = () => {
                     active={activePath === "products"}
                 />
                 <NavLink
-                    onClick={() => navigate("suppliers")}
+                    onClick={() => handleNavLinkClick("suppliers")}
                     label="Suppliers"
                     leftSection={<IconTruck size="1rem" stroke={1.5} />}
                     variant="filled"
@@ -99,15 +104,17 @@ const BasicAppShell = () => {
                     active={activePath === "suppliers"}
                 />
                 <NavLink
-                    onClick={() => navigate("cheques")}
+                    onClick={() => handleNavLinkClick("cheques")}
                     label="Cheques"
-                    leftSection={<IconCashBanknote size="1rem" stroke={1.5} />}
+                    leftSection={
+                        <IconCashBanknote size="1rem" stroke={1.5} />
+                    }
                     variant="filled"
                     color="dark"
                     active={activePath === "cheques"}
                 />
                 <NavLink
-                    onClick={() => navigate("invoices")}
+                    onClick={() => handleNavLinkClick("invoices")}
                     label="Invoices"
                     leftSection={<IconInvoice size="1rem" stroke={1.5} />}
                     variant="filled"
@@ -117,12 +124,14 @@ const BasicAppShell = () => {
             </AppShell.Navbar>
 
             <AppShell.Main>
-                { activePath === "dashboard" && (<div>
-                    <span className="text-lg font-semibold">
-                        Hello {greetingName}.!
-                    </span>
-                    <Divider/>
-                </div>)}
+                {activePath === "dashboard" && (
+                    <div>
+                        <span className="text-lg font-semibold">
+                            Hello {greetingName}.!
+                        </span>
+                        <Divider />
+                    </div>
+                )}
                 <div className="mt-2 border shadow-md h-full w-full">
                     <Outlet />
                 </div>

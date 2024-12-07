@@ -110,7 +110,7 @@ const Invoices = () => {
                         {paginatedData?.length !== 0 ? (
                             paginatedData?.map((c: any, i: number) => (
                                 <Table.Tr key={i}>
-                                    <Table.Td style={{width: "30%"}}>{c.supplier}</Table.Td>
+                                    <Table.Td style={{width: "30%"}}>{c.supplier?.name}</Table.Td>
                                     <Table.Td style={{width: "15%"}}>{c.invoiceDate}</Table.Td>
                                     <Table.Td style={{width: "20%"}}>{c.invoiceNumber}</Table.Td>
                                     <Table.Td style={{width: "20%"}}>{c.amount}</Table.Td>
@@ -216,7 +216,7 @@ const Invoices = () => {
                             className="border border-gray-300 rounded-md mb-4 p-4 bg-white shadow-sm"
                         >
                             <p className="font-semibold">
-                                Supplier: {c.supplier}
+                                Supplier: {c.supplier?.name}
                             </p>
                             <p>Invoiced Date: {c.invoiceDate}</p>
                             <p>Invoice Number: {c.invoiceNumber}</p>

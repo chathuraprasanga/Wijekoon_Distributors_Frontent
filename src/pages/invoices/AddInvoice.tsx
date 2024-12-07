@@ -1,5 +1,5 @@
 import { IconArrowLeft } from "@tabler/icons-react";
-import { Button, NumberInput, TextInput } from "@mantine/core";
+import { Button, NumberInput, Select, TextInput } from "@mantine/core";
 import { useLoading } from "../../helpers/loadingContext.tsx";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../store/store.ts";
@@ -7,11 +7,37 @@ import { useNavigate } from "react-router";
 import { isNotEmpty, useForm } from "@mantine/form";
 import toNotify from "../../helpers/toNotify.tsx";
 import { addInvoice } from "../../store/invoiceSlice/invoiceSlice.ts";
+import { useEffect, useState } from "react";
+import { getSuppliers } from "../../store/supplierSlice/supplierSlice.ts";
 
 const AddInvoice = () => {
     const { setLoading } = useLoading();
     const dispatch = useDispatch<AppDispatch | any>();
     const navigate = useNavigate();
+    const [selectableSuppliers, setSelectableSuppliers] = useState<any[]>([])
+    const supplierData =  selectableSuppliers.map((data:any) => {return {label: data.name, value: data._id }})
+
+    useEffect(() => {
+        fetchSuppliers();
+    }, [dispatch]);
+
+    const fetchSuppliers = async () => {
+        setLoading(true);
+        const response = await dispatch(
+            getSuppliers({ filters: { status: true } })
+        );
+        if (response.type === "supplier/getSuppliers/fulfilled") {
+            setLoading(false);
+            setSelectableSuppliers(response.payload.result);
+        } else {
+            setLoading(false);
+            toNotify(
+                "Something went wrong",
+                `Please contact system admin`,
+                "WARNING"
+            );
+        }
+    };
 
     const invoiceAddFrom = useForm({
         mode: "uncontrolled",
@@ -73,9 +99,11 @@ const AddInvoice = () => {
             </div>
             <div className="mx-4 my-4 lg:w-1/2">
                 <form onSubmit={invoiceAddFrom.onSubmit(handleInvoiceAdd)}>
-                    <TextInput
+                    <Select
                         label="Supplier"
                         withAsterisk
+                        searchable
+                        data={supplierData}
                         placeholder="Enter Supplier Name"
                         key={invoiceAddFrom.key("supplier")}
                         {...invoiceAddFrom.getInputProps("supplier")}
