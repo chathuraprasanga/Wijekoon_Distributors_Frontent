@@ -14,13 +14,14 @@ import { MantineProvider } from "@mantine/core";
 import "@mantine/core/styles.css";
 import "@mantine/charts/styles.css";
 import "@mantine/notifications/styles.css";
-import '@mantine/dates/styles.css';
+import "@mantine/dates/styles.css";
 
 import { AuthLoaderChecker } from "./utils/authChecker.ts";
 import { Notifications } from "@mantine/notifications";
 // import Loading from "./components/Loading.tsx";
 const Loading = React.lazy(() => import("./components/Loading.tsx"));
 import { LoadingProvider } from "./helpers/loadingContext.tsx";
+import { DatesProvider } from "@mantine/dates";
 
 const authChecker = async () => {
     const isAuthenticated = Boolean(localStorage.getItem("ACCESS_TOKEN"));
@@ -74,7 +75,9 @@ const EditSupplier = React.lazy(
     () => import("./pages/suppliers/EditSupplier.tsx")
 );
 const EditCheque = React.lazy(() => import("./pages/cheques/EditCheque.tsx"));
-const EditInvoice = React.lazy(() => import("./pages/invoices/EditInvoice.tsx"));
+const EditInvoice = React.lazy(
+    () => import("./pages/invoices/EditInvoice.tsx")
+);
 const ViewProduct = React.lazy(
     () => import("./pages/products/ViewProduct.tsx")
 );
@@ -82,7 +85,9 @@ const ViewSupplier = React.lazy(
     () => import("./pages/suppliers/ViewSupplier.tsx")
 );
 const ViewCheque = React.lazy(() => import("./pages/cheques/ViewCheque.tsx"));
-const ViewInvoice = React.lazy(() => import("./pages/invoices/ViewInvoice.tsx"));
+const ViewInvoice = React.lazy(
+    () => import("./pages/invoices/ViewInvoice.tsx")
+);
 
 const router = createBrowserRouter([
     {
@@ -157,7 +162,8 @@ const router = createBrowserRouter([
             {
                 path: "cheques/edit-cheque/:id",
                 element: <EditCheque />,
-            },{
+            },
+            {
                 path: "invoices/edit-invoice/:id",
                 element: <EditInvoice />,
             },
@@ -168,7 +174,8 @@ const router = createBrowserRouter([
             {
                 path: "cheques/view-cheque/:id",
                 element: <ViewCheque />,
-            },{
+            },
+            {
                 path: "invoices/view-invoice/:id",
                 element: <ViewInvoice />,
             },
@@ -192,14 +199,16 @@ const router = createBrowserRouter([
 createRoot(document.getElementById("root")!).render(
     <Provider store={store}>
         <MantineProvider>
-            <Suspense fallback={<Loading />}>
-                <LoadingProvider>
-                    <Notifications position="top-right" mt={50} />
-                    {/*<StrictMode>*/}
-                    <RouterProvider router={router} />
-                    {/*</StrictMode>*/}
-                </LoadingProvider>
-            </Suspense>
+            <DatesProvider settings={{ timezone: "UTC" }}>
+                <Suspense fallback={<Loading />}>
+                    <LoadingProvider>
+                        <Notifications position="top-right" mt={50} />
+                        {/*<StrictMode>*/}
+                        <RouterProvider router={router} />
+                        {/*</StrictMode>*/}
+                    </LoadingProvider>
+                </Suspense>
+            </DatesProvider>
         </MantineProvider>
     </Provider>
 );

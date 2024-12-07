@@ -17,6 +17,7 @@ import {
     isValidChequeNumber,
 } from "../../utils/inputValidators.ts";
 import { getCustomers } from "../../store/customerSlice/customerSlice.ts";
+import { DatePickerInput } from "@mantine/dates";
 
 const EditCheque = () => {
     const { setLoading } = useLoading();
@@ -62,6 +63,7 @@ const EditCheque = () => {
             chequeEditForm.setValues({
                 ...selectedCheque,
                 customer: selectedCheque.customer?._id || "", // Use only the customer ID
+                depositDate: new Date(selectedCheque?.depositDate || new Date()),
             });
             chequeEditForm.resetDirty();
         }
@@ -81,7 +83,7 @@ const EditCheque = () => {
             bank: "",
             branch: "",
             amount: 0,
-            depositDate: "",
+            depositDate: new Date(),
         },
         validate: {
             customer: isNotEmpty("Customer name is required"),
@@ -199,11 +201,10 @@ const EditCheque = () => {
                         key={chequeEditForm.key("amount")}
                         {...chequeEditForm.getInputProps("amount")}
                     />
-                    <TextInput
+                    <DatePickerInput
                         label="Deposit Date"
                         placeholder="Enter Deposit Date"
                         withAsterisk
-                        type="date"
                         key={chequeEditForm.key("depositDate")}
                         {...chequeEditForm.getInputProps("depositDate")}
                     />

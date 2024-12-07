@@ -9,6 +9,7 @@ import toNotify from "../../helpers/toNotify.tsx";
 import { addInvoice } from "../../store/invoiceSlice/invoiceSlice.ts";
 import { useEffect, useState } from "react";
 import { getSuppliers } from "../../store/supplierSlice/supplierSlice.ts";
+import { DatePickerInput } from "@mantine/dates";
 
 const AddInvoice = () => {
     const { setLoading } = useLoading();
@@ -43,7 +44,7 @@ const AddInvoice = () => {
         mode: "uncontrolled",
         initialValues: {
             supplier: "",
-            invoiceDate: "",
+            invoiceDate: null,
             invoiceNumber: "",
             amount: 0,
         },
@@ -108,10 +109,9 @@ const AddInvoice = () => {
                         key={invoiceAddFrom.key("supplier")}
                         {...invoiceAddFrom.getInputProps("supplier")}
                     />
-                    <TextInput
+                    <DatePickerInput
                         label="Invoice Date"
                         withAsterisk
-                        type="date"
                         placeholder="Enter Invoice Date"
                         key={invoiceAddFrom.key("invoiceDate")}
                         {...invoiceAddFrom.getInputProps("invoiceDate")}

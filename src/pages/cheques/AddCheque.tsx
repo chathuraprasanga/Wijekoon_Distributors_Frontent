@@ -14,6 +14,7 @@ import {
 } from "../../utils/inputValidators.ts";
 import { useEffect, useState } from "react";
 import { getCustomers } from "../../store/customerSlice/customerSlice.ts";
+import { DatePickerInput } from "@mantine/dates";
 
 const AddCheque = () => {
     const { setLoading } = useLoading();
@@ -52,7 +53,7 @@ const AddCheque = () => {
             bank: "",
             branch: "",
             amount: 0,
-            depositDate: "",
+            depositDate: null,
         },
         validate: {
             customer: isNotEmpty("Customer name is required"),
@@ -170,10 +171,9 @@ const AddCheque = () => {
                         key={chequeAddForm.key("amount")}
                         {...chequeAddForm.getInputProps("amount")}
                     />
-                    <TextInput
+                    <DatePickerInput
                         label="Deposit Date"
                         placeholder="Enter Deposit Date"
-                        type="date"
                         withAsterisk
                         key={chequeAddForm.key("depositDate")}
                         {...chequeAddForm.getInputProps("depositDate")}

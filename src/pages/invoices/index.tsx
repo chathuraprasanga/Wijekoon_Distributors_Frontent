@@ -10,6 +10,7 @@ import {
     getInvoices,
 } from "../../store/invoiceSlice/invoiceSlice.ts";
 import toNotify from "../../helpers/toNotify.tsx";
+import datePreview from "../../helpers/datePreview.tsx";
 
 const Invoices = () => {
     const { setLoading } = useLoading();
@@ -111,7 +112,7 @@ const Invoices = () => {
                             paginatedData?.map((c: any, i: number) => (
                                 <Table.Tr key={i}>
                                     <Table.Td style={{width: "30%"}}>{c.supplier?.name}</Table.Td>
-                                    <Table.Td style={{width: "15%"}}>{c.invoiceDate}</Table.Td>
+                                    <Table.Td style={{width: "15%"}}>{datePreview(c.invoiceDate)}</Table.Td>
                                     <Table.Td style={{width: "20%"}}>{c.invoiceNumber}</Table.Td>
                                     <Table.Td style={{width: "20%"}}>{c.amount}</Table.Td>
                                     <Table.Td style={{width: "10%"}}>
