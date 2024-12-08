@@ -138,10 +138,10 @@ const Suppliers = () => {
                                         {c.phone}
                                     </Table.Td>
                                     <Table.Td style={{ width: "20%" }}>
-                                        {c.email}
+                                        {c.email || "-"}
                                     </Table.Td>
                                     <Table.Td style={{ width: "25%" }}>
-                                        {c.address}
+                                        {c.address || "-"}
                                     </Table.Td>
                                     <Table.Td style={{ width: "10%" }}>
                                         <Badge
