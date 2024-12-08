@@ -1,5 +1,12 @@
 import { IconArrowLeft } from "@tabler/icons-react";
-import { Button, NumberInput, Select, TextInput } from "@mantine/core";
+import {
+    Box,
+    Button,
+    Group,
+    NumberInput,
+    Select,
+    TextInput,
+} from "@mantine/core";
 import { useLoading } from "../../helpers/loadingContext.tsx";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store/store.ts";
@@ -115,8 +122,8 @@ const EditInvoice = () => {
 
     return (
         <>
-            <div className="items-center flex flex-row justify-between p-4">
-                <div className="flex flex-row items-center">
+            <Group p="lg" display="flex" justify="space-between" align="center">
+                <Group display="flex">
                     <IconArrowLeft
                         className="cursor-pointer"
                         onClick={() => history.back()}
@@ -124,9 +131,9 @@ const EditInvoice = () => {
                     <span className="text-lg font-semibold ml-4">
                         Add Invoice
                     </span>
-                </div>
-            </div>
-            <div className="mx-4 my-4 lg:w-1/2">
+                </Group>
+            </Group>
+            <Box w={{ sm: "100%", lg: "50%" }} px="lg">
                 <form onSubmit={invoiceEditFrom.onSubmit(handleInvoiceAdd)}>
                     <Select
                         label="Supplier"
@@ -164,13 +171,13 @@ const EditInvoice = () => {
                         key={invoiceEditFrom.key("amount")}
                         {...invoiceEditFrom.getInputProps("amount")}
                     />
-                    <div className="mt-4 flex justify-end">
+                    <Group justify="flex-end" display="flex" pb="md" mt="md">
                         <Button size="xs" color="dark" type="submit" disabled={!invoiceEditFrom.isDirty()}>
                             Submit
                         </Button>
-                    </div>
+                    </Group>
                 </form>
-            </div>
+            </Box>
         </>
     );
 };

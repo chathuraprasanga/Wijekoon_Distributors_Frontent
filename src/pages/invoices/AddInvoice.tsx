@@ -1,5 +1,12 @@
 import { IconArrowLeft } from "@tabler/icons-react";
-import { Button, NumberInput, Select, TextInput } from "@mantine/core";
+import {
+    Box,
+    Button,
+    Group,
+    NumberInput,
+    Select,
+    TextInput,
+} from "@mantine/core";
 import { useLoading } from "../../helpers/loadingContext.tsx";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../store/store.ts";
@@ -44,7 +51,7 @@ const AddInvoice = () => {
         mode: "uncontrolled",
         initialValues: {
             supplier: "",
-            invoiceDate: null,
+            invoiceDate:  new Date(),
             invoiceNumber: "",
             amount: 0,
         },
@@ -87,8 +94,8 @@ const AddInvoice = () => {
 
     return (
         <>
-            <div className="items-center flex flex-row justify-between p-4">
-                <div className="flex flex-row items-center">
+            <Group p="lg" display="flex" justify="space-between" align="center">
+                <Group display="flex">
                     <IconArrowLeft
                         className="cursor-pointer"
                         onClick={() => history.back()}
@@ -96,9 +103,9 @@ const AddInvoice = () => {
                     <span className="text-lg font-semibold ml-4">
                         Add Invoice
                     </span>
-                </div>
-            </div>
-            <div className="mx-4 my-4 lg:w-1/2">
+                </Group>
+            </Group>
+            <Box w={{ sm: "100%", lg: "50%" }} px="lg">
                 <form onSubmit={invoiceAddFrom.onSubmit(handleInvoiceAdd)}>
                     <Select
                         label="Supplier"
@@ -113,6 +120,7 @@ const AddInvoice = () => {
                         label="Invoice Date"
                         withAsterisk
                         placeholder="Enter Invoice Date"
+                        clearable
                         key={invoiceAddFrom.key("invoiceDate")}
                         {...invoiceAddFrom.getInputProps("invoiceDate")}
                     />
@@ -136,13 +144,13 @@ const AddInvoice = () => {
                         {...invoiceAddFrom.getInputProps("amount")}
                         withAsterisk
                     />
-                    <div className="mt-4 flex justify-end">
+                    <Group justify="flex-end" display="flex" pb="md" mt="md">
                         <Button size="xs" color="dark" type="submit">
                             Submit
                         </Button>
-                    </div>
+                    </Group>
                 </form>
-            </div>
+            </Box>
         </>
     );
 };

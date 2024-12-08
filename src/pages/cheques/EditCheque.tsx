@@ -1,4 +1,12 @@
-import { Button, NumberInput, Select, TextInput } from "@mantine/core";
+import {
+    Button,
+    Group,
+    NumberInput,
+    Select,
+    TextInput,
+    Text,
+    Box,
+} from "@mantine/core";
 import { IconArrowLeft } from "@tabler/icons-react";
 import { useLoading } from "../../helpers/loadingContext.tsx";
 import { useDispatch, useSelector } from "react-redux";
@@ -88,7 +96,7 @@ const EditCheque = () => {
         validate: {
             customer: isNotEmpty("Customer name is required"),
             number: (value) => {
-                if (!value || !value.trim()) {
+                if (!value) {
                     return "Cheque number is required";
                 }
                 return isValidChequeNumber(value)
@@ -96,13 +104,13 @@ const EditCheque = () => {
                     : "Enter valid cheque number";
             },
             bank: (value) => {
-                if (!value || !value.trim()) {
+                if (!value) {
                     return "Bank code is required";
                 }
                 return isValidBankCode(value) ? null : "Enter valid bank code";
             },
             branch: (value) => {
-                if (!value || !value.trim()) {
+                if (!value) {
                     return "Branch code is required";
                 }
                 return isValidBranchCode(value)
@@ -145,18 +153,18 @@ const EditCheque = () => {
 
     return (
         <>
-            <div className="items-center flex flex-row justify-between p-4">
-                <div className="flex flex-row items-center">
+            <Group p="lg" display="flex" justify="space-between" align="center">
+                <Group display="flex">
                     <IconArrowLeft
                         className="cursor-pointer"
                         onClick={() => history.back()}
                     />
-                    <span className="text-lg font-semibold ml-4">
+                    <Text fw={500} ml="md" size="lg">
                         Edit Cheque
-                    </span>
-                </div>
-            </div>
-            <div className="mx-4 my-4 lg:w-1/2">
+                    </Text>
+                </Group>
+            </Group>
+            <Box w={{ sm: "100%", lg: "50%" }} px="lg">
                 <form onSubmit={chequeEditForm.onSubmit(handleChequeEdit)}>
                     <Select
                         label="Customer"
@@ -208,7 +216,7 @@ const EditCheque = () => {
                         key={chequeEditForm.key("depositDate")}
                         {...chequeEditForm.getInputProps("depositDate")}
                     />
-                    <div className="mt-4 flex justify-end">
+                    <Group justify="flex-end" display="flex" pb="md" mt="md">
                         <Button
                             size="xs"
                             color="dark"
@@ -217,9 +225,9 @@ const EditCheque = () => {
                         >
                             Submit
                         </Button>
-                    </div>
+                    </Group>
                 </form>
-            </div>
+            </Box>
         </>
     );
 };

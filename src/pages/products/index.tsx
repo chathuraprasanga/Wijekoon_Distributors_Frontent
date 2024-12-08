@@ -1,4 +1,14 @@
-import { Badge, Button, Group, Menu, Pagination, Table } from "@mantine/core";
+import {
+    Badge,
+    Box,
+    Button,
+    Card,
+    Group,
+    Menu,
+    Pagination,
+    Table,
+    Text,
+} from "@mantine/core";
 import {
     IconDatabaseOff,
     IconDotsVertical,
@@ -13,7 +23,10 @@ import { useEffect, useState } from "react";
 import { useLoading } from "../../helpers/loadingContext.tsx";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store/store.ts";
-import { changeStatusProduct, getProducts } from "../../store/productSlice/productSlice.ts";
+import {
+    changeStatusProduct,
+    getProducts,
+} from "../../store/productSlice/productSlice.ts";
 import toNotify from "../../helpers/toNotify.tsx";
 
 const Products = () => {
@@ -31,7 +44,7 @@ const Products = () => {
     }, []);
 
     const setPage = () => {
-        setCurrentPage(Number(sessionStorage.getItem("pageIndex") || 1));
+        setCurrentPage(Number(sessionStorage.getItem("pageIndex") ?? 1));
         sessionStorage.clear();
     };
 
@@ -79,11 +92,11 @@ const Products = () => {
     return (
         <>
             {/* Header */}
-            <div className="items-center flex flex-row justify-between p-4">
-                <div>
+            <Box display="flex" p="lg" className="items-center justify-between">
+                <Box>
                     <span className="text-lg font-semibold">Products</span>
-                </div>
-                <div>
+                </Box>
+                <Box>
                     <Button
                         size="xs"
                         color="dark"
@@ -91,11 +104,11 @@ const Products = () => {
                     >
                         Add Products
                     </Button>
-                </div>
-            </div>
+                </Box>
+            </Box>
 
             {/* Desktop Table */}
-            <div className="hidden lg:block mx-4 my-4 overflow-x-auto">
+            <Box visibleFrom="lg" mx="lg" my="lg" className="overflow-x-auto">
                 <Table
                     striped
                     highlightOnHover
@@ -104,25 +117,35 @@ const Products = () => {
                 >
                     <Table.Thead>
                         <Table.Tr>
-                            <Table.Th style={{width: "30%"}}>Name</Table.Th>
-                            <Table.Th style={{width: "25%"}}>Product Code</Table.Th>
-                            <Table.Th style={{width: "15%"}}>Size</Table.Th>
-                            <Table.Th style={{width: "15%"}}>Unit Price</Table.Th>
-                            <Table.Th style={{width: "10%"}}>Status</Table.Th>
-                            <Table.Th style={{width: "5%"}}></Table.Th>
+                            <Table.Th style={{ width: "30%" }}>Name</Table.Th>
+                            <Table.Th style={{ width: "25%" }}>
+                                Product Code
+                            </Table.Th>
+                            <Table.Th style={{ width: "15%" }}>Size</Table.Th>
+                            <Table.Th style={{ width: "15%" }}>
+                                Unit Price
+                            </Table.Th>
+                            <Table.Th style={{ width: "10%" }}>Status</Table.Th>
+                            <Table.Th style={{ width: "5%" }}></Table.Th>
                         </Table.Tr>
                     </Table.Thead>
                     <Table.Tbody>
                         {paginatedData?.length !== 0 ? (
                             paginatedData?.map((c: any, i: number) => (
                                 <Table.Tr key={i}>
-                                    <Table.Td style={{width: "30%"}}>{c.name}</Table.Td>
-                                    <Table.Td style={{width: "25%"}}>{c.productCode}</Table.Td>
-                                    <Table.Td style={{width: "15%"}}>{c.size}</Table.Td>
-                                    <Table.Td style={{width: "15%"}}>
+                                    <Table.Td style={{ width: "30%" }}>
+                                        {c.name}
+                                    </Table.Td>
+                                    <Table.Td style={{ width: "25%" }}>
+                                        {c.productCode}
+                                    </Table.Td>
+                                    <Table.Td style={{ width: "15%" }}>
+                                        {c.size}
+                                    </Table.Td>
+                                    <Table.Td style={{ width: "15%" }}>
                                         RS. {c.unitPrice.toFixed(2)}
                                     </Table.Td>
-                                    <Table.Td style={{width: "10%"}}>
+                                    <Table.Td style={{ width: "10%" }}>
                                         <Badge
                                             color={c.status ? "green" : "red"}
                                             size="sm"
@@ -131,7 +154,7 @@ const Products = () => {
                                             {c.status ? "ACTIVE" : "INACTIVE"}
                                         </Badge>
                                     </Table.Td>
-                                    <Table.Td style={{width: "5%"}}>
+                                    <Table.Td style={{ width: "5%" }}>
                                         <Menu width={150}>
                                             <Menu.Target>
                                                 <IconDotsVertical
@@ -151,7 +174,9 @@ const Products = () => {
                                                             String(currentPage)
                                                         );
                                                     }}
-                                                    rightSection={<IconEye size={16}/>}
+                                                    rightSection={
+                                                        <IconEye size={16} />
+                                                    }
                                                 >
                                                     View
                                                 </Menu.Item>
@@ -165,16 +190,32 @@ const Products = () => {
                                                             String(currentPage)
                                                         );
                                                     }}
-                                                    rightSection={<IconEdit size={16}/>}
+                                                    rightSection={
+                                                        <IconEdit size={16} />
+                                                    }
                                                 >
                                                     Edit
                                                 </Menu.Item>
                                                 <Menu.Item
-                                                    color={c.status ? "red" : "green"}
+                                                    color={
+                                                        c.status
+                                                            ? "red"
+                                                            : "green"
+                                                    }
                                                     onClick={() =>
                                                         handleChangeStatus(c)
                                                     }
-                                                    rightSection={c.status ? <IconMobiledataOff size={16} /> : <IconMobiledata size={16}/> }
+                                                    rightSection={
+                                                        c.status ? (
+                                                            <IconMobiledataOff
+                                                                size={16}
+                                                            />
+                                                        ) : (
+                                                            <IconMobiledata
+                                                                size={16}
+                                                            />
+                                                        )
+                                                    }
                                                 >
                                                     {c.status ? (
                                                         <span className="text-red-700">
@@ -207,20 +248,19 @@ const Products = () => {
                         )}
                     </Table.Tbody>
                 </Table>
-            </div>
+            </Box>
 
             {/* Mobile Cards */}
-            <div className="block lg:hidden mx-4 my-4">
+            <Box my="lg" mx="sm" hiddenFrom="lg">
                 {paginatedData?.length !== 0 ? (
                     paginatedData?.map((c: any, i: number) => (
-                        <div
-                            key={i}
-                            className="border border-gray-300 rounded-md mb-4 p-4 bg-white shadow-sm"
-                        >
-                            <p className="font-semibold">Name: {c.name}</p>
-                            <p>Product Code: {c.productCode}</p>
-                            <p>Size: {c.size}</p>
-                            <p>Unit Price: {c.unitPrice}</p>
+                        <Card key={i} shadow="sm" withBorder mx="xs" my="lg">
+                            <Text className="font-semibold">
+                                Name: {c.name}
+                            </Text>
+                            <Text>Product Code: {c.productCode}</Text>
+                            <Text>Size: {c.size}</Text>
+                            <Text>Unit Price: {c.unitPrice}</Text>
                             <Badge
                                 color={c.status ? "green" : "red"}
                                 size="sm"
@@ -229,7 +269,7 @@ const Products = () => {
                             >
                                 {c.status ? "ACTIVE" : "INACTIVE"}
                             </Badge>
-                            <div className="mt-2">
+                            <Group mt="md">
                                 <Menu width={150}>
                                     <Menu.Target>
                                         <IconDotsVertical
@@ -249,7 +289,7 @@ const Products = () => {
                                                     String(currentPage)
                                                 );
                                             }}
-                                            rightSection={<IconEye size={16}/>}
+                                            rightSection={<IconEye size={16} />}
                                         >
                                             View
                                         </Menu.Item>
@@ -263,7 +303,9 @@ const Products = () => {
                                                     String(currentPage)
                                                 );
                                             }}
-                                            rightSection={<IconEdit size={16}/>}
+                                            rightSection={
+                                                <IconEdit size={16} />
+                                            }
                                         >
                                             Edit
                                         </Menu.Item>
@@ -272,37 +314,41 @@ const Products = () => {
                                             onClick={() =>
                                                 handleChangeStatus(c)
                                             }
-                                            rightSection={c.status ? <IconMobiledataOff size={16} /> : <IconMobiledata size={16}/> }
+                                            rightSection={
+                                                c.status ? (
+                                                    <IconMobiledataOff
+                                                        size={16}
+                                                    />
+                                                ) : (
+                                                    <IconMobiledata size={16} />
+                                                )
+                                            }
                                         >
                                             {c.status ? (
                                                 <span className="text-red-700">
-                                                            Deactivate
-                                                        </span>
+                                                    Deactivate
+                                                </span>
                                             ) : (
                                                 <span className="text-green-700">
-                                                            Activate
-                                                        </span>
+                                                    Activate
+                                                </span>
                                             )}
                                         </Menu.Item>
                                     </Menu.Dropdown>
                                 </Menu>
-                            </div>
-                        </div>
+                            </Group>
+                        </Card>
                     ))
                 ) : (
-                    <div className="text-center">
-                        <IconDatabaseOff
-                            color="red"
-                            size="24"
-                            className="mr-2 self-center"
-                        />
+                    <Group display="flex" className="flex items-center">
+                        <IconDatabaseOff color="red" size="24" />
                         <p>No data available</p>
-                    </div>
+                    </Group>
                 )}
-            </div>
+            </Box>
 
             {/* Pagination */}
-            <div className="my-4 mx-4 flex justify-end">
+            <Group my="md" ms="md" px="lg" justify="flex-end">
                 <Pagination.Root
                     total={totalPages}
                     value={currentPage}
@@ -320,7 +366,7 @@ const Products = () => {
                         <Pagination.Last />
                     </Group>
                 </Pagination.Root>
-            </div>
+            </Group>
         </>
     );
 };

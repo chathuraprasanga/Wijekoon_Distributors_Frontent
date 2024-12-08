@@ -198,7 +198,7 @@ const router = createBrowserRouter([
 
 createRoot(document.getElementById("root")!).render(
     <Provider store={store}>
-        <MantineProvider>
+        <MantineProvider defaultColorScheme="light">
             <DatesProvider settings={{ timezone: "UTC" }}>
                 <Suspense fallback={<Loading />}>
                     <LoadingProvider>

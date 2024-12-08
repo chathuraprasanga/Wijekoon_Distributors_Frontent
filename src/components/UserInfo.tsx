@@ -1,4 +1,4 @@
-import { Avatar, Group, Menu, rem } from "@mantine/core";
+import { Avatar, Box, Group, Menu, rem, Text } from "@mantine/core";
 import {
     IconChevronRight,
     IconLogout,
@@ -32,27 +32,32 @@ const UserInfo = () => {
                             key={avatar}
                             radius="xl"
                         ></Avatar>
-                        <div className="flex flex-col">
-                            <div className="hidden md:flex lg:flex flex-col">
-                                <span className="font-bold text-sm text-gray-800">
-                                    {userDetails.username}
-                                </span>
-                                <span className="text-xs text-gray-400">
-                                    {userDetails.email}
-                                </span>
-                            </div>
-                        </div>
-                        <div className="hidden lg:block">
-                            <IconChevronRight size={20} color="gray" />
-                        </div>
+                        <Group visibleFrom={"lg"}>
+                            <Box>
+                                <Box>
+                                    <Text fw={700} size="sm">
+                                        {userDetails.username}
+                                    </Text>
+                                    <Text size="xs" c="gray.5">
+                                        {userDetails.email}
+                                    </Text>
+                                </Box>
+                            </Box>
+
+                            {/* Chevron Icon Section */}
+                            <Box>
+                                <IconChevronRight size={20} color="gray" />
+                            </Box>
+                        </Group>
                     </Group>
                 </Menu.Target>
                 <Menu.Dropdown>
                     <Menu.Label hiddenFrom="lg">User Details</Menu.Label>
                     <Menu.Item hiddenFrom="lg">
-                        <span>{userDetails.username}</span>
-                        <br />
-                        <span className="text-xs">{userDetails.email}</span>
+                        <Text>{userDetails.username}</Text>
+                        <Text size="xs" c="gray.6">
+                            {userDetails.email}
+                        </Text>
                     </Menu.Item>
                     <Menu.Divider />
                     <Menu.Label>Application</Menu.Label>

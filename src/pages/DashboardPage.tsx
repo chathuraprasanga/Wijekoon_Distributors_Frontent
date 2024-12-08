@@ -10,6 +10,7 @@ import { useEffect } from "react";
 import { useLoading } from "../helpers/loadingContext.tsx";
 import { getDashboardDetails } from "../store/dashboardSlice/dashboardSlice.ts";
 import toNotify from "../helpers/toNotify.tsx";
+import { ActionIcon, Box, Grid, Paper, Text } from "@mantine/core";
 
 const DashboardPage = () => {
     const { setLoading } = useLoading();
@@ -39,60 +40,115 @@ const DashboardPage = () => {
     };
 
     return (
-        <div className="p-4">
-            <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                <div className="p-6 rounded shadow flex items-center">
-                    <div className="mr-4">
-                        <IconCashBanknote />
-                    </div>
-                    <div>
-                        <div className="text-lg font-semibold">Cheques</div>
-                        <div className="text-sm">
-                            # {dashboardDetails?.chequesCount}
-                        </div>
-                    </div>
-                </div>
+        <Paper p="md">
+            <Grid gutter="md" className="flex flex-row">
+                <Grid.Col span={{ base: 12, md: 6, lg: 3 }}>
+                    <Paper
+                        shadow="md"
+                        p="md"
+                        radius="sm"
+                        display="flex"
+                        withBorder
+                        className="items-center"
+                    >
+                        <Box mr="xl">
+                            <ActionIcon size="xl" variant="light">
+                                <IconCashBanknote />
+                            </ActionIcon>
+                        </Box>
+                        <Box>
+                            <Text size="lg" fw={500}>
+                                Cheques
+                            </Text>
+                            <Text size="sm">
+                                # {dashboardDetails?.chequesCount}
+                            </Text>
+                        </Box>
+                    </Paper>
+                </Grid.Col>
 
-                <div className=" p-6 rounded shadow flex items-center">
-                    <div className="mr-4">
-                        <IconInvoice />
-                    </div>
-                    <div>
-                        <div className="text-lg font-semibold">Invoices</div>
-                        <div className="text-sm">
-                            # {dashboardDetails?.invoicesCount}
-                        </div>
-                    </div>
-                </div>
+                {/* Invoices Card */}
+                <Grid.Col span={{ base: 12, md: 6, lg: 3 }}>
+                    <Paper
+                        shadow="md"
+                        p="md"
+                        radius="sm"
+                        display="flex"
+                        withBorder
+                        className="items-center"
+                    >
+                        <Box mr="xl">
+                            <ActionIcon size="xl" variant="light">
+                                <IconInvoice />
+                            </ActionIcon>
+                        </Box>
+                        <Box>
+                            <Text size="lg" fw={500}>
+                                Invoices
+                            </Text>
+                            <Text size="sm">
+                                # {dashboardDetails?.invoicesCount}
+                            </Text>
+                        </Box>
+                    </Paper>
+                </Grid.Col>
 
-                <div className=" p-6 rounded shadow flex items-center">
-                    <div className="mr-4">
-                        <IconUsersGroup />
-                    </div>
-                    <div>
-                        <div className="text-lg font-semibold">Customers</div>
-                        <div className="text-sm">
-                            # {dashboardDetails?.customersCount}
-                        </div>
-                    </div>
-                </div>
+                {/* Customers Card */}
+                <Grid.Col span={{ base: 12, md: 6, lg: 3 }}>
+                    <Paper
+                        shadow="md"
+                        p="md"
+                        radius="sm"
+                        display="flex"
+                        withBorder
+                        className="items-center"
+                    >
+                        <Box mr="xl">
+                            <ActionIcon size="xl" variant="light">
+                                <IconUsersGroup />
+                            </ActionIcon>
+                        </Box>
+                        <Box>
+                            <Text size="lg" fw={500}>
+                                Customers
+                            </Text>
+                            <Text size="sm">
+                                # {dashboardDetails?.customersCount}
+                            </Text>
+                        </Box>
+                    </Paper>
+                </Grid.Col>
 
-                <div className=" p-6 rounded shadow flex items-center">
-                    <div className="mr-4">
-                        <IconPackages />
-                    </div>
-                    <div>
-                        <div className="text-lg font-semibold">Products</div>
-                        <div className="text-sm">
-                            # {dashboardDetails?.productsCount}
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div className="w-full h-full mt-12 flex flex-col lg:flex-row">
-
-            </div>
-        </div>
+                {/* Products Card */}
+                <Grid.Col span={{ base: 12, md: 6, lg: 3 }}>
+                    <Paper
+                        shadow="md"
+                        p="md"
+                        radius="sm"
+                        display="flex"
+                        withBorder
+                        className="items-center"
+                    >
+                        <Box mr="xl">
+                            <ActionIcon size="xl" variant="light">
+                                <IconPackages />
+                            </ActionIcon>
+                        </Box>
+                        <Box>
+                            <Text size="lg" fw={500}>
+                                Products
+                            </Text>
+                            <Text size="sm">
+                                # {dashboardDetails?.productsCount}
+                            </Text>
+                        </Box>
+                    </Paper>
+                </Grid.Col>
+            </Grid>
+            <Grid mt="md">
+                <Grid.Col span={{ lg: 6, md:6, sm:12 }}></Grid.Col>
+            </Grid>
+        </Paper>
     );
 };
 

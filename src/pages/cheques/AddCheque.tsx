@@ -1,4 +1,12 @@
-import { Button, NumberInput, Select, TextInput } from "@mantine/core";
+import {
+    Button,
+    NumberInput,
+    Select,
+    TextInput,
+    Group,
+    Text,
+    Box,
+} from "@mantine/core";
 import { IconArrowLeft } from "@tabler/icons-react";
 import { useLoading } from "../../helpers/loadingContext.tsx";
 import { useDispatch } from "react-redux";
@@ -20,8 +28,10 @@ const AddCheque = () => {
     const { setLoading } = useLoading();
     const dispatch = useDispatch<AppDispatch | any>();
     const navigate = useNavigate();
-    const [selectableCustomers, setSelectableCustomers] = useState<any[]>([])
-    const customerData =  selectableCustomers.map((data:any) => {return {label: data.name, value: data._id }})
+    const [selectableCustomers, setSelectableCustomers] = useState<any[]>([]);
+    const customerData = selectableCustomers.map((data: any) => {
+        return { label: data.name, value: data._id };
+    });
 
     useEffect(() => {
         fetchCustomers();
@@ -53,12 +63,12 @@ const AddCheque = () => {
             bank: "",
             branch: "",
             amount: 0,
-            depositDate: null,
+            depositDate: new Date(),
         },
         validate: {
             customer: isNotEmpty("Customer name is required"),
             number: (value) => {
-                if (!value || !value.trim()) {
+                if (!value) {
                     return "Cheque number is required";
                 }
                 return isValidChequeNumber(value)
@@ -66,13 +76,13 @@ const AddCheque = () => {
                     : "Enter valid cheque number";
             },
             bank: (value) => {
-                if (!value || !value.trim()) {
+                if (!value) {
                     return "Bank code is required";
                 }
                 return isValidBankCode(value) ? null : "Enter valid bank code";
             },
             branch: (value) => {
-                if (!value || !value.trim()) {
+                if (!value) {
                     return "Branch code is required";
                 }
                 return isValidBranchCode(value)
@@ -115,18 +125,18 @@ const AddCheque = () => {
 
     return (
         <>
-            <div className="items-center flex flex-row justify-between p-4">
-                <div className="flex flex-row items-center">
+            <Group p="lg" display="flex" justify="space-between" align="center">
+                <Group display="flex">
                     <IconArrowLeft
                         className="cursor-pointer"
                         onClick={() => history.back()}
                     />
-                    <span className="text-lg font-semibold ml-4">
+                    <Text fw={500} ml="md" size="lg">
                         Add Cheque
-                    </span>
-                </div>
-            </div>
-            <div className="mx-4 my-4 lg:w-1/2">
+                    </Text>
+                </Group>
+            </Group>
+            <Box w={{ sm: "100%", lg: "50%" }} px="lg">
                 <form onSubmit={chequeAddForm.onSubmit(handleChequeAdd)}>
                     <Select
                         label="Customer"
@@ -175,10 +185,12 @@ const AddCheque = () => {
                         label="Deposit Date"
                         placeholder="Enter Deposit Date"
                         withAsterisk
+                        clearable
+                        defaultValue={new Date()}
                         key={chequeAddForm.key("depositDate")}
                         {...chequeAddForm.getInputProps("depositDate")}
                     />
-                    <div className="mt-4 flex justify-end">
+                    <Group justify="flex-end" display="flex" pb="md" mt="md">
                         <Button
                             size="xs"
                             color="dark"
@@ -187,9 +199,9 @@ const AddCheque = () => {
                         >
                             Submit
                         </Button>
-                    </div>
+                    </Group>
                 </form>
-            </div>
+            </Box>
         </>
     );
 };

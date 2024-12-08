@@ -1,4 +1,4 @@
-import { Button, Textarea, TextInput } from "@mantine/core";
+import { Box, Button, Group, Textarea, TextInput } from "@mantine/core";
 import { IconArrowLeft } from "@tabler/icons-react";
 import { isNotEmpty, useForm } from "@mantine/form";
 import { useLoading } from "../../helpers/loadingContext.tsx";
@@ -25,7 +25,7 @@ const AddSupplier = () => {
         validate: {
             name: isNotEmpty("Supplier name is required"),
             phone: (value: string) => {
-                if (!value || !value.trim()) {
+                if (!value) {
                     return "Phone number is required";
                 }
                 return isValidPhone(value)
@@ -60,18 +60,18 @@ const AddSupplier = () => {
 
     return (
         <>
-            <div className="items-center flex flex-row justify-between p-4">
-                <div className="flex flex-row items-center">
+            <Group p="lg" display="flex" justify="space-between" align="center">
+                <Group display="flex">
                     <IconArrowLeft
                         className="cursor-pointer"
                         onClick={() => history.back()}
                     />
-                    <span className="text-lg font-semibold ml-4">
+                    <Group display="flex">
                         Add Supplier
-                    </span>
-                </div>
-            </div>
-            <div className="mx-4 my-4 lg:w-1/2">
+                    </Group>
+                </Group>
+            </Group>
+            <Box w={{  sm: "100%", lg: "50%" }} px="lg">
                 <form onSubmit={supplierAddForm.onSubmit(handleSupplierAdd)}>
                     <TextInput
                         label="Name"
@@ -99,13 +99,13 @@ const AddSupplier = () => {
                         key={supplierAddForm.key("address")}
                         {...supplierAddForm.getInputProps("address")}
                     />
-                    <div className="mt-4 flex justify-end">
+                    <Group justify="flex-end" display="flex" pb="md" mt="md">
                         <Button size="xs" color="dark" type="submit">
                             Submit
                         </Button>
-                    </div>
+                    </Group>
                 </form>
-            </div>
+            </Box>
         </>
     );
 };

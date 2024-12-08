@@ -4,7 +4,7 @@ import { AppDispatch, RootState } from "../../store/store.ts";
 import { useLoading } from "../../helpers/loadingContext.tsx";
 import { useParams } from "react-router";
 import { useEffect } from "react";
-import { Badge, Card } from "@mantine/core";
+import { Badge, Box, Card, Group } from "@mantine/core";
 import { getProduct } from "../../store/productSlice/productSlice.ts";
 
 const ViewProduct = () => {
@@ -29,8 +29,8 @@ const ViewProduct = () => {
 
     return (
         <>
-            <div className="items-center flex flex-row justify-between p-4">
-                <div className="flex flex-row items-center">
+            <Group p="lg" display="flex" justify="space-between" align="center">
+                <Group display="flex">
                     <IconArrowLeft
                         className="cursor-pointer"
                         onClick={() => history.back()}
@@ -38,10 +38,10 @@ const ViewProduct = () => {
                     <span className="text-lg font-semibold ml-4">
                         View Product
                     </span>
-                </div>
-            </div>
-            <div className="mx-4 my-4 lg:w-1/2">
-                <Card shadow="md" withBorder>
+                </Group>
+            </Group>
+            <Box mx="md" my="md">
+                <Card shadow="md" withBorder w={{sm: "100%", lg: "50%"}} >
                     <div className="flex flex-row">
                         <div className="w-1/4">Name:</div>
                         <div>{product?.name}</div>
@@ -67,7 +67,7 @@ const ViewProduct = () => {
                         </Badge>
                     </div>
                 </Card>
-            </div>
+            </Box>
         </>
     );
 };

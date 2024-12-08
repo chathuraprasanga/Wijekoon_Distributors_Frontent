@@ -1,6 +1,16 @@
 import { useNavigate } from "react-router";
 import { useEffect, useState } from "react";
-import { Badge, Button, Group, Menu, Pagination, Table } from "@mantine/core";
+import {
+    Badge,
+    Box,
+    Button,
+    Card,
+    Group,
+    Menu,
+    Pagination,
+    Table,
+    Text
+} from "@mantine/core";
 import {
     IconCertificate,
     IconCertificateOff,
@@ -32,7 +42,7 @@ const Cheques = () => {
     }, []);
 
     const setPage = () => {
-        setCurrentPage(Number(sessionStorage.getItem("pageIndex") || 1));
+        setCurrentPage(Number(sessionStorage.getItem("pageIndex") ?? 1));
         sessionStorage.clear();
     };
 
@@ -74,14 +84,27 @@ const Cheques = () => {
         }
     };
 
+    const getColor = (status:any) => {
+        switch (status) {
+            case "PENDING":
+                return "yellow";
+            case "RETURNED":
+                return "red";
+            case "DEPOSITED":
+                return "blue";
+            default:
+                return "green";
+        }
+    };
+
     return (
         <>
             {/* Header */}
-            <div className="items-center flex flex-row justify-between p-4">
-                <div>
+            <Box display="flex" p="lg" className="items-center justify-between">
+                <Box>
                     <span className="text-lg font-semibold">Cheques</span>
-                </div>
-                <div>
+                </Box>
+                <Box>
                     <Button
                         size="xs"
                         color="dark"
@@ -89,11 +112,11 @@ const Cheques = () => {
                     >
                         Add Cheque
                     </Button>
-                </div>
-            </div>
+                </Box>
+            </Box>
 
             {/* Desktop Table */}
-            <div className="hidden lg:block mx-4 my-4 overflow-x-auto">
+            <Box visibleFrom="lg" mx="lg" my="lg" className="overflow-x-auto">
                 <Table
                     striped
                     highlightOnHover
@@ -102,46 +125,56 @@ const Cheques = () => {
                 >
                     <Table.Thead>
                         <Table.Tr>
-                            <Table.Th style={{width: "20%"}}>Customer</Table.Th>
-                            <Table.Th style={{width: "15%"}}>Cheque Number</Table.Th>
-                            <Table.Th style={{width: "15%"}}>Bank</Table.Th>
-                            <Table.Th style={{width: "10%"}}>Branch</Table.Th>
-                            <Table.Th style={{width: "15%"}}>Amount</Table.Th>
-                            <Table.Th style={{width: "10%"}}>Deposit Date</Table.Th>
-                            <Table.Th style={{width: "10%"}}>Cheque Status</Table.Th>
-                            <Table.Th style={{width: "5%"}}></Table.Th>
+                            <Table.Th style={{ width: "20%" }}>
+                                Customer
+                            </Table.Th>
+                            <Table.Th style={{ width: "15%" }}>
+                                Cheque Number
+                            </Table.Th>
+                            <Table.Th style={{ width: "15%" }}>Bank</Table.Th>
+                            <Table.Th style={{ width: "10%" }}>Branch</Table.Th>
+                            <Table.Th style={{ width: "15%" }}>Amount</Table.Th>
+                            <Table.Th style={{ width: "10%" }}>
+                                Deposit Date
+                            </Table.Th>
+                            <Table.Th style={{ width: "10%" }}>
+                                Cheque Status
+                            </Table.Th>
+                            <Table.Th style={{ width: "5%" }}></Table.Th>
                         </Table.Tr>
                     </Table.Thead>
                     <Table.Tbody>
                         {paginatedData?.length !== 0 ? (
                             paginatedData?.map((c: any, i: number) => (
                                 <Table.Tr key={i}>
-                                    <Table.Td style={{width: "20%"}}>{c.customer.name}</Table.Td>
-                                    <Table.Td style={{width: "15%"}}>{c.number}</Table.Td>
-                                    <Table.Td style={{width: "15%"}}>{c.bank}</Table.Td>
-                                    <Table.Td style={{width: "10%"}}>{c.branch}</Table.Td>
-                                    <Table.Td style={{width: "15%"}}>Rs. {c.amount.toFixed(2)}</Table.Td>
-                                    <Table.Td style={{width: "10%"}}>{datePreview(c.depositDate)}</Table.Td>
-                                    <Table.Td style={{width: "10%"}}>
+                                    <Table.Td style={{ width: "20%" }}>
+                                        {c.customer.name}
+                                    </Table.Td>
+                                    <Table.Td style={{ width: "15%" }}>
+                                        {c.number}
+                                    </Table.Td>
+                                    <Table.Td style={{ width: "15%" }}>
+                                        {c.bank}
+                                    </Table.Td>
+                                    <Table.Td style={{ width: "10%" }}>
+                                        {c.branch}
+                                    </Table.Td>
+                                    <Table.Td style={{ width: "15%" }}>
+                                        Rs. {c.amount.toFixed(2)}
+                                    </Table.Td>
+                                    <Table.Td style={{ width: "10%" }}>
+                                        {datePreview(c.depositDate)}
+                                    </Table.Td>
+                                    <Table.Td style={{ width: "10%" }}>
                                         <Badge
                                             size="sm"
                                             radius="xs"
-                                            color={
-                                                c.chequeStatus === "PENDING"
-                                                    ? "yellow"
-                                                    : c.chequeStatus ===
-                                                        "DEPOSITED"
-                                                      ? "blue"
-                                                      : c.chequeStatus ===
-                                                          "RETURNED"
-                                                        ? "red"
-                                                        : "green"
-                                            }
+                                            color = {getColor(c.chequeStatus)}
                                         >
                                             {c.chequeStatus}
                                         </Badge>
                                     </Table.Td>
-                                    <Table.Td style={{width: "5%"}}>
+                                    <Table.Td style={{ width: "5%" }}>
                                         <Menu width={150}>
                                             <Menu.Target>
                                                 <IconDotsVertical
@@ -161,7 +194,9 @@ const Cheques = () => {
                                                             String(currentPage)
                                                         );
                                                     }}
-                                                    rightSection={<IconEye size={16}/>}
+                                                    rightSection={
+                                                        <IconEye size={16} />
+                                                    }
                                                 >
                                                     View
                                                 </Menu.Item>
@@ -179,28 +214,59 @@ const Cheques = () => {
                                                             String(currentPage)
                                                         );
                                                     }}
-                                                    rightSection={<IconEdit size={16}/>}
+                                                    rightSection={
+                                                        <IconEdit size={16} />
+                                                    }
                                                 >
                                                     Edit
                                                 </Menu.Item>
-                                                {c.chequeStatus !== "COMPLETED" && c.chequeStatus !== "RETURNED" && (
-                                                    <>
-                                                        <Menu.Item
-                                                            color="green"
-                                                            onClick={() => chequeStatusUpdate(c._id, "COMPLETED")}
-                                                            rightSection={<IconCertificate size={16}/>}
-                                                        >
-                                                            <span>Completed</span>
-                                                        </Menu.Item>
-                                                        <Menu.Item
-                                                            color="red"
-                                                            onClick={() => chequeStatusUpdate(c._id, "RETURNED")}
-                                                            rightSection={<IconCertificateOff size={16}/>}
-                                                        >
-                                                            <span>Returned</span>
-                                                        </Menu.Item>
-                                                    </>
-                                                )}
+                                                {c.chequeStatus !==
+                                                    "COMPLETED" &&
+                                                    c.chequeStatus !==
+                                                        "RETURNED" && (
+                                                        <>
+                                                            <Menu.Item
+                                                                color="green"
+                                                                onClick={() =>
+                                                                    chequeStatusUpdate(
+                                                                        c._id,
+                                                                        "COMPLETED"
+                                                                    )
+                                                                }
+                                                                rightSection={
+                                                                    <IconCertificate
+                                                                        size={
+                                                                            16
+                                                                        }
+                                                                    />
+                                                                }
+                                                            >
+                                                                <span>
+                                                                    Completed
+                                                                </span>
+                                                            </Menu.Item>
+                                                            <Menu.Item
+                                                                color="red"
+                                                                onClick={() =>
+                                                                    chequeStatusUpdate(
+                                                                        c._id,
+                                                                        "RETURNED"
+                                                                    )
+                                                                }
+                                                                rightSection={
+                                                                    <IconCertificateOff
+                                                                        size={
+                                                                            16
+                                                                        }
+                                                                    />
+                                                                }
+                                                            >
+                                                                <span>
+                                                                    Returned
+                                                                </span>
+                                                            </Menu.Item>
+                                                        </>
+                                                    )}
                                             </Menu.Dropdown>
                                         </Menu>
                                     </Table.Td>
@@ -222,41 +288,32 @@ const Cheques = () => {
                         )}
                     </Table.Tbody>
                 </Table>
-            </div>
+            </Box>
 
             {/* Mobile Cards */}
-            <div className="block lg:hidden mx-4 my-4">
+            <Box my="lg" mx="sm" hiddenFrom="lg">
                 {paginatedData?.length !== 0 ? (
                     paginatedData?.map((c: any, i: number) => (
-                        <div
-                            key={i}
-                            className="border border-gray-300 rounded-md mb-4 p-4 bg-white shadow-sm"
-                        >
-                            <p className="font-semibold">
+                        <Card key={i} shadow="sm" withBorder mx="xs" my="lg">
+                            <Text className="font-semibold">
                                 Customer: {c.customer.name}
-                            </p>
-                            <p>Cheque Number: {c.chequeNumber}</p>
-                            <p>Bank: {c.bank}</p>
-                            <p>Branch: {c.branch}</p>
-                            <p>Amount: Rs. {c.amount.toFixed(2)}</p>
-                            <p>Deposit Date: {datePreview(c.depositDate)}</p>
+                            </Text>
+                            <Text>Cheque Number: {c.chequeNumber}</Text>
+                            <Text>Bank: {c.bank}</Text>
+                            <Text>Branch: {c.branch}</Text>
+                            <Text>Amount: Rs. {c.amount.toFixed(2)}</Text>
+                            <Text>
+                                Deposit Date: {datePreview(c.depositDate)}
+                            </Text>
                             <Badge
                                 size="sm"
                                 radius="xs"
-                                color={
-                                    c.chequeStatus === "PENDING"
-                                        ? "yellow"
-                                        : c.chequeStatus === "DEPOSITED"
-                                          ? "blue"
-                                          : c.chequeStatus === "RETURNED"
-                                            ? "red"
-                                            : "green"
-                                }
+                                color = {getColor(c.chequeStatus)}
                                 className="mt-2"
                             >
                                 {c.chequeStatus}
                             </Badge>
-                            <div className="mt-2">
+                            <Group mt="md">
                                 <Menu width={150}>
                                     <Menu.Target>
                                         <IconDotsVertical
@@ -276,14 +333,13 @@ const Cheques = () => {
                                                     String(currentPage)
                                                 );
                                             }}
-                                            rightSection={<IconEye size={16}/>}
+                                            rightSection={<IconEye size={16} />}
                                         >
                                             View
                                         </Menu.Item>
                                         <Menu.Item
                                             disabled={
-                                                c.chequeStatus !==
-                                                "PENDING"
+                                                c.chequeStatus !== "PENDING"
                                             }
                                             onClick={() => {
                                                 navigate(
@@ -294,47 +350,64 @@ const Cheques = () => {
                                                     String(currentPage)
                                                 );
                                             }}
-                                            rightSection={<IconEdit size={16}/>}
+                                            rightSection={
+                                                <IconEdit size={16} />
+                                            }
                                         >
                                             Edit
                                         </Menu.Item>
-                                        {c.chequeStatus !== "COMPLETED" && c.chequeStatus !== "RETURNED" && (
-                                            <>
-                                                <Menu.Item
-                                                    color="green"
-                                                    onClick={() => chequeStatusUpdate(c._id, "COMPLETED")}
-                                                    rightSection={<IconCertificate size={16}/>}
-                                                >
-                                                    <span>Completed</span>
-                                                </Menu.Item>
-                                                <Menu.Item
-                                                    color="red"
-                                                    onClick={() => chequeStatusUpdate(c._id, "RETURNED")}
-                                                    rightSection={<IconCertificateOff size={16}/>}
-                                                >
-                                                    <span>Returned</span>
-                                                </Menu.Item>
-                                            </>
-                                        )}
+                                        {c.chequeStatus !== "COMPLETED" &&
+                                            c.chequeStatus !== "RETURNED" && (
+                                                <>
+                                                    <Menu.Item
+                                                        color="green"
+                                                        onClick={() =>
+                                                            chequeStatusUpdate(
+                                                                c._id,
+                                                                "COMPLETED"
+                                                            )
+                                                        }
+                                                        rightSection={
+                                                            <IconCertificate
+                                                                size={16}
+                                                            />
+                                                        }
+                                                    >
+                                                        <span>Completed</span>
+                                                    </Menu.Item>
+                                                    <Menu.Item
+                                                        color="red"
+                                                        onClick={() =>
+                                                            chequeStatusUpdate(
+                                                                c._id,
+                                                                "RETURNED"
+                                                            )
+                                                        }
+                                                        rightSection={
+                                                            <IconCertificateOff
+                                                                size={16}
+                                                            />
+                                                        }
+                                                    >
+                                                        <span>Returned</span>
+                                                    </Menu.Item>
+                                                </>
+                                            )}
                                     </Menu.Dropdown>
                                 </Menu>
-                            </div>
-                        </div>
+                            </Group>
+                        </Card>
                     ))
                 ) : (
-                    <div className="text-center">
-                        <IconDatabaseOff
-                            color="red"
-                            size="24"
-                            className="mr-2 self-center"
-                        />
+                    <Group display="flex" className="flex items-center">
+                        <IconDatabaseOff color="red" size="24" />
                         <p>No data available</p>
-                    </div>
+                    </Group>
                 )}
-            </div>
+            </Box>
 
             {/* Pagination */}
-            <div className="my-4 mx-4 flex justify-end">
+            <Group my="md" ms="md" px="lg" justify="flex-end">
                 <Pagination.Root
                     total={totalPages}
                     value={currentPage}
@@ -352,7 +425,7 @@ const Cheques = () => {
                         <Pagination.Last />
                     </Group>
                 </Pagination.Root>
-            </div>
+            </Group>
         </>
     );
 };

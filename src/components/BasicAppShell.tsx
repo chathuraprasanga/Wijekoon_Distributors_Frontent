@@ -1,20 +1,34 @@
-import { AppShell, Burger, Divider, Group, NavLink } from "@mantine/core";
+import {
+    ActionIcon,
+    AppShell,
+    Box,
+    Burger,
+    Divider,
+    Group,
+    NavLink,
+    Paper,
+    Text, useComputedColorScheme, useMantineColorScheme,
+} from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import logo from "../assets/logo1.png";
 import UserInfo from "./UserInfo.tsx";
 import {
     IconCashBanknote,
     IconInvoice,
-    IconLayoutDashboard,
-    IconPackages,
+    IconLayoutDashboard, IconMoon,
+    IconPackages, IconSun,
     IconTruck,
     IconUsersGroup,
 } from "@tabler/icons-react";
 import { Outlet, useLocation, useNavigate } from "react-router";
 import { useSelector } from "react-redux";
 import { RootState } from "../store/store.ts";
+import cx from 'clsx';
+import classes from './Demo.module.css';
 
 const BasicAppShell = () => {
+    const { setColorScheme } = useMantineColorScheme();
+    const computedColorScheme = useComputedColorScheme('light', { getInitialValueInEffect: true });
     const navigate = useNavigate();
     const location = useLocation();
     const userDetails = useSelector((state: RootState) => state.auth.user);
@@ -25,7 +39,7 @@ const BasicAppShell = () => {
     const greetingName = userDetails?.username?.split(" ")[0];
     const activePath = location?.pathname?.split("/")[2];
 
-    const handleNavLinkClick = (path:any) => {
+    const handleNavLinkClick = (path: any) => {
         navigate(path);
         closeMobile(); // Close the mobile navbar when a NavLink is clicked
     };
@@ -43,7 +57,7 @@ const BasicAppShell = () => {
         >
             <AppShell.Header>
                 <Group h="100%" px="md" justify="space-between">
-                    <div className="flex flex-row items-center">
+                    <Box display="flex" className="flex items-center">
                         <Burger
                             opened={mobileOpened}
                             onClick={toggleMobile}
@@ -62,10 +76,20 @@ const BasicAppShell = () => {
                             className="h-10 ml-6"
                             alt="logo"
                         />
-                    </div>
-                    <div>
+                    </Box>
+                    <Group display="flex" justify="center">
+                        <ActionIcon
+                            onClick={() => setColorScheme(computedColorScheme === 'light' ? 'dark' : 'light')}
+                            variant="default"
+                            size="md"
+                            aria-label="Toggle color scheme"
+                            mr="sm"
+                        >
+                            <IconSun className={cx(classes.icon, classes.light)} stroke={1.5} />
+                            <IconMoon className={cx(classes.icon, classes.dark)} stroke={1.5} />
+                        </ActionIcon>
                         <UserInfo />
-                    </div>
+                    </Group>
                 </Group>
             </AppShell.Header>
             <AppShell.Navbar>
@@ -106,9 +130,7 @@ const BasicAppShell = () => {
                 <NavLink
                     onClick={() => handleNavLinkClick("cheques")}
                     label="Cheques"
-                    leftSection={
-                        <IconCashBanknote size="1rem" stroke={1.5} />
-                    }
+                    leftSection={<IconCashBanknote size="1rem" stroke={1.5} />}
                     variant="filled"
                     color="dark"
                     active={activePath === "cheques"}
@@ -125,16 +147,19 @@ const BasicAppShell = () => {
 
             <AppShell.Main>
                 {activePath === "dashboard" && (
-                    <div>
-                        <span className="text-lg font-semibold">
+                    <Group>
+                        <Text size="xl" fw={500}>
                             Hello {greetingName}.!
-                        </span>
-                        <Divider />
-                    </div>
+                        </Text>
+                    </Group>
                 )}
-                <div className="mt-2 border shadow-md h-full w-full">
-                    <Outlet />
-                </div>
+                <Divider />
+
+                <Paper shadow="md" mt="md" withBorder className="h-full w-full">
+                    <Box mt="md" className="h-full w-full">
+                        <Outlet />
+                    </Box>
+                </Paper>
             </AppShell.Main>
         </AppShell>
     );

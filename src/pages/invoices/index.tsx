@@ -1,6 +1,16 @@
 import { useNavigate } from "react-router";
 import { useEffect, useState } from "react";
-import { Badge, Button, Group, Menu, Pagination, Table } from "@mantine/core";
+import {
+    Badge,
+    Box,
+    Button,
+    Card,
+    Group,
+    Menu,
+    Pagination,
+    Table,
+    Text
+} from "@mantine/core";
 import { IconCertificate, IconDatabaseOff, IconDotsVertical, IconEdit, IconEye } from "@tabler/icons-react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store/store.ts";
@@ -26,7 +36,7 @@ const Invoices = () => {
     }, []);
 
     const setPage = () => {
-        setCurrentPage(Number(sessionStorage.getItem("pageIndex") || 1));
+        setCurrentPage(Number(sessionStorage.getItem("pageIndex") ?? 1));
         sessionStorage.clear();
     };
 
@@ -74,11 +84,11 @@ const Invoices = () => {
     return (
         <>
             {/* Header */}
-            <div className="items-center flex flex-row justify-between p-4">
-                <div>
+            <Box display="flex" p="lg" className="items-center justify-between">
+                <Box>
                     <span className="text-lg font-semibold">Invoices</span>
-                </div>
-                <div>
+                </Box>
+                <Box>
                     <Button
                         size="xs"
                         color="dark"
@@ -86,11 +96,11 @@ const Invoices = () => {
                     >
                         Add Invoice
                     </Button>
-                </div>
-            </div>
+                </Box>
+            </Box>
 
             {/* Desktop Table */}
-            <div className="hidden lg:block mx-4 my-4 overflow-x-auto">
+            <Box visibleFrom="lg" mx="lg" my="lg" className="overflow-x-auto">
                 <Table
                     striped
                     highlightOnHover
@@ -206,22 +216,19 @@ const Invoices = () => {
                         )}
                     </Table.Tbody>
                 </Table>
-            </div>
+            </Box>
 
             {/* Mobile Cards */}
-            <div className="block lg:hidden mx-4 my-4">
+            <Box my="lg" mx="sm" hiddenFrom="lg">
                 {paginatedData?.length !== 0 ? (
                     paginatedData?.map((c: any, i: number) => (
-                        <div
-                            key={i}
-                            className="border border-gray-300 rounded-md mb-4 p-4 bg-white shadow-sm"
-                        >
-                            <p className="font-semibold">
+                        <Card key={i} shadow="sm" withBorder mx="xs" my="lg">
+                            <Text className="font-semibold">
                                 Supplier: {c.supplier?.name}
-                            </p>
-                            <p>Invoiced Date: {c.invoiceDate}</p>
-                            <p>Invoice Number: {c.invoiceNumber}</p>
-                            <p>Amount: {c.amount}</p>
+                            </Text>
+                            <Text>Invoiced Date: {datePreview(c.invoiceDate)}</Text>
+                            <Text>Invoice Number: {c.invoiceNumber}</Text>
+                            <Text>Amount: {c.amount}</Text>
                             <Badge
                                 size="sm"
                                 radius="xs"
@@ -232,7 +239,7 @@ const Invoices = () => {
                             >
                                 {c.invoiceStatus}
                             </Badge>
-                            <div className="mt-2">
+                            <Group mt="md">
                                 <Menu width={150}>
                                     <Menu.Target>
                                         <IconDotsVertical
@@ -289,23 +296,22 @@ const Invoices = () => {
                                         )}
                                     </Menu.Dropdown>
                                 </Menu>
-                            </div>
-                        </div>
+                            </Group>
+                        </Card>
                     ))
                 ) : (
-                    <div className="text-center">
+                    <Group display="flex" className="flex items-center">
                         <IconDatabaseOff
                             color="red"
                             size="24"
-                            className="mr-2 self-center"
                         />
                         <p>No data available</p>
-                    </div>
+                    </Group>
                 )}
-            </div>
+            </Box>
 
             {/* Pagination */}
-            <div className="my-4 mx-4 flex justify-end">
+            <Group my="md" ms="md" px="lg" justify="flex-end">
                 <Pagination.Root
                     total={totalPages}
                     value={currentPage}
@@ -323,7 +329,7 @@ const Invoices = () => {
                         <Pagination.Last />
                     </Group>
                 </Pagination.Root>
-            </div>
+            </Group>
         </>
     );
 };

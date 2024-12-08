@@ -4,7 +4,7 @@ import { AppDispatch, RootState } from "../../store/store.ts";
 import { useLoading } from "../../helpers/loadingContext.tsx";
 import { useParams } from "react-router";
 import { useEffect } from "react";
-import { Badge, Button, Card } from "@mantine/core";
+import { Badge, Box, Button, Card, Group } from "@mantine/core";
 import {
     changeStatusCheque,
     getCheque,
@@ -68,8 +68,8 @@ const ViewCheque = () => {
 
     return (
         <>
-            <div className="items-center flex flex-row justify-between p-4">
-                <div className="flex flex-row items-center">
+            <Group p="lg" display="flex" justify="space-between" align="center">
+                <Group display="flex">
                     <IconArrowLeft
                         className="cursor-pointer"
                         onClick={() => history.back()}
@@ -77,10 +77,10 @@ const ViewCheque = () => {
                     <span className="text-lg font-semibold ml-4">
                         View Cheque
                     </span>
-                </div>
-            </div>
-            <div className="mx-4 my-4 lg:w-1/2">
-                <Card shadow="md" withBorder>
+                </Group>
+            </Group>
+            <Box mx="md" my="md">
+                <Card shadow="md" withBorder w={{ sm: "100%", lg: "50%"}}>
                     <div className="flex flex-row">
                         <div className="w-2/4 lg:w-1/4">Customer:</div>
                         <div>{cheque?.customer?.name}</div>
@@ -118,7 +118,7 @@ const ViewCheque = () => {
                         </Badge>
                     </div>
                 </Card>
-                <div className="mt-4 flex justify-end">
+                <Group display="flex" justify="flex-end" w={{sm: "100%", lg: "50%"}} mt="md" >
                     {cheque?.chequeStatus === "DEPOSITED" && (
                         <>
                             <Button
@@ -160,8 +160,8 @@ const ViewCheque = () => {
                             Re-Deposit
                         </Button>
                     )}
-                </div>
-            </div>
+                </Group>
+            </Box>
         </>
     );
 };

@@ -4,9 +4,10 @@ import { AppDispatch, RootState } from "../../store/store.ts";
 import { useLoading } from "../../helpers/loadingContext.tsx";
 import { useParams } from "react-router";
 import { useEffect } from "react";
-import { Badge, Button, Card } from "@mantine/core";
+import { Badge, Box, Button, Card, Group } from "@mantine/core";
 import toNotify from "../../helpers/toNotify.tsx";
 import { changeStatusInvoice, getInvoice } from "../../store/invoiceSlice/invoiceSlice.ts";
+import datePreview from "../../helpers/datePreview.tsx";
 
 type ChequeStatus = "PAID" | "NOT PAID";
 
@@ -62,8 +63,8 @@ const ViewInvoice = () => {
 
     return (
         <>
-            <div className="items-center flex flex-row justify-between p-4">
-                <div className="flex flex-row items-center">
+            <Group p="lg" display="flex" justify="space-between" align="center">
+                <Group display="flex">
                     <IconArrowLeft
                         className="cursor-pointer"
                         onClick={() => history.back()}
@@ -71,17 +72,17 @@ const ViewInvoice = () => {
                     <span className="text-lg font-semibold ml-4">
                         View Invoice
                     </span>
-                </div>
-            </div>
-            <div className="mx-4 my-4 lg:w-1/2">
-                <Card shadow="md" withBorder>
+                </Group>
+            </Group>
+            <Box mx="md" my="md">
+                <Card shadow="md" withBorder w={{ sm: "100%", lg: "50%"}}>
                     <div className="flex flex-row">
                         <div className="w-2/4 lg:w-1/4">Supplier:</div>
                         <div>{invoice?.supplier?.name}</div>
                     </div>
                     <div className="flex flex-row">
                         <div className="w-2/4 lg:w-1/4">Invoice Date:</div>
-                        <div>{invoice?.invoiceDate}</div>
+                        <div>{datePreview(invoice?.invoiceDate)}</div>
                     </div>
                     <div className="flex flex-row">
                         <div className="w-2/4 lg:w-1/4">Invoice Number:</div>
@@ -104,7 +105,7 @@ const ViewInvoice = () => {
                         </Badge>
                     </div>
                 </Card>
-                <div className="mt-4 flex justify-end">
+                <Group display="flex" justify="flex-end" w={{sm: "100%", lg: "50%"}} mt="md" >
                     {invoice?.invoiceStatus === "NOT PAID" && (
                         <Button
                             color="green"
@@ -115,8 +116,8 @@ const ViewInvoice = () => {
                             Paid
                         </Button>
                     )}
-                </div>
-            </div>
+                </Group>
+            </Box>
         </>
     );
 };

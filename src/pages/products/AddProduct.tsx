@@ -1,5 +1,12 @@
 import { IconArrowLeft } from "@tabler/icons-react";
-import { Button, NumberInput, TextInput } from "@mantine/core";
+import {
+    Button,
+    NumberInput,
+    TextInput,
+    Group,
+    Text,
+    Box,
+} from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { useLoading } from "../../helpers/loadingContext.tsx";
 import toNotify from "../../helpers/toNotify.tsx";
@@ -49,18 +56,18 @@ const AddProduct = () => {
 
     return (
         <>
-            <div className="items-center flex flex-row justify-between p-4">
-                <div className="flex flex-row items-center">
+            <Group p="lg" display="flex" justify="space-between" align="center">
+                <Group display="flex">
                     <IconArrowLeft
                         className="cursor-pointer"
                         onClick={() => history.back()}
                     />
-                    <span className="text-lg font-semibold ml-4">
+                    <Text fw={500} ml="md" size="lg">
                         Add Product
-                    </span>
-                </div>
-            </div>
-            <div className="mx-4 my-4 lg:w-1/2">
+                    </Text>
+                </Group>
+            </Group>
+            <Box w={{  sm: "100%", lg: "50%" }} px="lg">
                 <form onSubmit={productAddForm.onSubmit(handleProductAdd)}>
                     <TextInput
                         label="Product Name"
@@ -99,13 +106,13 @@ const AddProduct = () => {
                         key={productAddForm.key("unitPrice")}
                         {...productAddForm.getInputProps("unitPrice")}
                     />
-                    <div className="mt-4 flex justify-end">
+                    <Group justify="flex-end" display="flex" pb="md" mt="md">
                         <Button size="xs" color="dark" type="submit">
                             Submit
                         </Button>
-                    </div>
+                    </Group>
                 </form>
-            </div>
+            </Box>
         </>
     );
 };

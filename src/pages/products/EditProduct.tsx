@@ -1,5 +1,5 @@
 import { IconArrowLeft } from "@tabler/icons-react";
-import { Button, NumberInput, TextInput } from "@mantine/core";
+import { Box, Button, Group, NumberInput, TextInput } from "@mantine/core";
 import { useNavigate, useParams } from "react-router";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -12,7 +12,7 @@ import { useLoading } from "../../helpers/loadingContext.tsx";
 import { isNotEmpty, useForm } from "@mantine/form";
 import toNotify from "../../helpers/toNotify.tsx";
 
-interface productEditValues {
+interface ProductEditValues {
     name: string,
     productCode: string,
     size: number,
@@ -43,7 +43,7 @@ const EditProduct = () => {
         setLoading(false);
     };
 
-    const productEditForm = useForm<productEditValues>({
+    const productEditForm = useForm<ProductEditValues>({
         mode: "uncontrolled",
         initialValues: {
             name: "",
@@ -84,18 +84,18 @@ const EditProduct = () => {
 
     return (
         <>
-            <div className="items-center flex flex-row justify-between p-4">
-                <div className="flex flex-row items-center">
+            <Group p="lg" display="flex" justify="space-between" align="center">
+                <Group display="flex">
                     <IconArrowLeft
                         className="cursor-pointer"
                         onClick={() => history.back()}
                     />
-                    <span className="text-lg font-semibold ml-4">
+                    <Group display="flex">
                         Edit Product
-                    </span>
-                </div>
-            </div>
-            <div className="mx-4 my-4 lg:w-1/2">
+                    </Group>
+                </Group>
+            </Group>
+            <Box w={{  sm: "100%", lg: "50%" }} px="lg">
                 <form onSubmit={productEditForm.onSubmit(handleProductUpdate)}>
                     <TextInput
                         label="Product Name"
@@ -135,13 +135,13 @@ const EditProduct = () => {
                         key={productEditForm.key("unitPrice")}
                         {...productEditForm.getInputProps("unitPrice")}
                     />
-                    <div className="mt-4 flex justify-end">
+                    <Group justify="flex-end" display="flex" pb="md" mt="md">
                         <Button size="xs" color="dark" type="submit" disabled={!productEditForm.isDirty()}>
                             Submit
                         </Button>
-                    </div>
+                    </Group>
                 </form>
-            </div>
+            </Box>
         </>
     );
 };

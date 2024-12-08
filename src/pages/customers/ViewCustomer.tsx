@@ -5,7 +5,7 @@ import { useLoading } from "../../helpers/loadingContext.tsx";
 import { getCustomer } from "../../store/customerSlice/customerSlice.ts";
 import { useParams } from "react-router";
 import { useEffect } from "react";
-import { Badge, Button, Card } from "@mantine/core";
+import { Badge, Box, Button, Card, Group } from "@mantine/core";
 
 const ViewCustomer = () => {
     const { setLoading } = useLoading();
@@ -37,8 +37,8 @@ const ViewCustomer = () => {
 
     return (
         <>
-            <div className="items-center flex flex-row justify-between p-4">
-                <div className="flex flex-row items-center">
+            <Group p="lg" display="flex" justify="space-between" align="center">
+                <Group display="flex">
                     <IconArrowLeft
                         className="cursor-pointer"
                         onClick={() => history.back()}
@@ -46,10 +46,10 @@ const ViewCustomer = () => {
                     <span className="text-lg font-semibold ml-4">
                         View Customer
                     </span>
-                </div>
-            </div>
-            <div className="mx-4 my-4 lg:w-1/2">
-                <Card shadow="md" withBorder>
+                </Group>
+            </Group>
+            <Box mx="md" my="md">
+                <Card shadow="md" withBorder w={{sm: "100%", lg: "50%"}} >
                     <div className="flex flex-row">
                         <div className="hidden lg:block lg:w-1/4">Name:</div>
                         <div>{customer?.name}</div>
@@ -75,7 +75,7 @@ const ViewCustomer = () => {
                         </Badge>
                     </div>
                 </Card>
-                <div className="mt-4 space-x-4 flex justify-end">
+                <Group display="flex" justify="flex-end" w={{sm: "100%", lg: "50%"}} mt="md" >
                     {/* Call Now Button: Visible only on mobile */}
                     <Button
                         color="dark"
@@ -98,8 +98,8 @@ const ViewCustomer = () => {
                     >
                         Email Now
                     </Button>)}
-                </div>
-            </div>
+                </Group>
+            </Box>
         </>
     );
 };
