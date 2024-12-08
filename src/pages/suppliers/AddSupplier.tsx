@@ -47,14 +47,18 @@ const AddSupplier = () => {
         if (response.type === "supplier/addSupplier/fulfilled") {
             setLoading(false);
             toNotify("Successs", "Supplier added successfully", "SUCCESS");
-            navigate("/app/suppliers")
+            navigate("/app/suppliers");
         } else if (response.type === "supplier/addSupplier/rejected") {
             const error: any = response.payload.error;
             setLoading(false);
             toNotify("Error", `${error}`, "ERROR");
         } else {
             setLoading(false);
-            toNotify("Something went wrong", `Please contact system admin`, "WARNING");
+            toNotify(
+                "Something went wrong",
+                `Please contact system admin`,
+                "WARNING"
+            );
         }
     };
 
@@ -66,12 +70,10 @@ const AddSupplier = () => {
                         className="cursor-pointer"
                         onClick={() => history.back()}
                     />
-                    <Group display="flex">
-                        Add Supplier
-                    </Group>
+                    <Group display="flex">Add Supplier</Group>
                 </Group>
             </Group>
-            <Box w={{  sm: "100%", lg: "50%" }} px="lg">
+            <Box w={{ sm: "100%", lg: "50%" }} px="lg">
                 <form onSubmit={supplierAddForm.onSubmit(handleSupplierAdd)}>
                     <TextInput
                         label="Name"
