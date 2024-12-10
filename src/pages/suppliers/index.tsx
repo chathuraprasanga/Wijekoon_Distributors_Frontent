@@ -9,7 +9,7 @@ import {
     Menu,
     Pagination,
     Table,
-    Text,
+    Text, TextInput,
 } from "@mantine/core";
 import {
     IconDatabaseOff,
@@ -17,7 +17,7 @@ import {
     IconEdit,
     IconEye,
     IconMobiledata,
-    IconMobiledataOff,
+    IconMobiledataOff, IconSearch,
 } from "@tabler/icons-react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store/store.ts";
@@ -105,6 +105,26 @@ const Suppliers = () => {
                         Add Supplier
                     </Button>
                 </Box>
+            </Box>
+
+            {/* Search Input */}
+            <Box px="lg">
+                <Group w={{ lg: "40%" }} gap="md">
+                    <TextInput
+                        w={{ lg: "70%" }}
+                        size="xs"
+                        placeholder="Name, Phone, Email"
+                    />
+                    <Button
+                        size="xs"
+                        w={{ lg: "20%" }}
+                        color="dark"
+                        leftSection={<IconSearch size={14} />}
+                        type="submit"
+                    >
+                        Search
+                    </Button>
+                </Group>
             </Box>
 
             {/* Desktop Table */}

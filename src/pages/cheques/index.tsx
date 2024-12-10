@@ -9,7 +9,7 @@ import {
     Menu,
     Pagination,
     Table,
-    Text
+    Text, TextInput,
 } from "@mantine/core";
 import {
     IconCertificate,
@@ -17,7 +17,7 @@ import {
     IconDatabaseOff,
     IconDotsVertical,
     IconEdit,
-    IconEye,
+    IconEye, IconSearch,
 } from "@tabler/icons-react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store/store.ts";
@@ -115,6 +115,26 @@ const Cheques = () => {
                 </Box>
             </Box>
 
+            {/* Search Input */}
+            <Box px="lg">
+                <Group w={{ lg: "40%" }} gap="md">
+                    <TextInput
+                        w={{ lg: "70%" }}
+                        size="xs"
+                        placeholder="Customer, Cheque Number"
+                    />
+                    <Button
+                        size="xs"
+                        w={{ lg: "20%" }}
+                        color="dark"
+                        leftSection={<IconSearch size={14} />}
+                        type="submit"
+                    >
+                        Search
+                    </Button>
+                </Group>
+            </Box>
+
             {/* Desktop Table */}
             <Box visibleFrom="lg" mx="lg" my="lg" className="overflow-x-auto">
                 <Table
@@ -148,7 +168,7 @@ const Cheques = () => {
                             paginatedData?.map((c: any, i: number) => (
                                 <Table.Tr key={i}>
                                     <Table.Td style={{ width: "20%" }}>
-                                        {c.customer.name}
+                                        {c.customer?.name}
                                     </Table.Td>
                                     <Table.Td style={{ width: "15%" }}>
                                         {c.number}
@@ -296,7 +316,7 @@ const Cheques = () => {
                     paginatedData?.map((c: any, i: number) => (
                         <Card key={i} shadow="sm" withBorder mx="xs" my="lg">
                             <Text className="font-semibold">
-                                Customer: {c.customer.name}
+                                Customer: {c.customer?.name}
                             </Text>
                             <Text>Cheque Number: {c.chequeNumber}</Text>
                             <Text>Bank: {c.bank}</Text>

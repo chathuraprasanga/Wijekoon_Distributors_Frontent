@@ -9,9 +9,9 @@ import {
     Menu,
     Pagination,
     Table,
-    Text
+    Text, TextInput,
 } from "@mantine/core";
-import { IconCertificate, IconDatabaseOff, IconDotsVertical, IconEdit, IconEye } from "@tabler/icons-react";
+import { IconCertificate, IconDatabaseOff, IconDotsVertical, IconEdit, IconEye, IconSearch } from "@tabler/icons-react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store/store.ts";
 import { useLoading } from "../../helpers/loadingContext.tsx";
@@ -97,6 +97,26 @@ const Invoices = () => {
                         Add Invoice
                     </Button>
                 </Box>
+            </Box>
+
+            {/* Search Input */}
+            <Box px="lg">
+                <Group w={{ lg: "40%" }} gap="md">
+                    <TextInput
+                        w={{ lg: "70%" }}
+                        size="xs"
+                        placeholder="Supplier, Invoice Id"
+                    />
+                    <Button
+                        size="xs"
+                        w={{ lg: "20%" }}
+                        color="dark"
+                        leftSection={<IconSearch size={14} />}
+                        type="submit"
+                    >
+                        Search
+                    </Button>
+                </Group>
             </Box>
 
             {/* Desktop Table */}

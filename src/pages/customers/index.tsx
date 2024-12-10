@@ -8,6 +8,7 @@ import {
     Text,
     Table,
     Card,
+    TextInput,
 } from "@mantine/core";
 import {
     IconDatabaseOff,
@@ -16,6 +17,7 @@ import {
     IconEye,
     IconMobiledata,
     IconMobiledataOff,
+    IconSearch,
 } from "@tabler/icons-react";
 // import customers from "./customer_data.json";
 import { useEffect, useState } from "react";
@@ -42,7 +44,7 @@ const Customers = () => {
     useEffect(() => {
         fetchCustomers();
         setPage();
-    }, []);
+    }, [dispatch]);
 
     const setPage = () => {
         setCurrentPage(Number(sessionStorage.getItem("pageIndex") ?? 1));
@@ -108,6 +110,26 @@ const Customers = () => {
                         Add Customer
                     </Button>
                 </Box>
+            </Box>
+
+            {/* Search Input */}
+            <Box px="lg">
+                <Group w={{ lg: "40%" }} gap="md">
+                    <TextInput
+                        w={{ lg: "70%" }}
+                        size="xs"
+                        placeholder="Name, Phone, Email"
+                    />
+                    <Button
+                        size="xs"
+                        w={{ lg: "20%" }}
+                        color="dark"
+                        leftSection={<IconSearch size={14} />}
+                        type="submit"
+                    >
+                        Search
+                    </Button>
+                </Group>
             </Box>
 
             {/* Desktop Table */}
