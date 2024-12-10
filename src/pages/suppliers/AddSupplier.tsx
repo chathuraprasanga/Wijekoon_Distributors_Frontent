@@ -1,4 +1,4 @@
-import { Box, Button, Group, Textarea, TextInput } from "@mantine/core";
+import { Box, Button, Group, Textarea, TextInput, Text } from "@mantine/core";
 import { IconArrowLeft } from "@tabler/icons-react";
 import { isNotEmpty, useForm } from "@mantine/form";
 import { useLoading } from "../../helpers/loadingContext.tsx";
@@ -70,7 +70,7 @@ const AddSupplier = () => {
                         className="cursor-pointer"
                         onClick={() => history.back()}
                     />
-                    <Group display="flex">Add Supplier</Group>
+                    <Text size="lg" fw={500} ml="md">Add Supplier</Text>
                 </Group>
             </Group>
             <Box w={{ sm: "100%", lg: "50%" }} px="lg">

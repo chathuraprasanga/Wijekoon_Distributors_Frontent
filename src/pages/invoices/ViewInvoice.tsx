@@ -99,7 +99,8 @@ const ViewInvoice = () => {
                                     invoice?.invoiceStatus as ChequeStatus
                                     ] || "gray"
                             }
-                            radius="sm"
+                            radius="xs"
+                            size="sm"
                         >
                             {invoice?.invoiceStatus}
                         </Badge>

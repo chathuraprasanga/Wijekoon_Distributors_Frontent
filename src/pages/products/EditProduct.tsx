@@ -1,5 +1,5 @@
 import { IconArrowLeft } from "@tabler/icons-react";
-import { Box, Button, Group, NumberInput, TextInput } from "@mantine/core";
+import { Box, Button, Group, NumberInput, TextInput, Text } from "@mantine/core";
 import { useNavigate, useParams } from "react-router";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -90,9 +90,9 @@ const EditProduct = () => {
                         className="cursor-pointer"
                         onClick={() => history.back()}
                     />
-                    <Group display="flex">
+                    <Text size={"lg"} fw={500} ml={"md"}>
                         Edit Product
-                    </Group>
+                    </Text>
                 </Group>
             </Group>
             <Box w={{  sm: "100%", lg: "50%" }} px="lg">

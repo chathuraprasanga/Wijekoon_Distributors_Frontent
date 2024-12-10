@@ -94,7 +94,7 @@ const Suppliers = () => {
             {/* Header */}
             <Box display="flex" p="lg" className="items-center justify-between">
                 <Box>
-                    <span className="text-lg font-semibold">Suppliers</span>
+                    <Text size="lg" fw={500}>Suppliers</Text>
                 </Box>
                 <Box>
                     <Button

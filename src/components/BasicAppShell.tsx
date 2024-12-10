@@ -80,7 +80,7 @@ const BasicAppShell = () => {
                     <Group display="flex" justify="center">
                         <ActionIcon
                             onClick={() => setColorScheme(computedColorScheme === 'light' ? 'dark' : 'light')}
-                            variant="default"
+                            variant="light"
                             size="md"
                             aria-label="Toggle color scheme"
                             mr="sm"

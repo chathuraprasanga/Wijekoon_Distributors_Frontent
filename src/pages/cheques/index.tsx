@@ -102,7 +102,7 @@ const Cheques = () => {
             {/* Header */}
             <Box display="flex" p="lg" className="items-center justify-between">
                 <Box>
-                    <span className="text-lg font-semibold">Cheques</span>
+                    <Text size="lg" fw={500}>Cheques</Text>
                 </Box>
                 <Box>
                     <Button
@@ -401,7 +401,7 @@ const Cheques = () => {
                 ) : (
                     <Group display="flex" className="flex items-center">
                         <IconDatabaseOff color="red" size="24" />
-                        <p>No data available</p>
+                        <Text>No data available</Text>
                     </Group>
                 )}
             </Box>

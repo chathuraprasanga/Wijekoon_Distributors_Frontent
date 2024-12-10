@@ -4,7 +4,7 @@ import { AppDispatch, RootState } from "../../store/store.ts";
 import { useLoading } from "../../helpers/loadingContext.tsx";
 import { useParams } from "react-router";
 import { useEffect } from "react";
-import { Badge, Box, Card, Group } from "@mantine/core";
+import { Badge, Box, Card, Group, Text } from "@mantine/core";
 import { getProduct } from "../../store/productSlice/productSlice.ts";
 
 const ViewProduct = () => {
@@ -35,9 +35,9 @@ const ViewProduct = () => {
                         className="cursor-pointer"
                         onClick={() => history.back()}
                     />
-                    <span className="text-lg font-semibold ml-4">
+                    <Text size="lg" fw={500} ml={"md"}>
                         View Product
-                    </span>
+                    </Text>
                 </Group>
             </Group>
             <Box mx="md" my="md">
@@ -61,7 +61,8 @@ const ViewProduct = () => {
                     <div className="flex items-end mt-4">
                         <Badge
                             color={product?.status ? "green" : "red"}
-                            radius="sm"
+                            radius="xs"
+                            size="sm"
                         >
                             {product?.status ? "ACTIVE" : "INACTIVE"}
                         </Badge>

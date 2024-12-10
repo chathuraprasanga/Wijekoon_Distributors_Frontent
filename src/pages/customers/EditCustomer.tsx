@@ -1,4 +1,4 @@
-import { Button, Group, Textarea, TextInput, Box } from "@mantine/core";
+import { Button, Group, Textarea, TextInput, Box, Text } from "@mantine/core";
 import { IconArrowLeft } from "@tabler/icons-react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store/store.ts";
@@ -92,9 +92,9 @@ const EditCustomer = () => {
                         className="cursor-pointer"
                         onClick={() => history.back()}
                     />
-                    <Group display="flex">
+                    <Text fw={500} size={"lg"} ml={"md"}>
                         Edit Customer
-                    </Group>
+                    </Text>
                 </Group>
             </Group>
             <Box w={{  sm: "100%", lg: "50%" }} px="lg">

@@ -5,7 +5,7 @@ import { useLoading } from "../../helpers/loadingContext.tsx";
 import { getCustomer } from "../../store/customerSlice/customerSlice.ts";
 import { useParams } from "react-router";
 import { useEffect } from "react";
-import { Badge, Box, Button, Card, Group } from "@mantine/core";
+import { Badge, Box, Button, Card, Group, Text } from "@mantine/core";
 
 const ViewCustomer = () => {
     const { setLoading } = useLoading();
@@ -43,9 +43,9 @@ const ViewCustomer = () => {
                         className="cursor-pointer"
                         onClick={() => history.back()}
                     />
-                    <span className="text-lg font-semibold ml-4">
+                    <Text size="lg" fw={500} ml="md">
                         View Customer
-                    </span>
+                    </Text>
                 </Group>
             </Group>
             <Box mx="md" my="md">
@@ -69,7 +69,8 @@ const ViewCustomer = () => {
                     <div className="flex items-end mt-4">
                         <Badge
                             color={customer?.status ? "green" : "red"}
-                            radius="sm"
+                            radius="xs"
+                            size="sm"
                         >
                             {customer?.status ? "ACTIVE" : "INACTIVE"}
                         </Badge>

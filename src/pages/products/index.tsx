@@ -94,7 +94,7 @@ const Products = () => {
             {/* Header */}
             <Box display="flex" p="lg" className="items-center justify-between">
                 <Box>
-                    <span className="text-lg font-semibold">Products</span>
+                    <Text size="lg" fw={500}>Products</Text>
                 </Box>
                 <Box>
                     <Button
