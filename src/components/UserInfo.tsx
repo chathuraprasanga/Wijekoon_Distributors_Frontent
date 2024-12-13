@@ -28,6 +28,7 @@ const UserInfo = () => {
                         {/* Avatar */}
                         <Avatar
                             color="initials"
+                            variant="gradient"
                             name={avatar}
                             key={avatar}
                             radius="xl"
