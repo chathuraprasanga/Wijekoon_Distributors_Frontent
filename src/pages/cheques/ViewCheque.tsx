@@ -125,6 +125,7 @@ const ViewCheque = () => {
                             <Button
                                 color="red"
                                 radius="sm"
+                                size="xs"
                                 ml={10}
                                 onClick={() => chequeStatusUpdate("RETURNED")}
                             >
@@ -133,6 +134,7 @@ const ViewCheque = () => {
                             <Button
                                 color="green"
                                 radius="sm"
+                                size="xs"
                                 ml={10}
                                 onClick={() => chequeStatusUpdate("COMPLETED")}
                             >
@@ -145,6 +147,7 @@ const ViewCheque = () => {
                         <Button
                             color="blue"
                             radius="sm"
+                            size="xs"
                             ml={10}
                             onClick={() => chequeStatusUpdate("DEPOSITED")}
                         >
@@ -155,6 +158,7 @@ const ViewCheque = () => {
                         <Button
                             color="blue"
                             radius="sm"
+                            size="xs"
                             ml={10}
                             onClick={() => chequeStatusUpdate("DEPOSITED")}
                         >

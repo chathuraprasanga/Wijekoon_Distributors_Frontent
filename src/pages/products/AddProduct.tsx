@@ -107,7 +107,7 @@ const AddProduct = () => {
                         {...productAddForm.getInputProps("unitPrice")}
                     />
                     <Group justify="flex-end" display="flex" pb="md" mt="md">
-                        <Button size="xs" color="dark" type="submit">
+                        <Button size="xs" type="submit">
                             Submit
                         </Button>
                     </Group>

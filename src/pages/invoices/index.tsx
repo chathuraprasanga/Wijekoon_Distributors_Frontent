@@ -91,7 +91,6 @@ const Invoices = () => {
                 <Box>
                     <Button
                         size="xs"
-                        color="dark"
                         onClick={() => navigate("/app/invoices/add-invoice")}
                     >
                         Add Invoice
@@ -110,7 +109,6 @@ const Invoices = () => {
                     <Button
                         size="xs"
                         w={{ lg: "20%" }}
-                        color="dark"
                         leftSection={<IconSearch size={14} />}
                         type="submit"
                     >
@@ -337,7 +335,6 @@ const Invoices = () => {
                     value={currentPage}
                     onChange={setCurrentPage}
                     size="sm"
-                    color="dark"
                     siblings={1}
                     boundaries={0}
                 >

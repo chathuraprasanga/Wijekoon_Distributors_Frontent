@@ -79,23 +79,22 @@ const ViewSupplier = () => {
                 <Group display="flex" justify="flex-end" w={{sm: "100%", lg: "50%"}} mt="md" >
                     {/* Call Now Button: Visible only on mobile */}
                     <Button
-                        color="dark"
                         radius="sm"
                         onClick={handleCall}
                         hiddenFrom="lg"
                         leftSection={<IconPhone/>}
+                        size="xs"
                     >
                         Call Now
                     </Button>
 
                     {/* Email Now Button: Visible on all devices */}
                     {supplier?.email && (<Button
-                        color="dark"
                         radius="sm"
                         onClick={handleEmail}
                         className="block"
                         leftSection={<IconMail/>}
-
+                        size="xs"
                     >
                         Email Now
                     </Button>)}

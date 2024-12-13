@@ -111,6 +111,7 @@ const ViewInvoice = () => {
                         <Button
                             color="green"
                             radius="sm"
+                            size="xs"
                             ml={10}
                             onClick={() => chequeStatusUpdate("PAID")}
                         >

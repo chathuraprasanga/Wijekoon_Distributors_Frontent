@@ -99,7 +99,6 @@ const Suppliers = () => {
                 <Box>
                     <Button
                         size="xs"
-                        color="dark"
                         onClick={() => navigate("/app/suppliers/add-supplier")}
                     >
                         Add Supplier
@@ -118,7 +117,6 @@ const Suppliers = () => {
                     <Button
                         size="xs"
                         w={{ lg: "20%" }}
-                        color="dark"
                         leftSection={<IconSearch size={14} />}
                         type="submit"
                     >
@@ -372,7 +370,6 @@ const Suppliers = () => {
                     value={currentPage}
                     onChange={setCurrentPage}
                     size="sm"
-                    color="dark"
                     siblings={1}
                     boundaries={0}
                 >

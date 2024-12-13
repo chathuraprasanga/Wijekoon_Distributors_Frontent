@@ -79,8 +79,8 @@ const ViewCustomer = () => {
                 <Group display="flex" justify="flex-end" w={{sm: "100%", lg: "50%"}} mt="md" >
                     {/* Call Now Button: Visible only on mobile */}
                     <Button
-                        color="dark"
                         radius="sm"
+                        size="xs"
                         onClick={handleCall}
                         hiddenFrom="lg"
                         leftSection={<IconPhone/>}
@@ -90,10 +90,10 @@ const ViewCustomer = () => {
 
                     {/* Email Now Button: Visible on all devices */}
                     {customer?.email && (<Button
-                        color="dark"
                         radius="sm"
                         onClick={handleEmail}
                         className="block"
+                        size="xs"
                         leftSection={<IconMail/>}
 
                     >

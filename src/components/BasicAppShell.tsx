@@ -100,7 +100,6 @@ const BasicAppShell = () => {
                         <IconLayoutDashboard size="1rem" stroke={1.5} />
                     }
                     variant="filled"
-                    color="dark"
                     active={activePath === "dashboard"}
                 />
                 <NavLink
@@ -108,7 +107,6 @@ const BasicAppShell = () => {
                     label="Customers"
                     leftSection={<IconUsersGroup size="1rem" stroke={1.5} />}
                     variant="filled"
-                    color="dark"
                     active={activePath === "customers"}
                 />
                 <NavLink
@@ -116,7 +114,6 @@ const BasicAppShell = () => {
                     label="Products"
                     leftSection={<IconPackages size="1rem" stroke={1.5} />}
                     variant="filled"
-                    color="dark"
                     active={activePath === "products"}
                 />
                 <NavLink
@@ -124,7 +121,6 @@ const BasicAppShell = () => {
                     label="Suppliers"
                     leftSection={<IconTruck size="1rem" stroke={1.5} />}
                     variant="filled"
-                    color="dark"
                     active={activePath === "suppliers"}
                 />
                 <NavLink
@@ -132,7 +128,6 @@ const BasicAppShell = () => {
                     label="Cheques"
                     leftSection={<IconCashBanknote size="1rem" stroke={1.5} />}
                     variant="filled"
-                    color="dark"
                     active={activePath === "cheques"}
                 />
                 <NavLink
@@ -140,7 +135,6 @@ const BasicAppShell = () => {
                     label="Invoices"
                     leftSection={<IconInvoice size="1rem" stroke={1.5} />}
                     variant="filled"
-                    color="dark"
                     active={activePath === "invoices"}
                 />
             </AppShell.Navbar>

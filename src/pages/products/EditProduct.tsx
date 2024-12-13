@@ -136,7 +136,7 @@ const EditProduct = () => {
                         {...productEditForm.getInputProps("unitPrice")}
                     />
                     <Group justify="flex-end" display="flex" pb="md" mt="md">
-                        <Button size="xs" color="dark" type="submit" disabled={!productEditForm.isDirty()}>
+                        <Button size="xs" type="submit" disabled={!productEditForm.isDirty()}>
                             Submit
                         </Button>
                     </Group>

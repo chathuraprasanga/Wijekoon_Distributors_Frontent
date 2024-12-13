@@ -107,7 +107,6 @@ const Cheques = () => {
                 <Box>
                     <Button
                         size="xs"
-                        color="dark"
                         onClick={() => navigate("/app/cheques/add-cheque")}
                     >
                         Add Cheque
@@ -126,7 +125,6 @@ const Cheques = () => {
                     <Button
                         size="xs"
                         w={{ lg: "20%" }}
-                        color="dark"
                         leftSection={<IconSearch size={14} />}
                         type="submit"
                     >
@@ -433,7 +431,6 @@ const Cheques = () => {
                     value={currentPage}
                     onChange={setCurrentPage}
                     size="sm"
-                    color="dark"
                     siblings={1}
                     boundaries={0}
                 >

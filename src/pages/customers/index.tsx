@@ -104,7 +104,6 @@ const Customers = () => {
                 <Box>
                     <Button
                         size="xs"
-                        color="dark"
                         onClick={() => navigate("/app/customers/add-customer")}
                     >
                         Add Customer
@@ -123,7 +122,6 @@ const Customers = () => {
                     <Button
                         size="xs"
                         w={{ lg: "20%" }}
-                        color="dark"
                         leftSection={<IconSearch size={14} />}
                         type="submit"
                     >
@@ -377,7 +375,6 @@ const Customers = () => {
                     value={currentPage}
                     onChange={setCurrentPage}
                     size="sm"
-                    color="dark"
                     siblings={1}
                     boundaries={0}
                 >

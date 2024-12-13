@@ -99,7 +99,6 @@ const Products = () => {
                 <Box>
                     <Button
                         size="xs"
-                        color="dark"
                         onClick={() => navigate("/app/products/add-product")}
                     >
                         Add Products
@@ -118,7 +117,6 @@ const Products = () => {
                     <Button
                         size="xs"
                         w={{ lg: "20%" }}
-                        color="dark"
                         leftSection={<IconSearch size={14} />}
                         type="submit"
                     >
@@ -374,7 +372,6 @@ const Products = () => {
                     value={currentPage}
                     onChange={setCurrentPage}
                     size="sm"
-                    color="dark"
                     siblings={1}
                     boundaries={0}
                 >

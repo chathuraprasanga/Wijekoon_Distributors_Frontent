@@ -124,7 +124,7 @@ const EditCustomer = () => {
                         {...customerEditForm.getInputProps("address")}
                     />
                     <Group justify="flex-end" display="flex" pb="md" mt="md">
-                        <Button size="xs" color="dark"  disabled={!customerEditForm.isDirty()} type="submit">
+                        <Button size="xs" disabled={!customerEditForm.isDirty()} type="submit">
                             Submit
                         </Button>
                     </Group>

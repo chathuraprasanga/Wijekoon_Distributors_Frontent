@@ -172,7 +172,7 @@ const EditInvoice = () => {
                         {...invoiceEditFrom.getInputProps("amount")}
                     />
                     <Group justify="flex-end" display="flex" pb="md" mt="md">
-                        <Button size="xs" color="dark" type="submit" disabled={!invoiceEditFrom.isDirty()}>
+                        <Button size="xs" type="submit" disabled={!invoiceEditFrom.isDirty()}>
                             Submit
                         </Button>
                     </Group>

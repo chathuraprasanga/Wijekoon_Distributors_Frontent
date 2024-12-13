@@ -219,7 +219,6 @@ const EditCheque = () => {
                     <Group justify="flex-end" display="flex" pb="md" mt="md">
                         <Button
                             size="xs"
-                            color="dark"
                             type="submit"
                             disabled={!chequeEditForm.isDirty()}
                         >
