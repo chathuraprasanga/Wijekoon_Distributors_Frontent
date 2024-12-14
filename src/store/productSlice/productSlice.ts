@@ -35,6 +35,21 @@ export const getProducts = createAsyncThunk(
     }
 );
 
+export const getPagedProducts = createAsyncThunk(
+    "product/getPagedProducts",
+    async (payload: any, { rejectWithValue }) => {
+        try {
+            const response = await axiosInstance.post(
+                "/products/paged-products",
+                payload
+            );
+            return response.data;
+        } catch (err: any) {
+            throw rejectWithValue(err.response.data);
+        }
+    }
+);
+
 export const addProduct = createAsyncThunk(
     "product/addProduct",
     async (payload: any, { rejectWithValue }) => {
@@ -102,6 +117,12 @@ const productSlice = createSlice({
             getProducts.fulfilled,
             (state: Draft<ProductState>, action: PayloadAction<any>) => {
                 state.products = action.payload.result;
+            }
+        );
+        builder.addCase(
+            getPagedProducts.fulfilled,
+            (state: Draft<ProductState>, action: PayloadAction<any>) => {
+                state.products = action.payload.result.response;
             }
         );
         builder.addCase(

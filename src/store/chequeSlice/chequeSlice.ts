@@ -50,6 +50,21 @@ export const getCheques = createAsyncThunk(
     }
 );
 
+export const getPagedCheques = createAsyncThunk(
+    "cheque/getPagedCheques",
+    async (payload: any, { rejectWithValue }) => {
+        try {
+            const response = await axiosInstance.post(
+                `/cheques/paged-cheques`,
+                payload
+            );
+            return response.data;
+        } catch (err: any) {
+            throw rejectWithValue(err.response.data);
+        }
+    }
+);
+
 export const getCheque = createAsyncThunk(
     "cheque/getCheque",
     async (id: any, { rejectWithValue }) => {
@@ -109,6 +124,12 @@ const chequeSlice = createSlice({
             getCheques.fulfilled,
             (state: Draft<ChequeState>, action: PayloadAction<any>) => {
                 state.cheques = action.payload.result;
+            }
+        );
+        builder.addCase(
+            getPagedCheques.fulfilled,
+            (state: Draft<ChequeState>, action: PayloadAction<any>) => {
+                state.cheques = action.payload.result.response;
             }
         );
         builder.addCase(

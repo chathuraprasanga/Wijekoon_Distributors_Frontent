@@ -50,6 +50,21 @@ export const getSuppliers = createAsyncThunk(
     }
 );
 
+export const getPagedSuppliers = createAsyncThunk(
+    "supplier/getPagedSuppliers",
+    async (payload: any, { rejectWithValue }) => {
+        try {
+            const response = await axiosInstance.post(
+                `/suppliers/paged-suppliers`,
+                payload
+            );
+            return response.data;
+        } catch (err: any) {
+            throw rejectWithValue(err.response.data);
+        }
+    }
+);
+
 export const getSupplier = createAsyncThunk(
     "supplier/getSupplier",
     async (id: any, { rejectWithValue }) => {
@@ -109,6 +124,12 @@ const supplierSlice = createSlice({
             getSuppliers.fulfilled,
             (state: Draft<SupplierState>, action: PayloadAction<any>) => {
                 state.suppliers = action.payload.result;
+            }
+        );
+        builder.addCase(
+            getPagedSuppliers.fulfilled,
+            (state: Draft<SupplierState>, action: PayloadAction<any>) => {
+                state.suppliers = action.payload.result.response;
             }
         );
         builder.addCase(

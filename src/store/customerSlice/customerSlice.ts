@@ -50,6 +50,21 @@ export const getCustomers = createAsyncThunk(
     }
 );
 
+export const getPagedCustomers = createAsyncThunk(
+    "customer/getPagedCustomers",
+    async (payload: any, { rejectWithValue }) => {
+        try {
+            const response = await axiosInstance.post(
+                `/customers/paged-customers`,
+                payload
+            );
+            return response.data;
+        } catch (err: any) {
+            throw rejectWithValue(err.response.data);
+        }
+    }
+);
+
 export const getCustomer = createAsyncThunk(
     "customer/getCustomer",
     async (id: any, { rejectWithValue }) => {
@@ -137,6 +152,12 @@ const customerSlice = createSlice({
                         : customer
                 );
                 state.selectedCustomer = null;
+            }
+        )
+        builder.addCase(
+            getPagedCustomers.fulfilled,
+            (state: Draft<CustomerState>,  action: PayloadAction<any>) => {
+                state.customers = action.payload.result.response;
             }
         )
     },

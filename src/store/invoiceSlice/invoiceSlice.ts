@@ -51,6 +51,21 @@ export const getInvoices = createAsyncThunk(
     }
 );
 
+export const getPagedInvoices = createAsyncThunk(
+    "invoice/getPagedInvoices",
+    async (payload: any, { rejectWithValue }) => {
+        try {
+            const response = await axiosInstance.post(
+                `/invoices/paged-invoices`,
+                payload
+            );
+            return response.data;
+        } catch (err: any) {
+            throw rejectWithValue(err.response.data);
+        }
+    }
+);
+
 export const getInvoice = createAsyncThunk(
     "invoice/getInvoice",
     async (id: any, { rejectWithValue }) => {
@@ -110,6 +125,12 @@ const invoiceSlice = createSlice({
             getInvoices.fulfilled,
             (state: Draft<InvoiceState>, action: PayloadAction<any>) => {
                 state.invoices = action.payload.result;
+            }
+        );
+        builder.addCase(
+            getPagedInvoices.fulfilled,
+            (state: Draft<InvoiceState>, action: PayloadAction<any>) => {
+                state.invoices = action.payload.result.response;
             }
         );
         builder.addCase(

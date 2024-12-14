@@ -8,8 +8,9 @@ import {
     Group,
     Menu,
     Pagination,
+    Select,
     Table,
-    Text, TextInput,
+    Text,
 } from "@mantine/core";
 import {
     IconCertificate,
@@ -17,49 +18,52 @@ import {
     IconDatabaseOff,
     IconDotsVertical,
     IconEdit,
-    IconEye, IconSearch,
+    IconEye,
 } from "@tabler/icons-react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store/store.ts";
 import { useLoading } from "../../helpers/loadingContext.tsx";
-import { changeStatusCheque, getCheques } from "../../store/chequeSlice/chequeSlice.ts";
+import {
+    changeStatusCheque,
+    getPagedCheques,
+} from "../../store/chequeSlice/chequeSlice.ts";
 import toNotify from "../../helpers/toNotify.tsx";
 import datePreview from "../../helpers/datePreview.tsx";
+import { getCustomers } from "../../store/customerSlice/customerSlice.ts";
+import { DateInput } from "@mantine/dates";
 
 const Cheques = () => {
-    const {setLoading} = useLoading();
-    const dispatch = useDispatch<AppDispatch|any>();
+    const { setLoading } = useLoading();
+    const dispatch = useDispatch<AppDispatch | any>();
     const navigate = useNavigate();
-    const [currentPage, setCurrentPage] = useState(1);
+
+    const [pageIndex, setPageIndex] = useState(1);
     const pageSize = 5;
-    const cheques = useSelector(
-        (state: RootState) => state.cheque.cheques
+    const [customer, setCustomer] = useState<string>("");
+    const [status, setStatus] = useState<string>("");
+    const [depositDate, setDepositDate] = useState<any>();
+    const sort = -1;
+    const [metadata, setMetadata] = useState<any>();
+
+    const cheques = useSelector((state: RootState) => state.cheque.cheques);
+    const customers = useSelector(
+        (state: RootState) => state.customer.customers
     );
 
     useEffect(() => {
         fetchCheques();
-        setPage();
-    }, []);
-
-    const setPage = () => {
-        setCurrentPage(Number(sessionStorage.getItem("pageIndex") ?? 1));
-        sessionStorage.clear();
-    };
+    }, [dispatch, pageIndex, customer, status, depositDate]);
 
     const fetchCheques = async () => {
         setLoading(true);
-        await dispatch(getCheques({}));
+        await dispatch(getCustomers({}));
+        const filters = { pageSize, pageIndex, customer, sort, status, depositDate };
+        const response = await dispatch(getPagedCheques({ filters: filters }));
+        setMetadata(response.payload.result.metadata);
         setLoading(false);
     };
 
-
-    const totalPages = Math.ceil(cheques?.length / pageSize);
-    const paginatedData: any = cheques?.slice(
-        (currentPage - 1) * pageSize,
-        currentPage * pageSize
-    );
-
-    const chequeStatusUpdate = async ( id: string,status: string) => {
+    const chequeStatusUpdate = async (id: string, status: string) => {
         setLoading(true);
         const payload = {
             id,
@@ -69,7 +73,11 @@ const Cheques = () => {
         if (response.type === "cheque/changeStatus/fulfilled") {
             await fetchCheques();
             setLoading(false);
-            toNotify("Success", "Cheque status changed successfully", "SUCCESS");
+            toNotify(
+                "Success",
+                "Cheque status changed successfully",
+                "SUCCESS"
+            );
         } else if (response.type === "cheque/changeStatus/rejected") {
             const error: any = response.payload.error;
             setLoading(false);
@@ -84,7 +92,7 @@ const Cheques = () => {
         }
     };
 
-    const getColor = (status:any) => {
+    const getColor = (status: any) => {
         switch (status) {
             case "PENDING":
                 return "yellow";
@@ -97,12 +105,21 @@ const Cheques = () => {
         }
     };
 
+    const selectableCustomers = customers.map((c: any) => {
+        return {
+            label: c?.name,
+            value: c?._id,
+        };
+    });
+
     return (
         <>
             {/* Header */}
             <Box display="flex" p="lg" className="items-center justify-between">
                 <Box>
-                    <Text size="lg" fw={500}>Cheques</Text>
+                    <Text size="lg" fw={500}>
+                        Cheques
+                    </Text>
                 </Box>
                 <Box>
                     <Button
@@ -116,20 +133,46 @@ const Cheques = () => {
 
             {/* Search Input */}
             <Box px="lg">
-                <Group w={{ lg: "40%" }} gap="md">
-                    <TextInput
-                        w={{ lg: "70%" }}
+                <Group w={{ lg: "60%", sm: "100%" }}>
+                    <Select
+                        className="w-full lg:w-1/4"
                         size="xs"
-                        placeholder="Customer, Cheque Number"
+                        placeholder="Select a customer"
+                        data={selectableCustomers}
+                        searchable
+                        clearable
+                        onChange={(value: string | null) => {
+                            if (value) {
+                                setCustomer(value);
+                            } else {
+                                setCustomer("");
+                            }
+                        }}
                     />
-                    <Button
+
+                    <Select
+                        className="w-full lg:w-1/4"
                         size="xs"
-                        w={{ lg: "20%" }}
-                        leftSection={<IconSearch size={14} />}
-                        type="submit"
-                    >
-                        Search
-                    </Button>
+                        placeholder="Select a status"
+                        data={["PENDING", "DEPOSITED", "RETURNED", "COMPLETED"]}
+                        searchable
+                        clearable
+                        onChange={(value: string | null) => {
+                            if (value) {
+                                setStatus(value);
+                            } else {
+                                setStatus("");
+                            }
+                        }}
+                    />
+
+                    <DateInput
+                        className="w-full lg:w-1/4"
+                        size="xs"
+                        placeholder="Select deposit date"
+                        clearable
+                        onChange={(e:any) => setDepositDate(e)}
+                    />
                 </Group>
             </Box>
 
@@ -162,8 +205,8 @@ const Cheques = () => {
                         </Table.Tr>
                     </Table.Thead>
                     <Table.Tbody>
-                        {paginatedData?.length !== 0 ? (
-                            paginatedData?.map((c: any, i: number) => (
+                        {cheques?.length !== 0 ? (
+                            cheques?.map((c: any, i: number) => (
                                 <Table.Tr key={i}>
                                     <Table.Td style={{ width: "20%" }}>
                                         {c.customer?.name}
@@ -187,7 +230,7 @@ const Cheques = () => {
                                         <Badge
                                             size="sm"
                                             radius="xs"
-                                            color = {getColor(c.chequeStatus)}
+                                            color={getColor(c.chequeStatus)}
                                         >
                                             {c.chequeStatus}
                                         </Badge>
@@ -209,7 +252,7 @@ const Cheques = () => {
                                                         );
                                                         sessionStorage.setItem(
                                                             "pageIndex",
-                                                            String(currentPage)
+                                                            String(pageIndex)
                                                         );
                                                     }}
                                                     rightSection={
@@ -229,7 +272,7 @@ const Cheques = () => {
                                                         );
                                                         sessionStorage.setItem(
                                                             "pageIndex",
-                                                            String(currentPage)
+                                                            String(pageIndex)
                                                         );
                                                     }}
                                                     rightSection={
@@ -310,8 +353,8 @@ const Cheques = () => {
 
             {/* Mobile Cards */}
             <Box my="lg" mx="sm" hiddenFrom="lg">
-                {paginatedData?.length !== 0 ? (
-                    paginatedData?.map((c: any, i: number) => (
+                {cheques?.length !== 0 ? (
+                    cheques?.map((c: any, i: number) => (
                         <Card key={i} shadow="sm" withBorder mx="xs" my="lg">
                             <Text className="font-semibold">
                                 Customer: {c.customer?.name}
@@ -326,7 +369,7 @@ const Cheques = () => {
                             <Badge
                                 size="sm"
                                 radius="xs"
-                                color = {getColor(c.chequeStatus)}
+                                color={getColor(c.chequeStatus)}
                                 className="mt-2"
                             >
                                 {c.chequeStatus}
@@ -348,7 +391,7 @@ const Cheques = () => {
                                                 );
                                                 sessionStorage.setItem(
                                                     "pageIndex",
-                                                    String(currentPage)
+                                                    String(pageIndex)
                                                 );
                                             }}
                                             rightSection={<IconEye size={16} />}
@@ -365,7 +408,7 @@ const Cheques = () => {
                                                 );
                                                 sessionStorage.setItem(
                                                     "pageIndex",
-                                                    String(currentPage)
+                                                    String(pageIndex)
                                                 );
                                             }}
                                             rightSection={
@@ -417,8 +460,8 @@ const Cheques = () => {
                         </Card>
                     ))
                 ) : (
-                    <Group display="flex" className="flex items-center">
-                        <IconDatabaseOff color="red" size="24" />
+                    <Group mx="xs" my="lg">
+                        <IconDatabaseOff color="red" size={24} />
                         <Text>No data available</Text>
                     </Group>
                 )}
@@ -427,9 +470,9 @@ const Cheques = () => {
             {/* Pagination */}
             <Group my="md" ms="md" px="lg" justify="flex-end">
                 <Pagination.Root
-                    total={totalPages}
-                    value={currentPage}
-                    onChange={setCurrentPage}
+                    total={Math.ceil(metadata?.total / pageSize)}
+                    value={pageIndex}
+                    onChange={setPageIndex}
                     size="sm"
                     siblings={1}
                     boundaries={0}

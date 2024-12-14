@@ -7,7 +7,8 @@ import {
     Menu,
     Pagination,
     Table,
-    Text, TextInput,
+    Text,
+    TextInput,
 } from "@mantine/core";
 import {
     IconDatabaseOff,
@@ -15,7 +16,9 @@ import {
     IconEdit,
     IconEye,
     IconMobiledata,
-    IconMobiledataOff, IconSearch,
+    IconMobiledataOff,
+    IconSearch,
+    IconX,
 } from "@tabler/icons-react";
 import { useNavigate } from "react-router";
 import { useEffect, useState } from "react";
@@ -24,7 +27,7 @@ import { useLoading } from "../../helpers/loadingContext.tsx";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store/store.ts";
 import {
-    changeStatusProduct,
+    changeStatusProduct, getPagedProducts,
     getProducts,
 } from "../../store/productSlice/productSlice.ts";
 import toNotify from "../../helpers/toNotify.tsx";
@@ -33,32 +36,26 @@ const Products = () => {
     const { setLoading } = useLoading();
     const dispatch = useDispatch<AppDispatch | any>();
     const navigate = useNavigate();
-    const [currentPage, setCurrentPage] = useState(1);
+
+    const [pageIndex, setPageIndex] = useState(1);
     const pageSize = 5;
+    const [searchQuery, setSearchQuery] = useState<string>("");
+    const sort = -1;
+    const [metadata, setMetadata] = useState<any>();
 
     const products = useSelector((state: RootState) => state.product.products);
 
     useEffect(() => {
         fetchProducts();
-        setPage();
-    }, []);
-
-    const setPage = () => {
-        setCurrentPage(Number(sessionStorage.getItem("pageIndex") ?? 1));
-        sessionStorage.clear();
-    };
+    }, [dispatch, pageIndex, searchQuery]);
 
     const fetchProducts = async () => {
         setLoading(true);
-        await dispatch(getProducts({}));
+        const filters = { pageSize, pageIndex, searchQuery, sort };
+        const response = await dispatch(getPagedProducts({ filters: filters }));
+        setMetadata(response.payload.result.metadata);
         setLoading(false);
     };
-
-    const totalPages = Math.ceil(products?.length / pageSize);
-    const paginatedData: any = products?.slice(
-        (currentPage - 1) * pageSize,
-        currentPage * pageSize
-    );
 
     const handleChangeStatus = async (product: any) => {
         setLoading(true);
@@ -94,7 +91,9 @@ const Products = () => {
             {/* Header */}
             <Box display="flex" p="lg" className="items-center justify-between">
                 <Box>
-                    <Text size="lg" fw={500}>Products</Text>
+                    <Text size="lg" fw={500}>
+                        Products
+                    </Text>
                 </Box>
                 <Box>
                     <Button
@@ -108,20 +107,26 @@ const Products = () => {
 
             {/* Search Input */}
             <Box px="lg">
-                <Group w={{ lg: "40%" }} gap="md">
+                <Group w={{ lg: "60%", sm: "100%" }}>
                     <TextInput
-                        w={{ lg: "70%" }}
+                        className="w-full lg:w-1/4"
                         size="xs"
-                        placeholder="Name, Product Code"
-                    />
-                    <Button
-                        size="xs"
-                        w={{ lg: "20%" }}
+                        placeholder="Name, ProductCode"
+                        onChange={(event) => setSearchQuery(event.target.value)}
+                        value={searchQuery}
+                        rightSection={
+                            searchQuery ? (
+                                <IconX
+                                    className="cursor-pointer"
+                                    onClick={() => setSearchQuery("")}
+                                    size={14}
+                                />
+                            ) : (
+                                ""
+                            )
+                        }
                         leftSection={<IconSearch size={14} />}
-                        type="submit"
-                    >
-                        Search
-                    </Button>
+                    />
                 </Group>
             </Box>
 
@@ -148,8 +153,8 @@ const Products = () => {
                         </Table.Tr>
                     </Table.Thead>
                     <Table.Tbody>
-                        {paginatedData?.length !== 0 ? (
-                            paginatedData?.map((c: any, i: number) => (
+                        {products?.length !== 0 ? (
+                            products?.map((c: any, i: number) => (
                                 <Table.Tr key={i}>
                                     <Table.Td style={{ width: "30%" }}>
                                         {c.name}
@@ -189,7 +194,7 @@ const Products = () => {
                                                         );
                                                         sessionStorage.setItem(
                                                             "pageIndex",
-                                                            String(currentPage)
+                                                            String(pageIndex)
                                                         );
                                                     }}
                                                     rightSection={
@@ -205,7 +210,7 @@ const Products = () => {
                                                         );
                                                         sessionStorage.setItem(
                                                             "pageIndex",
-                                                            String(currentPage)
+                                                            String(pageIndex)
                                                         );
                                                     }}
                                                     rightSection={
@@ -270,8 +275,8 @@ const Products = () => {
 
             {/* Mobile Cards */}
             <Box my="lg" mx="sm" hiddenFrom="lg">
-                {paginatedData?.length !== 0 ? (
-                    paginatedData?.map((c: any, i: number) => (
+                {products?.length !== 0 ? (
+                    products?.map((c: any, i: number) => (
                         <Card key={i} shadow="sm" withBorder mx="xs" my="lg">
                             <Text className="font-semibold">
                                 Name: {c.name}
@@ -304,7 +309,7 @@ const Products = () => {
                                                 );
                                                 sessionStorage.setItem(
                                                     "pageIndex",
-                                                    String(currentPage)
+                                                    String(pageIndex)
                                                 );
                                             }}
                                             rightSection={<IconEye size={16} />}
@@ -318,7 +323,7 @@ const Products = () => {
                                                 );
                                                 sessionStorage.setItem(
                                                     "pageIndex",
-                                                    String(currentPage)
+                                                    String(pageIndex)
                                                 );
                                             }}
                                             rightSection={
@@ -358,9 +363,9 @@ const Products = () => {
                         </Card>
                     ))
                 ) : (
-                    <Group display="flex" className="flex items-center">
-                        <IconDatabaseOff color="red" size="24" />
-                        <p>No data available</p>
+                    <Group mx="xs" my="lg">
+                        <IconDatabaseOff color="red" size={24} />
+                        <Text>No data available</Text>
                     </Group>
                 )}
             </Box>
@@ -368,9 +373,9 @@ const Products = () => {
             {/* Pagination */}
             <Group my="md" ms="md" px="lg" justify="flex-end">
                 <Pagination.Root
-                    total={totalPages}
-                    value={currentPage}
-                    onChange={setCurrentPage}
+                    total={Math.ceil(metadata?.total / pageSize)}
+                    value={pageIndex}
+                    onChange={setPageIndex}
                     size="sm"
                     siblings={1}
                     boundaries={0}

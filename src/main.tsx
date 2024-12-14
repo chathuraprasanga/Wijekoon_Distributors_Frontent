@@ -1,4 +1,4 @@
-import React, { Suspense } from "react";
+import React, { StrictMode, Suspense } from "react";
 import { createRoot } from "react-dom/client";
 import "./index.css";
 import {
@@ -203,9 +203,9 @@ createRoot(document.getElementById("root")!).render(
                 <Suspense fallback={<Loading />}>
                     <LoadingProvider>
                         <Notifications position="top-right" mt={50} />
-                        {/*<StrictMode>*/}
+                        <StrictMode>
                         <RouterProvider router={router} />
-                        {/*</StrictMode>*/}
+                        </StrictMode>
                     </LoadingProvider>
                 </Suspense>
             </DatesProvider>

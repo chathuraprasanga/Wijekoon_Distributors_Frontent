@@ -17,13 +17,13 @@ import {
     IconEdit,
     IconEye,
     IconMobiledata,
-    IconMobiledataOff, IconSearch,
+    IconMobiledataOff, IconSearch, IconX,
 } from "@tabler/icons-react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store/store.ts";
 import { useLoading } from "../../helpers/loadingContext.tsx";
 import {
-    changeStatusSupplier,
+    changeStatusSupplier, getPagedSuppliers,
     getSuppliers,
 } from "../../store/supplierSlice/supplierSlice.ts";
 import toNotify from "../../helpers/toNotify.tsx";
@@ -32,33 +32,28 @@ const Suppliers = () => {
     const { setLoading } = useLoading();
     const dispatch = useDispatch<AppDispatch | any>();
     const navigate = useNavigate();
-    const [currentPage, setCurrentPage] = useState(1);
+
+    const [pageIndex, setPageIndex] = useState(1);
     const pageSize = 5;
+    const [searchQuery, setSearchQuery] = useState<string>("");
+    const sort = -1;
+    const [metadata, setMetadata] = useState<any>();
+
     const suppliers = useSelector(
         (state: RootState) => state.supplier.suppliers
     );
 
     useEffect(() => {
         fetchSuppliers();
-        setPage();
-    }, []);
-
-    const setPage = () => {
-        setCurrentPage(Number(sessionStorage.getItem("pageIndex") ?? 1));
-        sessionStorage.clear();
-    };
+    }, [dispatch, pageIndex, searchQuery]);
 
     const fetchSuppliers = async () => {
         setLoading(true);
-        await dispatch(getSuppliers({}));
+        const filters = { pageSize, pageIndex, searchQuery, sort };
+        const response = await dispatch(getPagedSuppliers({ filters: filters }));
+        setMetadata(response.payload.result.metadata);
         setLoading(false);
     };
-
-    const totalPages = Math.ceil(suppliers?.length / pageSize);
-    const paginatedData: any = suppliers?.slice(
-        (currentPage - 1) * pageSize,
-        currentPage * pageSize
-    );
 
     const handleChangeStatus = async (supplier: any) => {
         setLoading(true);
@@ -108,20 +103,16 @@ const Suppliers = () => {
 
             {/* Search Input */}
             <Box px="lg">
-                <Group w={{ lg: "40%" }} gap="md">
+                <Group w={{ lg: "60%", sm: "100%" }}>
                     <TextInput
-                        w={{ lg: "70%" }}
+                        className="w-full lg:w-1/4"
                         size="xs"
                         placeholder="Name, Phone, Email"
+                        onChange={(event) => setSearchQuery(event.target.value)}
+                        value={searchQuery}
+                        rightSection={searchQuery ? <IconX className="cursor-pointer" onClick={() => setSearchQuery("")} size={14}/> : ""}
+                        leftSection={<IconSearch size={14}/>}
                     />
-                    <Button
-                        size="xs"
-                        w={{ lg: "20%" }}
-                        leftSection={<IconSearch size={14} />}
-                        type="submit"
-                    >
-                        Search
-                    </Button>
                 </Group>
             </Box>
 
@@ -146,8 +137,8 @@ const Suppliers = () => {
                         </Table.Tr>
                     </Table.Thead>
                     <Table.Tbody>
-                        {paginatedData?.length !== 0 ? (
-                            paginatedData?.map((c: any, i: number) => (
+                        {suppliers?.length !== 0 ? (
+                            suppliers?.map((c: any, i: number) => (
                                 <Table.Tr key={i}>
                                     <Table.Td style={{ width: "20%" }}>
                                         {c.name}
@@ -187,7 +178,7 @@ const Suppliers = () => {
                                                         );
                                                         sessionStorage.setItem(
                                                             "pageIndex",
-                                                            String(currentPage)
+                                                            String(pageIndex)
                                                         );
                                                     }}
                                                     rightSection={
@@ -203,7 +194,7 @@ const Suppliers = () => {
                                                         );
                                                         sessionStorage.setItem(
                                                             "pageIndex",
-                                                            String(currentPage)
+                                                            String(pageIndex)
                                                         );
                                                     }}
                                                     rightSection={
@@ -268,8 +259,8 @@ const Suppliers = () => {
 
             {/* Mobile Cards */}
             <Box my="lg" mx="sm" hiddenFrom="lg">
-                {paginatedData?.length !== 0 ? (
-                    paginatedData?.map((c: any, i: number) => (
+                {suppliers?.length !== 0 ? (
+                    suppliers?.map((c: any, i: number) => (
                         <Card key={i} shadow="sm" withBorder mx="xs" my="lg">
                             <Text className="font-semibold">
                                 Name: {c.name}
@@ -302,7 +293,7 @@ const Suppliers = () => {
                                                 );
                                                 sessionStorage.setItem(
                                                     "pageIndex",
-                                                    String(currentPage)
+                                                    String(pageIndex)
                                                 );
                                             }}
                                             rightSection={<IconEye size={16} />}
@@ -316,7 +307,7 @@ const Suppliers = () => {
                                                 );
                                                 sessionStorage.setItem(
                                                     "pageIndex",
-                                                    String(currentPage)
+                                                    String(pageIndex)
                                                 );
                                             }}
                                             rightSection={
@@ -356,9 +347,9 @@ const Suppliers = () => {
                         </Card>
                     ))
                 ) : (
-                    <Group display="flex" className="flex items-center">
-                        <IconDatabaseOff color="red" size="24" />
-                        <p>No data available</p>
+                    <Group mx="xs" my="lg">
+                        <IconDatabaseOff color="red" size={24} />
+                        <Text>No data available</Text>
                     </Group>
                 )}
             </Box>
@@ -366,9 +357,9 @@ const Suppliers = () => {
             {/* Pagination */}
             <Group my="md" ms="md" px="lg" justify="flex-end">
                 <Pagination.Root
-                    total={totalPages}
-                    value={currentPage}
-                    onChange={setCurrentPage}
+                    total={Math.ceil( metadata?.total / pageSize)}
+                    value={pageIndex}
+                    onChange={setPageIndex}
                     size="sm"
                     siblings={1}
                     boundaries={0}
