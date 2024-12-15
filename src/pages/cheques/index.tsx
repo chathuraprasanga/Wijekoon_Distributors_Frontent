@@ -155,7 +155,6 @@ const Cheques = () => {
                         size="xs"
                         placeholder="Select a status"
                         data={["PENDING", "DEPOSITED", "RETURNED", "COMPLETED"]}
-                        searchable
                         clearable
                         onChange={(value: string | null) => {
                             if (value) {

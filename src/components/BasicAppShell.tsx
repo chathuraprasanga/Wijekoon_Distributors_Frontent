@@ -44,6 +44,9 @@ const BasicAppShell = () => {
         closeMobile(); // Close the mobile navbar when a NavLink is clicked
     };
 
+    const currentDate = new Date();
+    const displayDate = currentDate.toISOString().split("T")[0];
+
     return (
         <AppShell
             header={{ height: 60 }}
@@ -92,7 +95,7 @@ const BasicAppShell = () => {
                     </Group>
                 </Group>
             </AppShell.Header>
-            <AppShell.Navbar>
+            <AppShell.Navbar >
                 <NavLink
                     onClick={() => handleNavLinkClick("dashboard")}
                     label="Dashboard"
@@ -141,13 +144,20 @@ const BasicAppShell = () => {
 
             <AppShell.Main>
                 {activePath === "dashboard" && (
+                    <>
                     <Group>
                         <Text size="xl" fw={500}>
                             Hello {greetingName}.!
                         </Text>
                     </Group>
+                    <Group>
+                        <Text size="xs">
+                            {displayDate}
+                        </Text>
+                    </Group>
+                    </>
                 )}
-                <Divider />
+                <Divider mt="sm" />
 
                 <Paper shadow="md" mt="md" withBorder className="h-full w-full">
                     <Box mt="md" className="h-full w-full">

@@ -144,9 +144,10 @@ const DashboardPage = () => {
                         </Box>
                     </Paper>
                 </Grid.Col>
+
             </Grid>
             <Grid mt="md">
-                <Grid.Col span={{ lg: 6, md:6, sm:12 }}></Grid.Col>
+
             </Grid>
         </Paper>
     );
