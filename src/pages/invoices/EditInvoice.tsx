@@ -8,22 +8,29 @@ import {
     TextInput,
 } from "@mantine/core";
 import { useLoading } from "../../helpers/loadingContext.tsx";
-import { useDispatch } from "react-redux";
-import { AppDispatch } from "../../store/store.ts";
-import { useNavigate } from "react-router";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../../store/store.ts";
+import { useNavigate, useParams } from "react-router";
 import { isNotEmpty, useForm } from "@mantine/form";
 import toNotify from "../../helpers/toNotify.tsx";
-import { addInvoice } from "../../store/invoiceSlice/invoiceSlice.ts";
+import { getInvoice, updateInvoice } from "../../store/invoiceSlice/invoiceSlice.ts";
 import { useEffect, useState } from "react";
 import { getSuppliers } from "../../store/supplierSlice/supplierSlice.ts";
 import { DatePickerInput } from "@mantine/dates";
 
-const AddInvoice = () => {
+const EditInvoice = () => {
     const { setLoading } = useLoading();
     const dispatch = useDispatch<AppDispatch | any>();
     const navigate = useNavigate();
-    const [selectableSuppliers, setSelectableSuppliers] = useState<any[]>([])
-    const supplierData =  selectableSuppliers.map((data:any) => {return {label: data.name, value: data._id }})
+    const id = useParams().id;
+
+    const selectedInvoice = useSelector(
+        (state: RootState) => state.invoice.selectedInvoice
+    );
+    const [selectedSuppliers, setSelectedSuppliers] = useState<any[]>([]);
+    const supplierData = selectedSuppliers.map((data: any) => {
+        return { label: data.name, value: data._id };
+    });
 
     useEffect(() => {
         fetchSuppliers();
@@ -36,7 +43,7 @@ const AddInvoice = () => {
         );
         if (response.type === "supplier/getSuppliers/fulfilled") {
             setLoading(false);
-            setSelectableSuppliers(response.payload.result);
+            setSelectedSuppliers(response.payload.result);
         } else {
             setLoading(false);
             toNotify(
@@ -47,13 +54,34 @@ const AddInvoice = () => {
         }
     };
 
-    const invoiceAddFrom = useForm({
+    useEffect(() => {
+        fetchInvoice();
+    }, [dispatch, id]);
+
+    useEffect(() => {
+        if (selectedInvoice) {
+            invoiceEditFrom.setValues({
+                ...selectedInvoice,
+                supplier: selectedInvoice.supplier?._id || "", // Use only the customer ID
+                invoiceDate: new Date(selectedInvoice?.invoiceDate || new Date()),
+            });
+            invoiceEditFrom.resetDirty();
+        }
+    }, [selectedInvoice]);
+
+    const fetchInvoice = async () => {
+        setLoading(false);
+        await dispatch(getInvoice(id));
+        setLoading(false);
+    };
+
+    const invoiceEditFrom = useForm({
         mode: "uncontrolled",
         initialValues: {
             supplier: "",
-            invoiceDate:  new Date(),
+            invoiceDate: new Date(),
             invoiceNumber: "",
-            amount: 0,
+            amount: 0.00,
         },
         validate: {
             supplier: isNotEmpty("Supplier name is required"),
@@ -71,14 +99,14 @@ const AddInvoice = () => {
         },
     });
 
-    const handleInvoiceAdd = async (values: typeof invoiceAddFrom.values) => {
+    const handleInvoiceAdd = async (values: typeof invoiceEditFrom.values) => {
         setLoading(true);
-        const response = await dispatch(addInvoice(values));
-        if (response.type === "invoice/addInvoice/fulfilled") {
+        const response = await dispatch(updateInvoice({ id, values }));
+        if (response.type === "invoice/updateInvoice/fulfilled") {
             setLoading(false);
-            toNotify("Success", "Invoice added successfully", "SUCCESS");
+            toNotify("Success", "Invoice updated successfully", "SUCCESS");
             navigate("/app/invoices");
-        } else if (response.type === "invoice/addInvoice/rejected") {
+        } else if (response.type === "invoice/updateInvoice/rejected") {
             const error: any = response.payload.error;
             setLoading(false);
             toNotify("Error", `${error}`, "ERROR");
@@ -106,46 +134,45 @@ const AddInvoice = () => {
                 </Group>
             </Group>
             <Box w={{ sm: "100%", lg: "50%" }} px="lg">
-                <form onSubmit={invoiceAddFrom.onSubmit(handleInvoiceAdd)}>
+                <form onSubmit={invoiceEditFrom.onSubmit(handleInvoiceAdd)}>
                     <Select
                         label="Supplier"
                         withAsterisk
                         searchable
                         data={supplierData}
                         placeholder="Enter Supplier Name"
-                        key={invoiceAddFrom.key("supplier")}
-                        {...invoiceAddFrom.getInputProps("supplier")}
+                        key={invoiceEditFrom.key("supplier")}
+                        {...invoiceEditFrom.getInputProps("supplier")}
                     />
                     <DatePickerInput
                         label="Invoice Date"
                         withAsterisk
                         placeholder="Enter Invoice Date"
-                        clearable
-                        key={invoiceAddFrom.key("invoiceDate")}
-                        {...invoiceAddFrom.getInputProps("invoiceDate")}
+                        key={invoiceEditFrom.key("invoiceDate")}
+                        {...invoiceEditFrom.getInputProps("invoiceDate")}
                     />
                     <TextInput
                         label="Invoice Number"
                         placeholder="Enter Invoice Number"
                         withAsterisk
-                        key={invoiceAddFrom.key("invoiceNumber")}
-                        {...invoiceAddFrom.getInputProps("invoiceNumber")}
+                        key={invoiceEditFrom.key("invoiceNumber")}
+                        {...invoiceEditFrom.getInputProps("invoiceNumber")}
                     />
                     <NumberInput
                         hideControls
                         allowNegative={false}
+                        withAsterisk
                         prefix="Rs. "
                         label="Cheque Amount"
                         decimalSeparator="."
                         decimalScale={2}
                         fixedDecimalScale
                         placeholder="Enter Cheque Amount"
-                        key={invoiceAddFrom.key("amount")}
-                        {...invoiceAddFrom.getInputProps("amount")}
-                        withAsterisk
+                        key={invoiceEditFrom.key("amount")}
+                        {...invoiceEditFrom.getInputProps("amount")}
                     />
                     <Group justify="flex-end" display="flex" pb="md" mt="md">
-                        <Button size="xs" type="submit">
+                        <Button size="xs" type="submit" disabled={!invoiceEditFrom.isDirty()}>
                             Submit
                         </Button>
                     </Group>
@@ -155,4 +182,4 @@ const AddInvoice = () => {
     );
 };
 
-export default AddInvoice;
+export default EditInvoice;

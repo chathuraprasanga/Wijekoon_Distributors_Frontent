@@ -1,40 +1,123 @@
 import { useNavigate } from "react-router";
-import { useState } from "react";
-import suppliers from "./supplier_data.json";
-import { Badge, Button, Group, Menu, Pagination, Table } from "@mantine/core";
-import { IconDatabaseOff, IconDotsVertical } from "@tabler/icons-react";
+import { useEffect, useState } from "react";
+import {
+    Badge,
+    Box,
+    Button,
+    Card,
+    Group,
+    Menu,
+    Pagination,
+    Table,
+    Text, TextInput,
+} from "@mantine/core";
+import {
+    IconDatabaseOff,
+    IconDotsVertical,
+    IconEdit,
+    IconEye,
+    IconMobiledata,
+    IconMobiledataOff, IconSearch, IconX,
+} from "@tabler/icons-react";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../../store/store.ts";
+import { useLoading } from "../../helpers/loadingContext.tsx";
+import {
+    changeStatusSupplier, getPagedSuppliers,
+    getSuppliers,
+} from "../../store/supplierSlice/supplierSlice.ts";
+import toNotify from "../../helpers/toNotify.tsx";
 
 const Suppliers = () => {
+    const { setLoading } = useLoading();
+    const dispatch = useDispatch<AppDispatch | any>();
     const navigate = useNavigate();
-    const [currentPage, setCurrentPage] = useState(1);
-    const pageSize = 5;
 
-    const totalPages = Math.ceil(suppliers.length / pageSize);
-    const paginatedData: any = suppliers.slice(
-        (currentPage - 1) * pageSize,
-        currentPage * pageSize
+    const [pageIndex, setPageIndex] = useState(1);
+    const pageSize = 5;
+    const [searchQuery, setSearchQuery] = useState<string>("");
+    const sort = -1;
+    const [metadata, setMetadata] = useState<any>();
+
+    const suppliers = useSelector(
+        (state: RootState) => state.supplier.suppliers
     );
+
+    useEffect(() => {
+        fetchSuppliers();
+    }, [dispatch, pageIndex, searchQuery]);
+
+    const fetchSuppliers = async () => {
+        setLoading(true);
+        const filters = { pageSize, pageIndex, searchQuery, sort };
+        const response = await dispatch(getPagedSuppliers({ filters: filters }));
+        setMetadata(response.payload.result.metadata);
+        setLoading(false);
+    };
+
+    const handleChangeStatus = async (supplier: any) => {
+        setLoading(true);
+        const response = await dispatch(
+            changeStatusSupplier({
+                id: supplier._id,
+                values: { status: !supplier.status },
+            })
+        );
+        if (response.type === "supplier/changeStatus/fulfilled") {
+            dispatch(getSuppliers({}));
+            setLoading(false);
+            toNotify(
+                "Success",
+                "Supplier status changed successfully",
+                "SUCCESS"
+            );
+        } else if (response.type === "supplier/changeStatus/rejected") {
+            setLoading(false);
+            toNotify("Error", `${response.payload.error}`, "ERROR");
+        } else {
+            setLoading(false);
+            toNotify(
+                "Something went wrong",
+                `Please contact system admin`,
+                "WARNING"
+            );
+        }
+    };
 
     return (
         <>
             {/* Header */}
-            <div className="items-center flex flex-row justify-between p-4">
-                <div>
-                    <span className="text-lg font-semibold">Suppliers</span>
-                </div>
-                <div>
+            <Box display="flex" p="lg" className="items-center justify-between">
+                <Box>
+                    <Text size="lg" fw={500}>Suppliers</Text>
+                </Box>
+                <Box>
                     <Button
                         size="xs"
-                        color="dark"
                         onClick={() => navigate("/app/suppliers/add-supplier")}
                     >
                         Add Supplier
                     </Button>
-                </div>
-            </div>
+                </Box>
+            </Box>
+
+            {/* Search Input */}
+            <Box px="lg">
+                <Group w={{ lg: "60%", sm: "100%" }}>
+                    <TextInput
+                        className="w-full lg:w-1/4"
+                        size="xs"
+                        placeholder="Name, Phone, Email"
+                        onChange={(event) => setSearchQuery(event.target.value)}
+                        value={searchQuery}
+                        rightSection={searchQuery ? <IconX className="cursor-pointer" onClick={() => setSearchQuery("")} size={14}/> : ""}
+                        leftSection={<IconSearch size={14}/>}
+                    />
+                </Group>
+            </Box>
 
             {/* Desktop Table */}
-            <div className="hidden lg:block mx-4 my-4 overflow-x-auto">
+            <Box visibleFrom="lg" mx="lg" my="lg" className="overflow-x-auto">
                 <Table
                     striped
                     highlightOnHover
@@ -43,23 +126,33 @@ const Suppliers = () => {
                 >
                     <Table.Thead>
                         <Table.Tr>
-                            <Table.Th>Name</Table.Th>
-                            <Table.Th>Phone</Table.Th>
-                            <Table.Th>Email</Table.Th>
-                            <Table.Th>Address</Table.Th>
-                            <Table.Th>Status</Table.Th>
-                            <Table.Th></Table.Th>
+                            <Table.Th style={{ width: "20%" }}>Name</Table.Th>
+                            <Table.Th style={{ width: "15%" }}>Phone</Table.Th>
+                            <Table.Th style={{ width: "20%" }}>Email</Table.Th>
+                            <Table.Th style={{ width: "25%" }}>
+                                Address
+                            </Table.Th>
+                            <Table.Th style={{ width: "10%" }}>Status</Table.Th>
+                            <Table.Th style={{ width: "5%" }}></Table.Th>
                         </Table.Tr>
                     </Table.Thead>
                     <Table.Tbody>
-                        {paginatedData.length !== 0 ? (
-                            paginatedData.map((c: any, i: number) => (
+                        {suppliers?.length !== 0 ? (
+                            suppliers?.map((c: any, i: number) => (
                                 <Table.Tr key={i}>
-                                    <Table.Td>{c.name}</Table.Td>
-                                    <Table.Td>{c.phone}</Table.Td>
-                                    <Table.Td>{c.email}</Table.Td>
-                                    <Table.Td>{c.address}</Table.Td>
-                                    <Table.Td>
+                                    <Table.Td style={{ width: "20%" }}>
+                                        {c.name}
+                                    </Table.Td>
+                                    <Table.Td style={{ width: "15%" }}>
+                                        {c.phone}
+                                    </Table.Td>
+                                    <Table.Td style={{ width: "20%" }}>
+                                        {c.email || "-"}
+                                    </Table.Td>
+                                    <Table.Td style={{ width: "25%" }}>
+                                        {c.address || "-"}
+                                    </Table.Td>
+                                    <Table.Td style={{ width: "10%" }}>
                                         <Badge
                                             color={c.status ? "green" : "red"}
                                             size="sm"
@@ -68,7 +161,7 @@ const Suppliers = () => {
                                             {c.status ? "ACTIVE" : "INACTIVE"}
                                         </Badge>
                                     </Table.Td>
-                                    <Table.Td>
+                                    <Table.Td style={{ width: "5%" }}>
                                         <Menu width={150}>
                                             <Menu.Target>
                                                 <IconDotsVertical
@@ -78,9 +171,59 @@ const Suppliers = () => {
                                             </Menu.Target>
                                             <Menu.Dropdown>
                                                 <Menu.Label>Actions</Menu.Label>
-                                                <Menu.Item>View</Menu.Item>
-                                                <Menu.Item>Edit</Menu.Item>
-                                                <Menu.Item>
+                                                <Menu.Item
+                                                    onClick={() => {
+                                                        navigate(
+                                                            `/app/suppliers/view-supplier/${c._id}`
+                                                        );
+                                                        sessionStorage.setItem(
+                                                            "pageIndex",
+                                                            String(pageIndex)
+                                                        );
+                                                    }}
+                                                    rightSection={
+                                                        <IconEye size={16} />
+                                                    }
+                                                >
+                                                    View
+                                                </Menu.Item>
+                                                <Menu.Item
+                                                    onClick={() => {
+                                                        navigate(
+                                                            `/app/suppliers/edit-supplier/${c._id}`
+                                                        );
+                                                        sessionStorage.setItem(
+                                                            "pageIndex",
+                                                            String(pageIndex)
+                                                        );
+                                                    }}
+                                                    rightSection={
+                                                        <IconEdit size={16} />
+                                                    }
+                                                >
+                                                    Edit
+                                                </Menu.Item>
+                                                <Menu.Item
+                                                    color={
+                                                        c.status
+                                                            ? "red"
+                                                            : "green"
+                                                    }
+                                                    onClick={() =>
+                                                        handleChangeStatus(c)
+                                                    }
+                                                    rightSection={
+                                                        c.status ? (
+                                                            <IconMobiledataOff
+                                                                size={16}
+                                                            />
+                                                        ) : (
+                                                            <IconMobiledata
+                                                                size={16}
+                                                            />
+                                                        )
+                                                    }
+                                                >
                                                     {c.status ? (
                                                         <span className="text-red-700">
                                                             Deactivate
@@ -112,20 +255,19 @@ const Suppliers = () => {
                         )}
                     </Table.Tbody>
                 </Table>
-            </div>
+            </Box>
 
             {/* Mobile Cards */}
-            <div className="block lg:hidden mx-4 my-4">
-                {paginatedData.length !== 0 ? (
-                    paginatedData.map((c: any, i: number) => (
-                        <div
-                            key={i}
-                            className="border border-gray-300 rounded-md mb-4 p-4 bg-white shadow-sm"
-                        >
-                            <p className="font-semibold">Name: {c.name}</p>
-                            <p>Phone: {c.phone}</p>
-                            <p>Email: {c.email}</p>
-                            <p>Address: {c.address}</p>
+            <Box my="lg" mx="sm" hiddenFrom="lg">
+                {suppliers?.length !== 0 ? (
+                    suppliers?.map((c: any, i: number) => (
+                        <Card key={i} shadow="sm" withBorder mx="xs" my="lg">
+                            <Text className="font-semibold">
+                                Name: {c.name}
+                            </Text>
+                            <Text>Phone: {c.phone}</Text>
+                            <Text>Email: {c.email}</Text>
+                            <Text>Address: {c.address}</Text>
                             <Badge
                                 color={c.status ? "green" : "red"}
                                 size="sm"
@@ -134,7 +276,7 @@ const Suppliers = () => {
                             >
                                 {c.status ? "ACTIVE" : "INACTIVE"}
                             </Badge>
-                            <div className="mt-2">
+                            <Group mt="md">
                                 <Menu width={150}>
                                     <Menu.Target>
                                         <IconDotsVertical
@@ -144,9 +286,51 @@ const Suppliers = () => {
                                     </Menu.Target>
                                     <Menu.Dropdown>
                                         <Menu.Label>Actions</Menu.Label>
-                                        <Menu.Item>View</Menu.Item>
-                                        <Menu.Item>Edit</Menu.Item>
-                                        <Menu.Item>
+                                        <Menu.Item
+                                            onClick={() => {
+                                                navigate(
+                                                    `/app/suppliers/view-supplier/${c._id}`
+                                                );
+                                                sessionStorage.setItem(
+                                                    "pageIndex",
+                                                    String(pageIndex)
+                                                );
+                                            }}
+                                            rightSection={<IconEye size={16} />}
+                                        >
+                                            View
+                                        </Menu.Item>
+                                        <Menu.Item
+                                            onClick={() => {
+                                                navigate(
+                                                    `/app/suppliers/edit-supplier/${c._id}`
+                                                );
+                                                sessionStorage.setItem(
+                                                    "pageIndex",
+                                                    String(pageIndex)
+                                                );
+                                            }}
+                                            rightSection={
+                                                <IconEdit size={16} />
+                                            }
+                                        >
+                                            Edit
+                                        </Menu.Item>
+                                        <Menu.Item
+                                            color={c.status ? "red" : "green"}
+                                            onClick={() =>
+                                                handleChangeStatus(c)
+                                            }
+                                            rightSection={
+                                                c.status ? (
+                                                    <IconMobiledataOff
+                                                        size={16}
+                                                    />
+                                                ) : (
+                                                    <IconMobiledata size={16} />
+                                                )
+                                            }
+                                        >
                                             {c.status ? (
                                                 <span className="text-red-700">
                                                     Deactivate
@@ -159,29 +343,24 @@ const Suppliers = () => {
                                         </Menu.Item>
                                     </Menu.Dropdown>
                                 </Menu>
-                            </div>
-                        </div>
+                            </Group>
+                        </Card>
                     ))
                 ) : (
-                    <div className="text-center">
-                        <IconDatabaseOff
-                            color="red"
-                            size="24"
-                            className="mr-2 self-center"
-                        />
-                        <p>No data available</p>
-                    </div>
+                    <Group mx="xs" my="lg">
+                        <IconDatabaseOff color="red" size={24} />
+                        <Text>No data available</Text>
+                    </Group>
                 )}
-            </div>
+            </Box>
 
             {/* Pagination */}
-            <div className="my-4 mx-4 flex justify-end">
+            <Group my="md" ms="md" px="lg" justify="flex-end">
                 <Pagination.Root
-                    total={totalPages}
-                    value={currentPage}
-                    onChange={setCurrentPage}
+                    total={Math.ceil( metadata?.total / pageSize)}
+                    value={pageIndex}
+                    onChange={setPageIndex}
                     size="sm"
-                    color="dark"
                     siblings={1}
                     boundaries={0}
                 >
@@ -193,7 +372,7 @@ const Suppliers = () => {
                         <Pagination.Last />
                     </Group>
                 </Pagination.Root>
-            </div>
+            </Group>
         </>
     );
 };

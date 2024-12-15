@@ -1,20 +1,44 @@
-import { Box, Button, Group, Textarea, TextInput, Text } from "@mantine/core";
+import { Box, Button, Group, Textarea, TextInput } from "@mantine/core";
 import { IconArrowLeft } from "@tabler/icons-react";
 import { isNotEmpty, useForm } from "@mantine/form";
 import { useLoading } from "../../helpers/loadingContext.tsx";
-import { useDispatch } from "react-redux";
-import { AppDispatch } from "../../store/store.ts";
-import { addSupplier } from "../../store/supplierSlice/supplierSlice.ts";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../../store/store.ts";
+import {
+    getSupplier,
+    updateSupplier,
+} from "../../store/supplierSlice/supplierSlice.ts";
 import toNotify from "../../helpers/toNotify.tsx";
-import { useNavigate } from "react-router";
+import { useNavigate, useParams } from "react-router";
+import { useEffect } from "react";
 import { isValidEmail, isValidPhone } from "../../utils/inputValidators.ts";
 
-const AddSupplier = () => {
+const EditSupplier = () => {
     const { setLoading } = useLoading();
     const dispatch = useDispatch<AppDispatch | any>();
     const navigate = useNavigate();
+    const id = useParams().id;
+    const selectedSupplier = useSelector(
+        (state: RootState) => state.supplier.selectedSupplier
+    );
+    console.log("ss", selectedSupplier);
 
-    const supplierAddForm = useForm({
+    useEffect(() => {
+        fetchSupplier();
+    }, [dispatch, id]);
+
+    useEffect(() => {
+        supplierEditForm.setValues(selectedSupplier);
+        supplierEditForm.resetDirty();
+    }, [selectedSupplier]);
+
+    const fetchSupplier = async () => {
+        setLoading(false);
+        await dispatch(getSupplier(id));
+        setLoading(false);
+    };
+
+    const supplierEditForm = useForm({
         mode: "uncontrolled",
         initialValues: {
             name: "",
@@ -41,14 +65,16 @@ const AddSupplier = () => {
         },
     });
 
-    const handleSupplierAdd = async (values: typeof supplierAddForm.values) => {
+    const handleSupplierEdit = async (
+        values: typeof supplierEditForm.values
+    ) => {
         setLoading(true);
-        const response = await dispatch(addSupplier(values));
-        if (response.type === "supplier/addSupplier/fulfilled") {
+        const response = await dispatch(updateSupplier({ id, values }));
+        if (response.type === "supplier/updateSupplier/fulfilled") {
             setLoading(false);
-            toNotify("Successs", "Supplier added successfully", "SUCCESS");
+            toNotify("Successs", "Supplier updated successfully", "SUCCESS");
             navigate("/app/suppliers");
-        } else if (response.type === "supplier/addSupplier/rejected") {
+        } else if (response.type === "supplier/updateSupplier/rejected") {
             const error: any = response.payload.error;
             setLoading(false);
             toNotify("Error", `${error}`, "ERROR");
@@ -70,39 +96,43 @@ const AddSupplier = () => {
                         className="cursor-pointer"
                         onClick={() => history.back()}
                     />
-                    <Text size="lg" fw={500} ml="md">Add Supplier</Text>
+                    <Group display="flex">Edit Supplier</Group>
                 </Group>
             </Group>
             <Box w={{ sm: "100%", lg: "50%" }} px="lg">
-                <form onSubmit={supplierAddForm.onSubmit(handleSupplierAdd)}>
+                <form onSubmit={supplierEditForm.onSubmit(handleSupplierEdit)}>
                     <TextInput
                         label="Name"
                         withAsterisk
                         placeholder="Enter Supplier Name"
-                        key={supplierAddForm.key("name")}
-                        {...supplierAddForm.getInputProps("name")}
+                        key={supplierEditForm.key("name")}
+                        {...supplierEditForm.getInputProps("name")}
                     />
                     <TextInput
                         label="Phone"
                         withAsterisk
                         placeholder="Enter Supplier Phone Number"
-                        key={supplierAddForm.key("phone")}
-                        {...supplierAddForm.getInputProps("phone")}
+                        key={supplierEditForm.key("phone")}
+                        {...supplierEditForm.getInputProps("phone")}
                     />
                     <TextInput
                         label="Email"
                         placeholder="Enter Supplier Email"
-                        key={supplierAddForm.key("email")}
-                        {...supplierAddForm.getInputProps("email")}
+                        key={supplierEditForm.key("email")}
+                        {...supplierEditForm.getInputProps("email")}
                     />
                     <Textarea
                         label="Address"
                         placeholder="Enter Supplier Address"
-                        key={supplierAddForm.key("address")}
-                        {...supplierAddForm.getInputProps("address")}
+                        key={supplierEditForm.key("address")}
+                        {...supplierEditForm.getInputProps("address")}
                     />
                     <Group justify="flex-end" display="flex" pb="md" mt="md">
-                        <Button size="xs" type="submit">
+                        <Button
+                            size="xs"
+                            type="submit"
+                            disabled={!supplierEditForm.isDirty()}
+                        >
                             Submit
                         </Button>
                     </Group>
@@ -112,4 +142,4 @@ const AddSupplier = () => {
     );
 };
 
-export default AddSupplier;
+export default EditSupplier;

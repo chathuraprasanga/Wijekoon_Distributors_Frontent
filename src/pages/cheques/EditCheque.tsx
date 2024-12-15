@@ -1,33 +1,40 @@
 import {
     Button,
+    Group,
     NumberInput,
     Select,
     TextInput,
-    Group,
     Text,
     Box,
 } from "@mantine/core";
 import { IconArrowLeft } from "@tabler/icons-react";
 import { useLoading } from "../../helpers/loadingContext.tsx";
-import { useDispatch } from "react-redux";
-import { AppDispatch } from "../../store/store.ts";
-import { useNavigate } from "react-router";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../../store/store.ts";
+import { useNavigate, useParams } from "react-router";
 import { isNotEmpty, useForm } from "@mantine/form";
 import toNotify from "../../helpers/toNotify.tsx";
-import { addCheque } from "../../store/chequeSlice/chequeSlice.ts";
+import {
+    getCheque,
+    updateCheque,
+} from "../../store/chequeSlice/chequeSlice.ts";
+import { useEffect, useState } from "react";
 import {
     isValidBankCode,
     isValidBranchCode,
     isValidChequeNumber,
 } from "../../utils/inputValidators.ts";
-import { useEffect, useState } from "react";
 import { getCustomers } from "../../store/customerSlice/customerSlice.ts";
 import { DatePickerInput } from "@mantine/dates";
 
-const AddCheque = () => {
+const EditCheque = () => {
     const { setLoading } = useLoading();
     const dispatch = useDispatch<AppDispatch | any>();
+    const id = useParams().id;
     const navigate = useNavigate();
+    const selectedCheque = useSelector(
+        (state: RootState) => state.cheque.selectedCheque
+    );
     const [selectableCustomers, setSelectableCustomers] = useState<any[]>([]);
     const customerData = selectableCustomers.map((data: any) => {
         return { label: data.name, value: data._id };
@@ -55,7 +62,28 @@ const AddCheque = () => {
         }
     };
 
-    const chequeAddForm = useForm({
+    useEffect(() => {
+        fetchCheque();
+    }, [dispatch, id]);
+
+    useEffect(() => {
+        if (selectedCheque) {
+            chequeEditForm.setValues({
+                ...selectedCheque,
+                customer: selectedCheque.customer?._id || "", // Use only the customer ID
+                depositDate: new Date(selectedCheque?.depositDate || new Date()),
+            });
+            chequeEditForm.resetDirty();
+        }
+    }, [selectedCheque]);
+
+    const fetchCheque = async () => {
+        setLoading(false);
+        await dispatch(getCheque(id));
+        setLoading(false);
+    };
+
+    const chequeEditForm = useForm({
         mode: "uncontrolled",
         initialValues: {
             customer: "",
@@ -102,14 +130,14 @@ const AddCheque = () => {
         },
     });
 
-    const handleChequeAdd = async (values: typeof chequeAddForm.values) => {
+    const handleChequeEdit = async (values: typeof chequeEditForm.values) => {
         setLoading(true);
-        const response = await dispatch(addCheque(values));
-        if (response.type === "cheque/addCheque/fulfilled") {
+        const response = await dispatch(updateCheque({ id, values }));
+        if (response.type === "cheque/updateCheque/fulfilled") {
             setLoading(false);
-            toNotify("Success", "Cheque added successfully", "SUCCESS");
+            toNotify("Success", "Cheque updated successfully", "SUCCESS");
             navigate("/app/cheques");
-        } else if (response.type === "cheque/addCheque/rejected") {
+        } else if (response.type === "cheque/updateCheque/rejected") {
             const error: any = response.payload.error;
             setLoading(false);
             toNotify("Error", `${error}`, "ERROR");
@@ -132,69 +160,67 @@ const AddCheque = () => {
                         onClick={() => history.back()}
                     />
                     <Text fw={500} ml="md" size="lg">
-                        Add Cheque
+                        Edit Cheque
                     </Text>
                 </Group>
             </Group>
             <Box w={{ sm: "100%", lg: "50%" }} px="lg">
-                <form onSubmit={chequeAddForm.onSubmit(handleChequeAdd)}>
+                <form onSubmit={chequeEditForm.onSubmit(handleChequeEdit)}>
                     <Select
                         label="Customer"
                         withAsterisk
                         placeholder="Select Customer"
                         searchable
                         data={customerData}
-                        key={chequeAddForm.key("customer")}
-                        {...chequeAddForm.getInputProps("customer")}
+                        key={chequeEditForm.key("customer")}
+                        {...chequeEditForm.getInputProps("customer")}
                     />
                     <TextInput
                         label="Cheque Number"
-                        placeholder="Enter Cheque Number"
+                        placeholder="Enter Branch Code"
                         withAsterisk
-                        key={chequeAddForm.key("number")}
-                        {...chequeAddForm.getInputProps("number")}
+                        key={chequeEditForm.key("number")}
+                        {...chequeEditForm.getInputProps("number")}
                     />
                     <TextInput
                         label="Bank"
                         withAsterisk
                         placeholder="Enter Customer Bank Name"
-                        key={chequeAddForm.key("bank")}
-                        {...chequeAddForm.getInputProps("bank")}
+                        key={chequeEditForm.key("bank")}
+                        {...chequeEditForm.getInputProps("bank")}
                     />
                     <TextInput
                         label="Branch"
                         placeholder="Enter Customer Bank Branch Code"
                         withAsterisk
-                        key={chequeAddForm.key("branch")}
-                        {...chequeAddForm.getInputProps("branch")}
+                        key={chequeEditForm.key("branch")}
+                        {...chequeEditForm.getInputProps("branch")}
                     />
                     <NumberInput
                         hideControls
                         allowNegative={false}
-                        withAsterisk
                         prefix="Rs. "
                         label="Cheque Amount"
+                        withAsterisk
                         decimalSeparator="."
                         decimalScale={2}
                         fixedDecimalScale
                         placeholder="Enter Cheque Amount"
-                        key={chequeAddForm.key("amount")}
-                        {...chequeAddForm.getInputProps("amount")}
+                        key={chequeEditForm.key("amount")}
+                        {...chequeEditForm.getInputProps("amount")}
                     />
                     <DatePickerInput
                         label="Deposit Date"
                         placeholder="Enter Deposit Date"
                         withAsterisk
-                        clearable
-                        defaultValue={new Date()}
-                        key={chequeAddForm.key("depositDate")}
-                        {...chequeAddForm.getInputProps("depositDate")}
+                        key={chequeEditForm.key("depositDate")}
+                        {...chequeEditForm.getInputProps("depositDate")}
                     />
                     <Group justify="flex-end" display="flex" pb="md" mt="md">
                         <Button
                             size="xs"
                             type="submit"
-                            onClick={() => console.log(chequeAddForm.values)}
+                            disabled={!chequeEditForm.isDirty()}
                         >
                             Submit
                         </Button>
@@ -205,4 +231,4 @@ const AddCheque = () => {
     );
 };
 
-export default AddCheque;
+export default EditCheque;

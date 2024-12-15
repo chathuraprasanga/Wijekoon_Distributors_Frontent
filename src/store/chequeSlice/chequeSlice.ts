@@ -6,26 +6,26 @@ import {
 } from "@reduxjs/toolkit";
 import axiosInstance from "../../interceptors/axiosInterceptor.ts";
 
-interface CustomerState {
-    customers: any;
-    selectedCustomer: any;
+interface ChequeState {
+    cheques: any;
+    selectedCheque: any;
     status: string;
     error: string;
 }
 
-const initialState: CustomerState = {
-    customers: [],
-    selectedCustomer: {},
+const initialState: ChequeState = {
+    cheques: [],
+    selectedCheque: {},
     status: "idle",
     error: "",
 };
 
-export const addCustomer = createAsyncThunk(
-    "customer/addCustomer",
+export const addCheque = createAsyncThunk(
+    "cheque/addCheque",
     async (payload: any, { rejectWithValue }) => {
         try {
             const response = await axiosInstance.post(
-                `/customers/customer`,
+                `/cheques/cheque`,
                 payload
             );
             return response.data;
@@ -35,12 +35,12 @@ export const addCustomer = createAsyncThunk(
     }
 );
 
-export const getCustomers = createAsyncThunk(
-    "customer/getCustomers",
+export const getCheques = createAsyncThunk(
+    "cheque/getCheques",
     async (payload: any, { rejectWithValue }) => {
         try {
             const response = await axiosInstance.post(
-                `/customers/customers`,
+                `/cheques/cheques`,
                 payload
             );
             return response.data;
@@ -50,12 +50,12 @@ export const getCustomers = createAsyncThunk(
     }
 );
 
-export const getPagedCustomers = createAsyncThunk(
-    "customer/getPagedCustomers",
+export const getPagedCheques = createAsyncThunk(
+    "cheque/getPagedCheques",
     async (payload: any, { rejectWithValue }) => {
         try {
             const response = await axiosInstance.post(
-                `/customers/paged-customers`,
+                `/cheques/paged-cheques`,
                 payload
             );
             return response.data;
@@ -65,12 +65,12 @@ export const getPagedCustomers = createAsyncThunk(
     }
 );
 
-export const getCustomer = createAsyncThunk(
-    "customer/getCustomer",
+export const getCheque = createAsyncThunk(
+    "cheque/getCheque",
     async (id: any, { rejectWithValue }) => {
         try {
             const response = await axiosInstance.get(
-                `/customers/customer/${id}`
+                `/cheques/cheque/${id}`
             );
             return response.data;
         } catch (err: any) {
@@ -79,12 +79,12 @@ export const getCustomer = createAsyncThunk(
     }
 );
 
-export const updateCustomer = createAsyncThunk(
-    "customer/updateCustomer",
+export const updateCheque = createAsyncThunk(
+    "cheque/updateCheque",
     async (payload: any, { rejectWithValue }) => {
         try {
             const response = await axiosInstance.put(
-                `/customers/customer/${payload.id}`,
+                `/cheques/cheque/${payload.id}`,
                 payload.values
             );
             return response.data;
@@ -94,12 +94,12 @@ export const updateCustomer = createAsyncThunk(
     }
 );
 
-export const changeStatusCustomer = createAsyncThunk(
-    "customer/changeStatus",
+export const changeStatusCheque = createAsyncThunk(
+    "cheque/changeStatus",
     async (payload: any, { rejectWithValue }) => {
         try {
             const response = await axiosInstance.put(
-                `/customers/change-status/${payload.id}`,
+                `/cheques/change-status/${payload.id}`,
                 payload.values
             );
             return response.data;
@@ -109,58 +109,58 @@ export const changeStatusCustomer = createAsyncThunk(
     }
 );
 
-const customerSlice = createSlice({
-    name: "customer",
+const chequeSlice = createSlice({
+    name: "cheque",
     initialState,
     reducers: {},
     extraReducers: (builder) => {
         builder.addCase(
-            addCustomer.fulfilled,
+            addCheque.fulfilled,
             (_, action: PayloadAction<any>) => {
                 return action.payload;
             }
         );
         builder.addCase(
-            getCustomers.fulfilled,
-            (state: Draft<CustomerState>, action: PayloadAction<any>) => {
-                state.customers = action.payload.result;
+            getCheques.fulfilled,
+            (state: Draft<ChequeState>, action: PayloadAction<any>) => {
+                state.cheques = action.payload.result;
             }
         );
         builder.addCase(
-            getCustomer.fulfilled,
-            (state: Draft<CustomerState>, action: PayloadAction<any>) => {
-                state.selectedCustomer = action.payload.result;
+            getPagedCheques.fulfilled,
+            (state: Draft<ChequeState>, action: PayloadAction<any>) => {
+                state.cheques = action.payload.result.response;
             }
         );
         builder.addCase(
-            updateCustomer.fulfilled,
-            (state: Draft<CustomerState>, action: PayloadAction<any>) => {
-                state.customers = state.customers.map((customer: any) =>
-                    customer._id === action.payload.result._id
-                        ? action.payload.result
-                        : customer
-                );
-                state.selectedCustomer = null;
+            getCheque.fulfilled,
+            (state: Draft<ChequeState>, action: PayloadAction<any>) => {
+                state.selectedCheque = action.payload.result;
             }
-        )
+        );
         builder.addCase(
-            changeStatusCustomer.fulfilled,
-            (state: Draft<CustomerState>, action: PayloadAction<any>) => {
-                state.customers = state.customers.map((customer: any) =>
-                    customer._id === action.payload.result._id
+            updateCheque.fulfilled,
+            (state: Draft<ChequeState>, action: PayloadAction<any>) => {
+                state.cheques = state.cheques.map((cheques: any) =>
+                    cheques._id === action.payload.result._id
                         ? action.payload.result
-                        : customer
+                        : cheques
                 );
-                state.selectedCustomer = null;
+                state.selectedCheque = null;
             }
-        )
+        );
         builder.addCase(
-            getPagedCustomers.fulfilled,
-            (state: Draft<CustomerState>,  action: PayloadAction<any>) => {
-                state.customers = action.payload.result.response;
+            changeStatusCheque.fulfilled,
+            (state: Draft<ChequeState>, action: PayloadAction<any>) => {
+                state.cheques = state.cheques.map((cheque: any) =>
+                    cheque._id === action.payload.result._id
+                        ? action.payload.result
+                        : cheque
+                );
+                state.selectedCheque = null;
             }
-        )
+        );
     },
 });
 
-export default customerSlice.reducer;
+export default chequeSlice.reducer;

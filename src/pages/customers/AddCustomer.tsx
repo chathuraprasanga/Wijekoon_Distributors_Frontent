@@ -1,41 +1,21 @@
-import { Button, Textarea, TextInput } from "@mantine/core";
+import { Button, Group, Textarea, TextInput, Text, Box } from "@mantine/core";
 import { IconArrowLeft } from "@tabler/icons-react";
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "../../store/store.ts";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "../../store/store.ts";
 import { useLoading } from "../../helpers/loadingContext.tsx";
 import {
     addCustomer,
-    getCustomer,
 } from "../../store/customerSlice/customerSlice.ts";
 import toNotify from "../../helpers/toNotify.tsx";
-import { useNavigate, useParams } from "react-router";
+import { useNavigate } from "react-router";
 import { useForm } from "@mantine/form";
-import { useEffect } from "react";
+import { isValidEmail, isValidPhone } from "../../utils/inputValidators.ts";
 
 const AddCustomer = () => {
     const { setLoading } = useLoading();
     const navigate = useNavigate();
     const dispatch = useDispatch<AppDispatch | any>();
-    const id: any = useParams().id ?? null;
-    const customer = useSelector(
-        (state: RootState) => state.customer.selectedCustomer
-    );
 
-    useEffect(() => {
-        if (id) {
-            fetchSelectedCustomer();
-        }
-    }, [dispatch]);
-
-    useEffect(() => {
-        customerAddForm.setValues(customer);
-    }, [customer]);
-
-    const fetchSelectedCustomer = async () => {
-        setLoading(true);
-        await dispatch(getCustomer(id));
-        setLoading(false);
-    };
 
     const customerAddForm = useForm({
         mode: "uncontrolled",
@@ -47,17 +27,17 @@ const AddCustomer = () => {
         },
         validate: {
             name: (value) => (value.trim() ? null : "Name is required"),
-            phone: (value) => {
-                if (!value.trim()) return "Phone is required";
-                const phoneRegex = /^[0-9]+$/; // Only digits
-                return phoneRegex.test(value)
+            phone: (value: string) => {
+                if (!value) {
+                    return "Phone number is required";
+                }
+                return isValidPhone(value)
                     ? null
-                    : "Phone must contain only numbers";
+                    : "Enter a valid phone number";
             },
             email: (value) => {
-                if (!value.trim()) return null; // Skip validation if email is empty
-                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                return emailRegex.test(value)
+                if (!value.trim()) return null;
+                return isValidEmail(value)
                     ? null
                     : "Enter a valid email address";
             },
@@ -74,7 +54,7 @@ const AddCustomer = () => {
             navigate("/app/customers");
         } else if (response.type === "customer/addCustomer/rejected"){
             setLoading(false);
-            toNotify("Success", `${response.payload.error}`, "ERROR");
+            toNotify("Error", `${response.payload.error}`, "ERROR");
         } else {
             setLoading(false);
             toNotify("Something went wrong", `Please contact system admin`, "WARNING");
@@ -83,18 +63,18 @@ const AddCustomer = () => {
 
     return (
         <>
-            <div className="items-center flex flex-row justify-between p-4">
-                <div className="flex flex-row items-center">
+            <Group p="lg" display="flex" justify="space-between" align="center">
+                <Group display="flex">
                     <IconArrowLeft
                         className="cursor-pointer"
                         onClick={() => history.back()}
                     />
-                    <span className="text-lg font-semibold ml-4">
+                    <Text fw={500} ml="md" size="lg">
                         Add Customer
-                    </span>
-                </div>
-            </div>
-            <div className="mx-4 my-4 lg:w-1/2">
+                    </Text>
+                </Group>
+            </Group>
+            <Box w={{  sm: "100%", lg: "50%" }} px="lg">
                 <form onSubmit={customerAddForm.onSubmit(handleAddCustomer)}>
                     <TextInput
                         label="Name"
@@ -118,13 +98,13 @@ const AddCustomer = () => {
                         placeholder="Enter Customer Address"
                         {...customerAddForm.getInputProps("address")}
                     />
-                    <div className="mt-4 flex justify-end">
-                        <Button size="xs" color="dark" type="submit">
+                    <Group justify="flex-end" display="flex" pb="md" mt="md">
+                        <Button size="xs" type="submit">
                             Submit
                         </Button>
-                    </div>
+                    </Group>
                 </form>
-            </div>
+            </Box>
         </>
     );
 };

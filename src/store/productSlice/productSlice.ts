@@ -6,26 +6,26 @@ import {
 } from "@reduxjs/toolkit";
 import axiosInstance from "../../interceptors/axiosInterceptor.ts";
 
-interface CustomerState {
-    customers: any;
-    selectedCustomer: any;
+interface ProductState {
+    products: any;
+    selectedProduct: any;
     status: string;
     error: string;
 }
 
-const initialState: CustomerState = {
-    customers: [],
-    selectedCustomer: {},
+const initialState: ProductState = {
+    products: [],
+    selectedProduct: {},
     status: "idle",
     error: "",
 };
 
-export const addCustomer = createAsyncThunk(
-    "customer/addCustomer",
+export const getProducts = createAsyncThunk(
+    "product/getProducts",
     async (payload: any, { rejectWithValue }) => {
         try {
             const response = await axiosInstance.post(
-                `/customers/customer`,
+                "/products/products",
                 payload
             );
             return response.data;
@@ -35,12 +35,12 @@ export const addCustomer = createAsyncThunk(
     }
 );
 
-export const getCustomers = createAsyncThunk(
-    "customer/getCustomers",
+export const getPagedProducts = createAsyncThunk(
+    "product/getPagedProducts",
     async (payload: any, { rejectWithValue }) => {
         try {
             const response = await axiosInstance.post(
-                `/customers/customers`,
+                "/products/paged-products",
                 payload
             );
             return response.data;
@@ -50,12 +50,12 @@ export const getCustomers = createAsyncThunk(
     }
 );
 
-export const getPagedCustomers = createAsyncThunk(
-    "customer/getPagedCustomers",
+export const addProduct = createAsyncThunk(
+    "product/addProduct",
     async (payload: any, { rejectWithValue }) => {
         try {
             const response = await axiosInstance.post(
-                `/customers/paged-customers`,
+                "/products/product",
                 payload
             );
             return response.data;
@@ -65,12 +65,12 @@ export const getPagedCustomers = createAsyncThunk(
     }
 );
 
-export const getCustomer = createAsyncThunk(
-    "customer/getCustomer",
+export const getProduct = createAsyncThunk(
+    "product/getProduct",
     async (id: any, { rejectWithValue }) => {
         try {
             const response = await axiosInstance.get(
-                `/customers/customer/${id}`
+                `/products/product/${id}`
             );
             return response.data;
         } catch (err: any) {
@@ -79,12 +79,26 @@ export const getCustomer = createAsyncThunk(
     }
 );
 
-export const updateCustomer = createAsyncThunk(
-    "customer/updateCustomer",
+export const updateProduct = createAsyncThunk(
+    "product/updateProduct",
     async (payload: any, { rejectWithValue }) => {
         try {
             const response = await axiosInstance.put(
-                `/customers/customer/${payload.id}`,
+                `/products/product/${payload.id}`, payload.values
+            );
+            return response.data;
+        } catch (err: any) {
+            throw rejectWithValue(err.response.data);
+        }
+    }
+);
+
+export const changeStatusProduct = createAsyncThunk(
+    "product/changeStatus",
+    async (payload: any, { rejectWithValue }) => {
+        try {
+            const response = await axiosInstance.put(
+                `/products/change-status/${payload.id}`,
                 payload.values
             );
             return response.data;
@@ -94,73 +108,58 @@ export const updateCustomer = createAsyncThunk(
     }
 );
 
-export const changeStatusCustomer = createAsyncThunk(
-    "customer/changeStatus",
-    async (payload: any, { rejectWithValue }) => {
-        try {
-            const response = await axiosInstance.put(
-                `/customers/change-status/${payload.id}`,
-                payload.values
-            );
-            return response.data;
-        } catch (err: any) {
-            throw rejectWithValue(err.response.data);
-        }
-    }
-);
-
-const customerSlice = createSlice({
-    name: "customer",
+const productSlice = createSlice({
+    name: "product",
     initialState,
     reducers: {},
     extraReducers: (builder) => {
         builder.addCase(
-            addCustomer.fulfilled,
+            getProducts.fulfilled,
+            (state: Draft<ProductState>, action: PayloadAction<any>) => {
+                state.products = action.payload.result;
+            }
+        );
+        builder.addCase(
+            getPagedProducts.fulfilled,
+            (state: Draft<ProductState>, action: PayloadAction<any>) => {
+                state.products = action.payload.result.response;
+            }
+        );
+        builder.addCase(
+            addProduct.fulfilled,
             (_, action: PayloadAction<any>) => {
                 return action.payload;
             }
         );
         builder.addCase(
-            getCustomers.fulfilled,
-            (state: Draft<CustomerState>, action: PayloadAction<any>) => {
-                state.customers = action.payload.result;
-            }
-        );
-        builder.addCase(
-            getCustomer.fulfilled,
-            (state: Draft<CustomerState>, action: PayloadAction<any>) => {
-                state.selectedCustomer = action.payload.result;
-            }
-        );
-        builder.addCase(
-            updateCustomer.fulfilled,
-            (state: Draft<CustomerState>, action: PayloadAction<any>) => {
-                state.customers = state.customers.map((customer: any) =>
-                    customer._id === action.payload.result._id
-                        ? action.payload.result
-                        : customer
-                );
-                state.selectedCustomer = null;
+            getProduct.fulfilled,
+            (state: Draft<ProductState>, action: PayloadAction<any>) => {
+                state.selectedProduct = action.payload.result;
             }
         )
         builder.addCase(
-            changeStatusCustomer.fulfilled,
-            (state: Draft<CustomerState>, action: PayloadAction<any>) => {
-                state.customers = state.customers.map((customer: any) =>
-                    customer._id === action.payload.result._id
+            updateProduct.fulfilled,
+            (state: Draft<ProductState>, action: PayloadAction<any>) => {
+                state.products = state.products.map((product: any) =>
+                    product._id === action.payload.result._id
                         ? action.payload.result
-                        : customer
+                        : product
                 );
-                state.selectedCustomer = null;
+                state.selectedProduct = null;
             }
         )
         builder.addCase(
-            getPagedCustomers.fulfilled,
-            (state: Draft<CustomerState>,  action: PayloadAction<any>) => {
-                state.customers = action.payload.result.response;
+            changeStatusProduct.fulfilled,
+            (state: Draft<ProductState>, action: PayloadAction<any>) => {
+                state.products = state.products.map((product: any) =>
+                    product._id === action.payload.result._id
+                        ? action.payload.result
+                        : product
+                );
+                state.selectedProduct = null;
             }
         )
     },
 });
 
-export default customerSlice.reducer;
+export default productSlice.reducer;

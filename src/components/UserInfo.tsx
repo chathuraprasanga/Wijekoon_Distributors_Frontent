@@ -1,53 +1,64 @@
-import { Avatar, Group, Menu, rem } from "@mantine/core";
-import { IconChevronRight, IconLogout, IconSettings } from "@tabler/icons-react";
+import { Avatar, Box, Group, Menu, rem, Text } from "@mantine/core";
+import {
+    IconChevronRight,
+    IconLogout,
+    IconSettings,
+} from "@tabler/icons-react";
 import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store/store.ts";
+import { logOut } from "../store/authSlice/authSlice.ts";
 
 const UserInfo = () => {
+    const dispatch = useDispatch();
     const navigate = useNavigate();
     const userDetails = useSelector((state: RootState) => state.auth.user);
 
-    const avatar = userDetails.username
-        .split(" ")
-        .map((name:any) => name[0])
+    const avatar = userDetails?.username
+        ?.split(" ")
+        .map((name: any) => name[0])
         .join("")
         .toUpperCase();
 
     return (
         <>
-            <Menu shadow="md" width="200" >
+            <Menu shadow="md" width="200">
                 <Menu.Target>
                     <Group className="cursor-pointer">
                         {/* Avatar */}
                         <Avatar
                             color="initials"
+                            variant="gradient"
                             name={avatar}
                             key={avatar}
                             radius="xl"
                         ></Avatar>
-                        <div className="flex flex-col">
-                            <div className="hidden md:flex lg:flex flex-col">
-                                <span className="font-bold text-sm text-gray-800">
-                                    {userDetails.username}
-                                </span>
-                                <span className="text-xs text-gray-400">
-                                    {userDetails.email}
-                                </span>
-                            </div>
-                        </div>
-                        <div className="hidden lg:block">
-                            <IconChevronRight size={20} color="gray" />
-                        </div>
+                        <Group visibleFrom={"lg"}>
+                            <Box>
+                                <Box>
+                                    <Text fw={700} size="sm">
+                                        {userDetails.username}
+                                    </Text>
+                                    <Text size="xs" c="gray.5">
+                                        {userDetails.email}
+                                    </Text>
+                                </Box>
+                            </Box>
+
+                            {/* Chevron Icon Section */}
+                            <Box>
+                                <IconChevronRight size={20} color="gray" />
+                            </Box>
+                        </Group>
                     </Group>
                 </Menu.Target>
                 <Menu.Dropdown>
                     <Menu.Label hiddenFrom="lg">User Details</Menu.Label>
-                    <Menu.Item hiddenFrom="lg"
-                    >
-                        <span>{userDetails.username}</span>
-                        <br/>
-                        <span className="text-xs">{userDetails.email}</span>
+                    <Menu.Item hiddenFrom="lg">
+                        <Text>{userDetails.username}</Text>
+                        <Text size="xs" c="gray.6">
+                            {userDetails.email}
+                        </Text>
                     </Menu.Item>
                     <Menu.Divider />
                     <Menu.Label>Application</Menu.Label>
@@ -58,7 +69,7 @@ const UserInfo = () => {
                             />
                         }
                         disabled
-                        onClick={()=> navigate("/app/settings")}
+                        onClick={() => navigate("/app/settings")}
                     >
                         Settings
                     </Menu.Item>
@@ -71,9 +82,12 @@ const UserInfo = () => {
                                 style={{ width: rem(14), height: rem(14) }}
                             />
                         }
-                        onClick={() => navigate("/login")}
+                        onClick={() => {
+                            dispatch(logOut());
+                            navigate("/login");
+                        }}
                     >
-                       Logout
+                        Logout
                     </Menu.Item>
                 </Menu.Dropdown>
             </Menu>

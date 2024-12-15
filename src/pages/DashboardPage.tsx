@@ -1,148 +1,154 @@
-import { IconCashBanknote, IconInvoice, IconPackages, IconUsersGroup } from "@tabler/icons-react";
-import { BarChart } from "@mantine/charts";
-import { Button, Group } from "@mantine/core";
+import {
+    IconCashBanknote,
+    IconInvoice,
+    IconPackages,
+    IconUsersGroup,
+} from "@tabler/icons-react";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../store/store.ts";
+import { useEffect } from "react";
+import { useLoading } from "../helpers/loadingContext.tsx";
+import { getDashboardDetails } from "../store/dashboardSlice/dashboardSlice.ts";
 import toNotify from "../helpers/toNotify.tsx";
+import { ActionIcon, Box, Grid, Paper, Text } from "@mantine/core";
 
 const DashboardPage = () => {
-    const data = [
-        {
-            month: "January",
-            "Keshara Super Lime": 1200,
-            "Keshara Skim Coat": 900,
-            "Keshara Tile Master": 200,
-            "Keshara Dollamite Fertilizer": 300,
-        },
-        {
-            month: "February",
-            "Keshara Super Lime": 1900,
-            "Keshara Skim Coat": 1200,
-            "Keshara Tile Master": 400,
-            "Keshara Dollamite Fertilizer": 500,
-        },
-        {
-            month: "March",
-            "Keshara Super Lime": 400,
-            "Keshara Skim Coat": 1000,
-            "Keshara Tile Master": 200,
-            "Keshara Dollamite Fertilizer": 600,
-        },
-        {
-            month: "April",
-            "Keshara Super Lime": 1000,
-            "Keshara Skim Coat": 200,
-            "Keshara Tile Master": 800,
-            "Keshara Dollamite Fertilizer": 700,
-        },
-        {
-            month: "May",
-            "Keshara Super Lime": 800,
-            "Keshara Skim Coat": 1400,
-            "Keshara Tile Master": 1200,
-            "Keshara Dollamite Fertilizer": 1000,
-        },
-        {
-            month: "June",
-            "Keshara Super Lime": 750,
-            "Keshara Skim Coat": 600,
-            "Keshara Tile Master": 1000,
-            "Keshara Dollamite Fertilizer": 1200,
-        },
-    ];
+    const { setLoading } = useLoading();
+    const dispatch = useDispatch<AppDispatch | any>();
+    const user = useSelector((state: RootState) => state.auth.user);
+    const dashboardDetails = useSelector((state: RootState) => state.dashboard);
+
+    useEffect(() => {
+        fetchDashboardDetails();
+    }, [dispatch]);
+
+    const fetchDashboardDetails = async () => {
+        setLoading(true);
+        const response = await dispatch(
+            getDashboardDetails({ userId: user._id })
+        );
+        if (response.type === "dashboard/getDetails/fulfilled") {
+            setLoading(false);
+        } else {
+            setLoading(false);
+            toNotify(
+                "Warning",
+                "Something went wrong, Please contact Admin",
+                "WARNING"
+            );
+        }
+    };
 
     return (
-        <div className="p-4">
-            <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                <div className="p-6 rounded shadow flex items-center">
-                    <div className="mr-4">
-                        <IconCashBanknote />
-                    </div>
-                    <div>
-                        <div className="text-lg font-semibold">Cheques</div>
-                        <div className="text-sm"># 155</div>
-                    </div>
-                </div>
+        <Paper p="md">
+            <Grid gutter="md" className="flex flex-row">
+                <Grid.Col span={{ base: 12, md: 6, lg: 3 }}>
+                    <Paper
+                        shadow="md"
+                        p="md"
+                        radius="sm"
+                        display="flex"
+                        withBorder
+                        className="items-center"
+                    >
+                        <Box mr="xl">
+                            <ActionIcon size="xl" variant="light">
+                                <IconCashBanknote />
+                            </ActionIcon>
+                        </Box>
+                        <Box>
+                            <Text size="lg" fw={500}>
+                                Cheques
+                            </Text>
+                            <Text size="sm">
+                                # {dashboardDetails?.chequesCount}
+                            </Text>
+                        </Box>
+                    </Paper>
+                </Grid.Col>
 
-                <div className=" p-6 rounded shadow flex items-center">
-                    <div className="mr-4">
-                        <IconInvoice />
-                    </div>
-                    <div>
-                        <div className="text-lg font-semibold">Invoices</div>
-                        <div className="text-sm"># 155</div>
-                    </div>
-                </div>
+                {/* Invoices Card */}
+                <Grid.Col span={{ base: 12, md: 6, lg: 3 }}>
+                    <Paper
+                        shadow="md"
+                        p="md"
+                        radius="sm"
+                        display="flex"
+                        withBorder
+                        className="items-center"
+                    >
+                        <Box mr="xl">
+                            <ActionIcon size="xl" variant="light">
+                                <IconInvoice />
+                            </ActionIcon>
+                        </Box>
+                        <Box>
+                            <Text size="lg" fw={500}>
+                                Invoices
+                            </Text>
+                            <Text size="sm">
+                                # {dashboardDetails?.invoicesCount}
+                            </Text>
+                        </Box>
+                    </Paper>
+                </Grid.Col>
 
-                <div className=" p-6 rounded shadow flex items-center">
-                    <div className="mr-4">
-                        <IconUsersGroup />
-                    </div>
-                    <div>
-                        <div className="text-lg font-semibold">Customers</div>
-                        <div className="text-sm"># 155</div>
-                    </div>
-                </div>
+                {/* Customers Card */}
+                <Grid.Col span={{ base: 12, md: 6, lg: 3 }}>
+                    <Paper
+                        shadow="md"
+                        p="md"
+                        radius="sm"
+                        display="flex"
+                        withBorder
+                        className="items-center"
+                    >
+                        <Box mr="xl">
+                            <ActionIcon size="xl" variant="light">
+                                <IconUsersGroup />
+                            </ActionIcon>
+                        </Box>
+                        <Box>
+                            <Text size="lg" fw={500}>
+                                Customers
+                            </Text>
+                            <Text size="sm">
+                                # {dashboardDetails?.customersCount}
+                            </Text>
+                        </Box>
+                    </Paper>
+                </Grid.Col>
 
-                <div className=" p-6 rounded shadow flex items-center">
-                    <div className="mr-4">
-                        <IconPackages />
-                    </div>
-                    <div>
-                        <div className="text-lg font-semibold">Products</div>
-                        <div className="text-sm"># 155</div>
-                    </div>
-                </div>
-            </div>
-            <div className="w-full h-full mt-12 flex flex-col lg:flex-row">
-                {/* First Chart */}
-                <div className="w-full lg:w-1/2 p-4 shadow">
-                    <BarChart
-                        h={300}
-                        data={data}
-                        dataKey="month"
-                        series={[
-                            { name: "Keshara Super Lime", color: "lime.6" },
-                            { name: "Keshara Skim Coat", color: "gray.6" },
-                            { name: "Keshara Tile Master", color: "orange.6" },
-                            { name: "Keshara Dollamite Fertilizer", color: "green.6" },
-                        ]}
-                        tickLine="y"
-                    />
-                </div>
-
-                {/* Second Chart */}
-                <div className="w-full lg:w-1/2 p-4">
-                    <div>
-                        <Group mt="xl">
-                            <Button
-                                color="green"
-                                onClick={() => toNotify("Success", "This is a success message", "SUCCESS")}
-                            >
-                                Show Success
-                            </Button>
-                            <Button
-                                color="red"
-                                onClick={() => toNotify("Error", "This is an error message", "ERROR")}
-                            >
-                                Show Error
-                            </Button>
-                            <Button
-                                color="blue"
-                                onClick={() => toNotify("Loading", "Loading in progress...", "LOADING")}
-                            >
-                                Show Loading
-                            </Button>
-                            <Button
-                                color="yellow"
-                                onClick={() => toNotify("Warning", "This is a warning message", "WARNING")}
-                            >
-                                Show Warning
-                            </Button>
-                        </Group>
-                    </div>
-                </div>
-            </div>
-
-        </div>
+                {/* Products Card */}
+                <Grid.Col span={{ base: 12, md: 6, lg: 3 }}>
+                    <Paper
+                        shadow="md"
+                        p="md"
+                        radius="sm"
+                        display="flex"
+                        withBorder
+                        className="items-center"
+                    >
+                        <Box mr="xl">
+                            <ActionIcon size="xl" variant="light">
+                                <IconPackages />
+                            </ActionIcon>
+                        </Box>
+                        <Box>
+                            <Text size="lg" fw={500}>
+                                Products
+                            </Text>
+                            <Text size="sm">
+                                # {dashboardDetails?.productsCount}
+                            </Text>
+                        </Box>
+                    </Paper>
+                </Grid.Col>
+            </Grid>
+            <Grid mt="md">
+                <Grid.Col span={{ lg: 6, md:6, sm:12 }}></Grid.Col>
+            </Grid>
+        </Paper>
     );
 };
 

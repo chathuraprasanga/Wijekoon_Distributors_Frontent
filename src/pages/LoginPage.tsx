@@ -25,9 +25,9 @@ const LoginPage = () => {
                     return "Email or phone is required";
                 }
                 // Regex for validating email
-                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                const emailRegex =  /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
                 // Regex for validating phone number
-                const phoneRegex = /^[0-9]{10}$/;
+                const phoneRegex = /^07[0-9]\d{7}$/;
 
                 if (!emailRegex.test(value) && !phoneRegex.test(value)) {
                     return "Enter a valid email or phone number";

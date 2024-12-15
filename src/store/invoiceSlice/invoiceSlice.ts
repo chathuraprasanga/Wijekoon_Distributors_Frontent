@@ -5,27 +5,28 @@ import {
     PayloadAction,
 } from "@reduxjs/toolkit";
 import axiosInstance from "../../interceptors/axiosInterceptor.ts";
+import cheques from "../../pages/cheques";
 
-interface CustomerState {
-    customers: any;
-    selectedCustomer: any;
+interface InvoiceState {
+    invoices: any;
+    selectedInvoice: any;
     status: string;
     error: string;
 }
 
-const initialState: CustomerState = {
-    customers: [],
-    selectedCustomer: {},
+const initialState: InvoiceState = {
+    invoices: [],
+    selectedInvoice: {},
     status: "idle",
     error: "",
 };
 
-export const addCustomer = createAsyncThunk(
-    "customer/addCustomer",
+export const addInvoice = createAsyncThunk(
+    "invoice/addInvoice",
     async (payload: any, { rejectWithValue }) => {
         try {
             const response = await axiosInstance.post(
-                `/customers/customer`,
+                `/invoices/invoice`,
                 payload
             );
             return response.data;
@@ -35,12 +36,12 @@ export const addCustomer = createAsyncThunk(
     }
 );
 
-export const getCustomers = createAsyncThunk(
-    "customer/getCustomers",
+export const getInvoices = createAsyncThunk(
+    "invoice/getInvoices",
     async (payload: any, { rejectWithValue }) => {
         try {
             const response = await axiosInstance.post(
-                `/customers/customers`,
+                `/invoices/invoices`,
                 payload
             );
             return response.data;
@@ -50,12 +51,12 @@ export const getCustomers = createAsyncThunk(
     }
 );
 
-export const getPagedCustomers = createAsyncThunk(
-    "customer/getPagedCustomers",
+export const getPagedInvoices = createAsyncThunk(
+    "invoice/getPagedInvoices",
     async (payload: any, { rejectWithValue }) => {
         try {
             const response = await axiosInstance.post(
-                `/customers/paged-customers`,
+                `/invoices/paged-invoices`,
                 payload
             );
             return response.data;
@@ -65,12 +66,12 @@ export const getPagedCustomers = createAsyncThunk(
     }
 );
 
-export const getCustomer = createAsyncThunk(
-    "customer/getCustomer",
+export const getInvoice = createAsyncThunk(
+    "invoice/getInvoice",
     async (id: any, { rejectWithValue }) => {
         try {
             const response = await axiosInstance.get(
-                `/customers/customer/${id}`
+                `/invoices/invoice/${id}`
             );
             return response.data;
         } catch (err: any) {
@@ -79,12 +80,12 @@ export const getCustomer = createAsyncThunk(
     }
 );
 
-export const updateCustomer = createAsyncThunk(
-    "customer/updateCustomer",
+export const updateInvoice = createAsyncThunk(
+    "invoice/updateInvoice",
     async (payload: any, { rejectWithValue }) => {
         try {
             const response = await axiosInstance.put(
-                `/customers/customer/${payload.id}`,
+                `/invoices/invoice/${payload.id}`,
                 payload.values
             );
             return response.data;
@@ -94,12 +95,12 @@ export const updateCustomer = createAsyncThunk(
     }
 );
 
-export const changeStatusCustomer = createAsyncThunk(
-    "customer/changeStatus",
+export const changeStatusInvoice = createAsyncThunk(
+    "invoice/changeStatus",
     async (payload: any, { rejectWithValue }) => {
         try {
             const response = await axiosInstance.put(
-                `/customers/change-status/${payload.id}`,
+                `/invoices/change-status/${payload.id}`,
                 payload.values
             );
             return response.data;
@@ -109,58 +110,58 @@ export const changeStatusCustomer = createAsyncThunk(
     }
 );
 
-const customerSlice = createSlice({
-    name: "customer",
+const invoiceSlice = createSlice({
+    name: "invoice",
     initialState,
     reducers: {},
     extraReducers: (builder) => {
         builder.addCase(
-            addCustomer.fulfilled,
+            addInvoice.fulfilled,
             (_, action: PayloadAction<any>) => {
                 return action.payload;
             }
         );
         builder.addCase(
-            getCustomers.fulfilled,
-            (state: Draft<CustomerState>, action: PayloadAction<any>) => {
-                state.customers = action.payload.result;
+            getInvoices.fulfilled,
+            (state: Draft<InvoiceState>, action: PayloadAction<any>) => {
+                state.invoices = action.payload.result;
             }
         );
         builder.addCase(
-            getCustomer.fulfilled,
-            (state: Draft<CustomerState>, action: PayloadAction<any>) => {
-                state.selectedCustomer = action.payload.result;
+            getPagedInvoices.fulfilled,
+            (state: Draft<InvoiceState>, action: PayloadAction<any>) => {
+                state.invoices = action.payload.result.response;
             }
         );
         builder.addCase(
-            updateCustomer.fulfilled,
-            (state: Draft<CustomerState>, action: PayloadAction<any>) => {
-                state.customers = state.customers.map((customer: any) =>
-                    customer._id === action.payload.result._id
-                        ? action.payload.result
-                        : customer
-                );
-                state.selectedCustomer = null;
+            getInvoice.fulfilled,
+            (state: Draft<InvoiceState>, action: PayloadAction<any>) => {
+                state.selectedInvoice = action.payload.result;
             }
-        )
+        );
         builder.addCase(
-            changeStatusCustomer.fulfilled,
-            (state: Draft<CustomerState>, action: PayloadAction<any>) => {
-                state.customers = state.customers.map((customer: any) =>
-                    customer._id === action.payload.result._id
+            updateInvoice.fulfilled,
+            (state: Draft<InvoiceState>, action: PayloadAction<any>) => {
+                state.invoices = state.invoices.map((invoice: any) =>
+                    invoice._id === action.payload.result._id
                         ? action.payload.result
-                        : customer
+                        : cheques
                 );
-                state.selectedCustomer = null;
+                state.selectedInvoice = null;
             }
-        )
+        );
         builder.addCase(
-            getPagedCustomers.fulfilled,
-            (state: Draft<CustomerState>,  action: PayloadAction<any>) => {
-                state.customers = action.payload.result.response;
+            changeStatusInvoice.fulfilled,
+            (state: Draft<InvoiceState>, action: PayloadAction<any>) => {
+                state.invoices = state.invoices.map((invoice: any) =>
+                    invoice._id === action.payload.result._id
+                        ? action.payload.result
+                        : invoice
+                );
+                state.selectedInvoice = null;
             }
-        )
+        );
     },
 });
 
-export default customerSlice.reducer;
+export default invoiceSlice.reducer;

@@ -1,4 +1,4 @@
-import { Button, Textarea, TextInput } from "@mantine/core";
+import { Button, Group, Textarea, TextInput, Box, Text } from "@mantine/core";
 import { IconArrowLeft } from "@tabler/icons-react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store/store.ts";
@@ -11,6 +11,7 @@ import toNotify from "../../helpers/toNotify.tsx";
 import { useNavigate, useParams } from "react-router";
 import { useForm } from "@mantine/form";
 import { useEffect } from "react";
+import { isValidEmail, isValidPhone } from "../../utils/inputValidators.ts";
 
 const EditCustomer = () => {
     const { setLoading } = useLoading();
@@ -48,17 +49,17 @@ const EditCustomer = () => {
         },
         validate: {
             name: (value) => (value.trim() ? null : "Name is required"),
-            phone: (value) => {
-                if (!value.trim()) return "Phone is required";
-                const phoneRegex = /^[0-9]+$/; // Only digits
-                return phoneRegex.test(value)
+            phone: (value: string) => {
+                if (!value) {
+                    return "Phone number is required";
+                }
+                return isValidPhone(value)
                     ? null
-                    : "Phone must contain only numbers";
+                    : "Enter a valid phone number";
             },
             email: (value) => {
-                if (!value.trim()) return null; // Skip validation if email is empty
-                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                return emailRegex.test(value)
+                if (!value.trim()) return null;
+                return isValidEmail(value)
                     ? null
                     : "Enter a valid email address";
             },
@@ -70,14 +71,13 @@ const EditCustomer = () => {
     ) => {
         setLoading(true);
         const response = await dispatch(updateCustomer({ id, values }));
-        console.log(response);
         if (response.type === "customer/updateCustomer/fulfilled"){
             setLoading(false);
             toNotify("Success", "Customer updated successfully", "SUCCESS");
             navigate("/app/customers");
         } else if (response.type === "customer/updateCustomer/rejected"){
             setLoading(false);
-            toNotify("Success", `${response.payload.error}`, "ERROR");
+            toNotify("Error", `${response.payload.error}`, "ERROR");
         } else {
             setLoading(false);
             toNotify("Something went wrong", `Please contact system admin`, "WARNING");
@@ -86,18 +86,18 @@ const EditCustomer = () => {
 
     return (
         <>
-            <div className="items-center flex flex-row justify-between p-4">
-                <div className="flex flex-row items-center">
+            <Group p="lg" display="flex" justify="space-between" align="center">
+                <Group display="flex">
                     <IconArrowLeft
                         className="cursor-pointer"
                         onClick={() => history.back()}
                     />
-                    <span className="text-lg font-semibold ml-4">
-                        Add Customer
-                    </span>
-                </div>
-            </div>
-            <div className="mx-4 my-4 lg:w-1/2">
+                    <Text fw={500} size={"lg"} ml={"md"}>
+                        Edit Customer
+                    </Text>
+                </Group>
+            </Group>
+            <Box w={{  sm: "100%", lg: "50%" }} px="lg">
                 <form
                     onSubmit={customerEditForm.onSubmit(handleUpdateCustomer)}
                 >
@@ -123,13 +123,13 @@ const EditCustomer = () => {
                         placeholder="Enter Customer Address"
                         {...customerEditForm.getInputProps("address")}
                     />
-                    <div className="mt-4 flex justify-end">
-                        <Button size="xs" color="dark"  disabled={!customerEditForm.isDirty()} type="submit">
+                    <Group justify="flex-end" display="flex" pb="md" mt="md">
+                        <Button size="xs" disabled={!customerEditForm.isDirty()} type="submit">
                             Submit
                         </Button>
-                    </div>
+                    </Group>
                 </form>
-            </div>
+            </Box>
         </>
     );
 };

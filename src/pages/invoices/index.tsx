@@ -1,40 +1,160 @@
 import { useNavigate } from "react-router";
-import { useState } from "react";
-import { Badge, Button, Group, Menu, Pagination, Table } from "@mantine/core";
-import { IconDatabaseOff, IconDotsVertical } from "@tabler/icons-react";
-import invoices from "./invoice_data.json";
+import { useEffect, useState } from "react";
+import {
+    Badge,
+    Box,
+    Button,
+    Card,
+    Group,
+    Menu,
+    Pagination, Select,
+    Table,
+    Text,
+} from "@mantine/core";
+import { IconCertificate, IconDatabaseOff, IconDotsVertical, IconEdit, IconEye } from "@tabler/icons-react";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../../store/store.ts";
+import { useLoading } from "../../helpers/loadingContext.tsx";
+import {
+    changeStatusInvoice, getPagedInvoices,
+} from "../../store/invoiceSlice/invoiceSlice.ts";
+import toNotify from "../../helpers/toNotify.tsx";
+import datePreview from "../../helpers/datePreview.tsx";
+import { DateInput } from "@mantine/dates";
+
+import { getSuppliers } from "../../store/supplierSlice/supplierSlice.ts";
 
 const Invoices = () => {
+    const { setLoading } = useLoading();
+    const dispatch = useDispatch<AppDispatch | any>();
     const navigate = useNavigate();
-    const [currentPage, setCurrentPage] = useState(1);
-    const pageSize = 5;
 
-    const totalPages = Math.ceil(invoices.length / pageSize);
-    const paginatedData: any = invoices.slice(
-        (currentPage - 1) * pageSize,
-        currentPage * pageSize
+    const [pageIndex, setPageIndex] = useState(1);
+    const pageSize = 5;
+    const [supplier, setSupplier] = useState<string>("");
+    const [status, setStatus] = useState<string>("");
+    const [invoicedDate, setInvoicedDate] = useState<any>();
+    const sort = -1;
+    const [metadata, setMetadata] = useState<any>();
+
+    const invoices = useSelector((state: RootState) => state.invoice.invoices);
+    const suppliers = useSelector(
+        (state: RootState) => state.supplier.suppliers
     );
+
+    useEffect(() => {
+        fetchInvoices();
+    }, [dispatch, pageIndex, status, supplier, invoicedDate]);
+
+    const fetchInvoices = async () => {
+        setLoading(true);
+        await dispatch(getSuppliers({}));
+        const filters = { pageSize, pageIndex, supplier, sort, status, invoicedDate };
+        const response = await dispatch(getPagedInvoices({ filters: filters }));
+        setMetadata(response.payload.result.metadata);
+        setLoading(false);
+    };
+
+    const invoiceStatusUpdate = async (id: string, status: string) => {
+        setLoading(true);
+        const payload = {
+            id,
+            values: { invoiceStatus: status },
+        };
+        const response = await dispatch(changeStatusInvoice(payload));
+        if (response.type === "invoice/changeStatus/fulfilled") {
+            await fetchInvoices();
+            setLoading(false);
+            toNotify(
+                "Success",
+                "Invoice status changed successfully",
+                "SUCCESS"
+            );
+        } else if (response.type === "invoice/changeStatus/rejected") {
+            const error: any = response.payload.error;
+            setLoading(false);
+            toNotify("Error", `${error}`, "ERROR");
+        } else {
+            setLoading(false);
+            toNotify(
+                "Something went wrong",
+                `Please contact system admin`,
+                "WARNING"
+            );
+        }
+    };
+
+    const selectableSuppliers = suppliers.map((c: any) => {
+        return {
+            label: c?.name,
+            value: c?._id,
+        };
+    });
 
     return (
         <>
             {/* Header */}
-            <div className="items-center flex flex-row justify-between p-4">
-                <div>
-                    <span className="text-lg font-semibold">Invoices</span>
-                </div>
-                <div>
+            <Box display="flex" p="lg" className="items-center justify-between">
+                <Box>
+                    <Text size="lg" fw={500}>Invoices</Text>
+                </Box>
+                <Box>
                     <Button
                         size="xs"
-                        color="dark"
                         onClick={() => navigate("/app/invoices/add-invoice")}
                     >
                         Add Invoice
                     </Button>
-                </div>
-            </div>
+                </Box>
+            </Box>
+
+            {/* Search Input */}
+            <Box px="lg">
+                <Group w={{ lg: "60%", sm: "100%" }}>
+                    <Select
+                        className="w-full lg:w-1/4"
+                        size="xs"
+                        placeholder="Select a supplier"
+                        data={selectableSuppliers}
+                        searchable
+                        clearable
+                        onChange={(value: string | null) => {
+                            if (value) {
+                                setSupplier(value);
+                            } else {
+                                setSupplier("");
+                            }
+                        }}
+                    />
+
+                    <Select
+                        className="w-full lg:w-1/4"
+                        size="xs"
+                        placeholder="Select a status"
+                        data={["PAID", "NOT PAID"]}
+                        searchable
+                        clearable
+                        onChange={(value: string | null) => {
+                            if (value) {
+                                setStatus(value);
+                            } else {
+                                setStatus("");
+                            }
+                        }}
+                    />
+
+                    <DateInput
+                        className="w-full lg:w-1/4"
+                        size="xs"
+                        placeholder="Select invoice date"
+                        clearable
+                        onChange={(e:any) => setInvoicedDate(e)}
+                    />
+                </Group>
+            </Box>
 
             {/* Desktop Table */}
-            <div className="hidden lg:block mx-4 my-4 overflow-x-auto">
+            <Box visibleFrom="lg" mx="lg" my="lg" className="overflow-x-auto">
                 <Table
                     striped
                     highlightOnHover
@@ -43,25 +163,25 @@ const Invoices = () => {
                 >
                     <Table.Thead>
                         <Table.Tr>
-                            <Table.Th>Supplier</Table.Th>
-                            <Table.Th>Invoiced Date</Table.Th>
-                            <Table.Th>Invoice Number</Table.Th>
-                            <Table.Th>Amount</Table.Th>
-                            <Table.Th>Invoice Status</Table.Th>
-                            <Table.Th></Table.Th>
+                            <Table.Th style={{width: "30%"}}>Supplier</Table.Th>
+                            <Table.Th style={{width: "15%"}}>Invoiced Date</Table.Th>
+                            <Table.Th style={{width: "20%"}}>Invoice Number</Table.Th>
+                            <Table.Th style={{width: "20%"}}>Amount</Table.Th>
+                            <Table.Th style={{width: "10%"}}>Invoice Status</Table.Th>
+                            <Table.Th style={{width: "5%"}}></Table.Th>
                         </Table.Tr>
                     </Table.Thead>
                     <Table.Tbody>
-                        {paginatedData.length !== 0 ? (
-                            paginatedData.map((c: any, i: number) => (
+                        {invoices?.length !== 0 ? (
+                            invoices?.map((c: any, i: number) => (
                                 <Table.Tr key={i}>
-                                    <Table.Td>{c.supplier}</Table.Td>
-                                    <Table.Td>{c.invoiceDate}</Table.Td>
-                                    <Table.Td>{c.invoiceNumber}</Table.Td>
-                                    <Table.Td>{c.amount}</Table.Td>
-                                    <Table.Td>
+                                    <Table.Td style={{width: "30%"}}>{c.supplier?.name}</Table.Td>
+                                    <Table.Td style={{width: "15%"}}>{datePreview(c.invoiceDate)}</Table.Td>
+                                    <Table.Td style={{width: "20%"}}>{c.invoiceNumber}</Table.Td>
+                                    <Table.Td style={{width: "20%"}}>{c.amount}</Table.Td>
+                                    <Table.Td style={{width: "10%"}}>
                                         <Badge
-                                            size="md"
+                                            size="sm"
                                             radius="xs"
                                             color={
                                                 c.invoiceStatus === "PAID"
@@ -72,7 +192,7 @@ const Invoices = () => {
                                             {c.invoiceStatus}
                                         </Badge>
                                     </Table.Td>
-                                    <Table.Td>
+                                    <Table.Td style={{width: "5%"}}>
                                         <Menu width={150}>
                                             <Menu.Target>
                                                 <IconDotsVertical
@@ -82,21 +202,51 @@ const Invoices = () => {
                                             </Menu.Target>
                                             <Menu.Dropdown>
                                                 <Menu.Label>Actions</Menu.Label>
-                                                <Menu.Item>
-                                                    <span>View</span>
+                                                <Menu.Item
+                                                    onClick={() => {
+                                                        navigate(
+                                                            `/app/invoices/view-invoice/${c._id}`
+                                                        );
+                                                        sessionStorage.setItem(
+                                                            "pageIndex",
+                                                            String(pageIndex)
+                                                        );
+                                                    }}
+                                                    rightSection={<IconEye size={16}/>}
+                                                >
+                                                    View
                                                 </Menu.Item>
                                                 <Menu.Item
                                                     disabled={
                                                         c.invoiceStatus ===
                                                         "PAID"
                                                     }
+                                                    onClick={() => {
+                                                        navigate(
+                                                            `/app/invoices/edit-invoice/${c._id}`
+                                                        );
+                                                        sessionStorage.setItem(
+                                                            "pageIndex",
+                                                            String(pageIndex)
+                                                        );
+                                                    }}
+                                                    rightSection={<IconEdit size={16}/>}
                                                 >
                                                     Edit
                                                 </Menu.Item>
                                                 {c.invoiceStatus ===
                                                     "NOT PAID" && (
-                                                    <Menu.Item color="green">
-                                                        Payment Done
+                                                    <Menu.Item
+                                                        color="green"
+                                                        onClick={() =>
+                                                            invoiceStatusUpdate(
+                                                                c._id,
+                                                                "PAID"
+                                                            )
+                                                        }
+                                                        rightSection={<IconCertificate size={16}/>}
+                                                    >
+                                                        Paid
                                                     </Menu.Item>
                                                 )}
                                             </Menu.Dropdown>
@@ -120,24 +270,21 @@ const Invoices = () => {
                         )}
                     </Table.Tbody>
                 </Table>
-            </div>
+            </Box>
 
             {/* Mobile Cards */}
-            <div className="block lg:hidden mx-4 my-4">
-                {paginatedData.length !== 0 ? (
-                    paginatedData.map((c: any, i: number) => (
-                        <div
-                            key={i}
-                            className="border border-gray-300 rounded-md mb-4 p-4 bg-white shadow-sm"
-                        >
-                            <p className="font-semibold">
-                                Supplier: {c.supplier}
-                            </p>
-                            <p>Invoiced Date: {c.invoiceDate}</p>
-                            <p>Invoice Number: {c.invoiceNumber}</p>
-                            <p>Amount: {c.amount}</p>
+            <Box my="lg" mx="sm" hiddenFrom="lg">
+                {invoices?.length !== 0 ? (
+                    invoices?.map((c: any, i: number) => (
+                        <Card key={i} shadow="sm" withBorder mx="xs" my="lg">
+                            <Text className="font-semibold">
+                                Supplier: {c.supplier?.name}
+                            </Text>
+                            <Text>Invoiced Date: {datePreview(c.invoiceDate)}</Text>
+                            <Text>Invoice Number: {c.invoiceNumber}</Text>
+                            <Text>Amount: {c.amount}</Text>
                             <Badge
-                                size="md"
+                                size="sm"
                                 radius="xs"
                                 color={
                                     c.invoiceStatus === "PAID" ? "green" : "red"
@@ -146,7 +293,7 @@ const Invoices = () => {
                             >
                                 {c.invoiceStatus}
                             </Badge>
-                            <div className="mt-2">
+                            <Group mt="md">
                                 <Menu width={150}>
                                     <Menu.Target>
                                         <IconDotsVertical
@@ -156,44 +303,71 @@ const Invoices = () => {
                                     </Menu.Target>
                                     <Menu.Dropdown>
                                         <Menu.Label>Actions</Menu.Label>
-                                        <Menu.Item>View</Menu.Item>
+                                        <Menu.Item
+                                            onClick={() => {
+                                                navigate(
+                                                    `/app/invoices/view-invoice/${c._id}`
+                                                );
+                                                sessionStorage.setItem(
+                                                    "pageIndex",
+                                                    String(pageIndex)
+                                                );
+                                            }}
+                                            rightSection={<IconEye size={16}/>}
+                                        >
+                                            View
+                                        </Menu.Item>
                                         <Menu.Item
                                             disabled={
                                                 c.invoiceStatus === "PAID"
                                             }
+                                            onClick={() => {
+                                                navigate(
+                                                    `/app/invoices/edit-invoice/${c._id}`
+                                                );
+                                                sessionStorage.setItem(
+                                                    "pageIndex",
+                                                    String(pageIndex)
+                                                );
+                                            }}
+                                            rightSection={<IconEdit size={16}/>}
                                         >
                                             Edit
                                         </Menu.Item>
                                         {c.invoiceStatus === "NOT PAID" && (
-                                            <Menu.Item color="green">
-                                                Payment Done
+                                            <Menu.Item
+                                                color="green"
+                                                onClick={() =>
+                                                    invoiceStatusUpdate(
+                                                        c._id,
+                                                        "PAID"
+                                                    )
+                                                }
+                                                rightSection={<IconCertificate size={16}/>}
+                                            >
+                                                Paid
                                             </Menu.Item>
                                         )}
                                     </Menu.Dropdown>
                                 </Menu>
-                            </div>
-                        </div>
+                            </Group>
+                        </Card>
                     ))
                 ) : (
-                    <div className="text-center">
-                        <IconDatabaseOff
-                            color="red"
-                            size="24"
-                            className="mr-2 self-center"
-                        />
-                        <p>No data available</p>
-                    </div>
+                    <Group mx="xs" my="lg">
+                        <IconDatabaseOff color="red" size={24} />
+                        <Text>No data available</Text>
+                    </Group>
                 )}
-            </div>
+            </Box>
 
             {/* Pagination */}
-            <div className="my-4 mx-4 flex justify-end">
+            <Group my="md" ms="md" px="lg" justify="flex-end">
                 <Pagination.Root
-                    total={totalPages}
-                    value={currentPage}
-                    onChange={setCurrentPage}
+                    total={Math.ceil( metadata?.total / pageSize)}
+                    value={pageIndex}
+                    onChange={setPageIndex}
                     size="sm"
-                    color="dark"
                     siblings={1}
                     boundaries={0}
                 >
@@ -205,7 +379,7 @@ const Invoices = () => {
                         <Pagination.Last />
                     </Group>
                 </Pagination.Root>
-            </div>
+            </Group>
         </>
     );
 };
