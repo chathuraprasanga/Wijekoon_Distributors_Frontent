@@ -30,7 +30,7 @@ jobs:
       # Deploy to droplet
       - name: Deploy Frontend
         run: |
-          ssh -o StrictHostKeyChecking=no ${{ secrets.DROPLET_USER }}@${{ secrets.DROPLET_HOST }} << 'EOF'
+          ssh ${{ secrets.DROPLET_USER }}@${{ secrets.DROPLET_HOST }}
             sudo rm -rf /var/www/wijekoon-distributors/frontend/*
             mkdir -p /var/www/wijekoon-distributors/frontend
           EOF
@@ -38,7 +38,6 @@ jobs:
           ssh -o StrictHostKeyChecking=no ${{ secrets.DROPLET_USER }}@${{ secrets.DROPLET_HOST }} << 'EOF'
             sudo systemctl reload nginx
           EOF
-      
 
       # Reload Nginx
       - name: Reload Nginx
