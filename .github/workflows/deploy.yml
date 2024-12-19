@@ -15,13 +15,13 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # Set up SSH
+      # Set up SSH Agent
       - name: Set up SSH Agent
         uses: webfactory/ssh-agent@v0.9.0
         with:
           ssh-private-key: ${{ secrets.PRIVATE_KEY }}
 
-      # Test the connectivity
+      # Test the SSH Connection
       - name: Test SSH Connection
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.DROPLET_USER }}@${{ secrets.DROPLET_HOST }} "echo 'SSH connection successful'"
@@ -32,23 +32,20 @@ jobs:
           npm ci
           npm run build
 
-      # Deploy to droplet
-      - name: Deploy Frontend
+      # Clean the frontend directory on the server
+      - name: Clean Frontend Directory
         run: |
-          ssh -o StrictHostKeyChecking=no ${{ secrets.DROPLET_USER }}@${{ secrets.DROPLET_HOST }} << 'EOF'
-            sudo rm -rf /var/www/wijekoon-distributors/frontend/*
-            mkdir -p /var/www/wijekoon-distributors/frontend
+          ssh -o StrictHostKeyChecking=no ${{ secrets.DROPLET_USER }}@${{ secrets.DROPLET_HOST }} << EOF
+          sudo rm -rf /var/www/wijekoon-distributors/frontend/*
+          mkdir -p /var/www/wijekoon-distributors/frontend
           EOF
-          
+
+      # Copy built files to the server
+      - name: Copy Built Files to Server
+        run: |
           scp -r dist/* ${{ secrets.DROPLET_USER }}@${{ secrets.DROPLET_HOST }}:/var/www/wijekoon-distributors/frontend
-          
-          ssh -o StrictHostKeyChecking=no ${{ secrets.DROPLET_USER }}@${{ secrets.DROPLET_HOST }} << 'EOF'
-            sudo systemctl reload nginx
-          EOF     
-          
-          # Reload Nginx
+
+      # Reload Nginx on the server
       - name: Reload Nginx
         run: |
-          ssh -o StrictHostKeyChecking=no ${{ secrets.DROPLET_USER }}@${{ secrets.DROPLET_HOST }} << 'EOF'
-            sudo systemctl reload nginx
-          EOF
+          ssh -o StrictHostKeyChecking=no ${{ secrets.DROPLET_USER }}@${{ secrets.DROPLET_HOST }} "sudo systemctl reload nginx"
