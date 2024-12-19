@@ -1,0 +1,44 @@
+name: Deploy Frontend
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    name: Deploy Frontend to Droplet
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout code
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Set up SSH
+      - name: Set up SSH
+        uses: webfactory/ssh-agent@v0.8.1
+        with:
+          ssh-private-key: ${{ secrets.PRIVATE_KEY }}
+
+      # Install dependencies and build
+      - name: Build Frontend
+        run: |
+          npm ci
+          npm run build
+
+      # Deploy to droplet
+      - name: Deploy to Droplet
+        run: |
+          ssh -o StrictHostKeyChecking=no ${{ secrets.DROPLET_USER }}@${{ secrets.DROPLET_HOST }} << 'EOF'
+            rm -rf ${{ secrets.FRONTEND_PATH }}/*
+            mkdir -p ${{ secrets.FRONTEND_PATH }}
+          EOF
+          scp -r dist/* ${{ secrets.DROPLET_USER }}@${{ secrets.DROPLET_HOST }}:${{ secrets.FRONTEND_PATH }}
+
+      # Reload Nginx
+      - name: Reload Nginx
+        run: |
+          ssh -o StrictHostKeyChecking=no ${{ secrets.DROPLET_USER }}@${{ secrets.DROPLET_HOST }} << 'EOF'
+            sudo systemctl reload nginx
+          EOF
