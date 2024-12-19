@@ -28,13 +28,17 @@ jobs:
           npm run build
 
       # Deploy to droplet
-      - name: Deploy to Droplet
+      - name: Deploy Frontend
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.DROPLET_USER }}@${{ secrets.DROPLET_HOST }} << 'EOF'
-            rm -rf ${{ secrets.FRONTEND_PATH }}/*
-            mkdir -p ${{ secrets.FRONTEND_PATH }}
+            sudo rm -rf /var/www/wijekoon-distributors/frontend/*
+            mkdir -p /var/www/wijekoon-distributors/frontend
           EOF
-          scp -r dist/* ${{ secrets.DROPLET_USER }}@${{ secrets.DROPLET_HOST }}:${{ secrets.FRONTEND_PATH }}
+          scp -r dist/* ${{ secrets.DROPLET_USER }}@${{ secrets.DROPLET_HOST }}:/var/www/wijekoon-distributors/frontend
+          ssh -o StrictHostKeyChecking=no ${{ secrets.DROPLET_USER }}@${{ secrets.DROPLET_HOST }} << 'EOF'
+            sudo systemctl reload nginx
+          EOF
+      
 
       # Reload Nginx
       - name: Reload Nginx
