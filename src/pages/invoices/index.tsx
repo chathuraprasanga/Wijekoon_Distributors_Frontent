@@ -132,7 +132,6 @@ const Invoices = () => {
                         size="xs"
                         placeholder="Select a status"
                         data={["PAID", "NOT PAID"]}
-                        searchable
                         clearable
                         onChange={(value: string | null) => {
                             if (value) {

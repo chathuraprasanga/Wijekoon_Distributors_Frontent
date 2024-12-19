@@ -9,6 +9,7 @@ import {
     Table,
     Card,
     TextInput,
+    Select,
 } from "@mantine/core";
 import {
     IconDatabaseOff,
@@ -16,7 +17,8 @@ import {
     IconEdit,
     IconEye,
     IconMobiledata,
-    IconMobiledataOff, IconSearch,
+    IconMobiledataOff,
+    IconSearch,
     IconX,
 } from "@tabler/icons-react";
 // import customers from "./customer_data.json";
@@ -26,7 +28,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store/store.ts";
 import {
     changeStatusCustomer,
-    getCustomers, getPagedCustomers,
+    getPagedCustomers,
 } from "../../store/customerSlice/customerSlice.ts";
 import { useLoading } from "../../helpers/loadingContext.tsx";
 import toNotify from "../../helpers/toNotify.tsx";
@@ -39,7 +41,10 @@ const Customers = () => {
     const [pageIndex, setPageIndex] = useState(1);
     const pageSize = 5;
     const [searchQuery, setSearchQuery] = useState<string>("");
+    const [status, setStatus] = useState("");
     const sort = -1;
+    const filters = { pageSize, pageIndex, searchQuery, sort, status };
+
     const [metadata, setMetadata] = useState<any>();
 
     const customers = useSelector(
@@ -48,14 +53,13 @@ const Customers = () => {
 
     useEffect(() => {
         fetchCustomers();
-    }, [dispatch, pageIndex, searchQuery]);
-
-
+    }, [dispatch, pageIndex, searchQuery, status]);
 
     const fetchCustomers = async () => {
         setLoading(true);
-        const filters = { pageSize, pageIndex, searchQuery, sort };
-        const response = await dispatch(getPagedCustomers({ filters: filters }));
+        const response = await dispatch(
+            getPagedCustomers({ filters: filters })
+        );
         setMetadata(response.payload.result.metadata);
         setLoading(false);
     };
@@ -69,7 +73,7 @@ const Customers = () => {
             })
         );
         if (response.type === "customer/changeStatus/fulfilled") {
-            dispatch(getCustomers({}));
+            dispatch(getPagedCustomers({ filters: filters }));
             setLoading(false);
             toNotify(
                 "Success",
@@ -117,8 +121,33 @@ const Customers = () => {
                         placeholder="Name, Phone, Email"
                         onChange={(event) => setSearchQuery(event.target.value)}
                         value={searchQuery}
-                        rightSection={searchQuery ? <IconX className="cursor-pointer" onClick={() => setSearchQuery("")} size={14}/> : ""}
-                        leftSection={<IconSearch size={14}/>}
+                        rightSection={
+                            searchQuery ? (
+                                <IconX
+                                    className="cursor-pointer"
+                                    onClick={() => setSearchQuery("")}
+                                    size={14}
+                                />
+                            ) : (
+                                ""
+                            )
+                        }
+                        leftSection={<IconSearch size={14} />}
+                    />
+
+                    <Select
+                        className="w-full lg:w-1/4"
+                        size="xs"
+                        placeholder="Select a status"
+                        data={["ACTIVE", "INACTIVE"]}
+                        clearable
+                        onChange={(value: string | null) => {
+                            if (value) {
+                                setStatus(value);
+                            } else {
+                                setStatus("");
+                            }
+                        }}
                     />
                 </Group>
             </Box>

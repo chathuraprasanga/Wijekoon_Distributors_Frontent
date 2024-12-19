@@ -5,7 +5,7 @@ import {
     Card,
     Group,
     Menu,
-    Pagination,
+    Pagination, Select,
     Table,
     Text,
     TextInput,
@@ -28,7 +28,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store/store.ts";
 import {
     changeStatusProduct, getPagedProducts,
-    getProducts,
 } from "../../store/productSlice/productSlice.ts";
 import toNotify from "../../helpers/toNotify.tsx";
 
@@ -40,18 +39,20 @@ const Products = () => {
     const [pageIndex, setPageIndex] = useState(1);
     const pageSize = 5;
     const [searchQuery, setSearchQuery] = useState<string>("");
+    const [status, setStatus] = useState<string>();
     const sort = -1;
+    const filters = { pageSize, pageIndex, searchQuery, sort, status };
+
     const [metadata, setMetadata] = useState<any>();
 
     const products = useSelector((state: RootState) => state.product.products);
 
     useEffect(() => {
         fetchProducts();
-    }, [dispatch, pageIndex, searchQuery]);
+    }, [dispatch, pageIndex, searchQuery, status]);
 
     const fetchProducts = async () => {
         setLoading(true);
-        const filters = { pageSize, pageIndex, searchQuery, sort };
         const response = await dispatch(getPagedProducts({ filters: filters }));
         setMetadata(response.payload.result.metadata);
         setLoading(false);
@@ -66,7 +67,7 @@ const Products = () => {
             })
         );
         if (response.type === "product/changeStatus/fulfilled") {
-            dispatch(getProducts({}));
+            dispatch(getPagedProducts({ filters: filters }));
             setLoading(false);
             toNotify(
                 "Success",
@@ -127,6 +128,22 @@ const Products = () => {
                         }
                         leftSection={<IconSearch size={14} />}
                     />
+
+                    <Select
+                        className="w-full lg:w-1/4"
+                        size="xs"
+                        placeholder="Select a status"
+                        data={["ACTIVE", "INACTIVE"]}
+                        clearable
+                        onChange={(value: string | null) => {
+                            if (value) {
+                                setStatus(value);
+                            } else {
+                                setStatus("");
+                            }
+                        }}
+                    />
+
                 </Group>
             </Box>
 
