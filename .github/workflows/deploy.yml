@@ -1,0 +1,58 @@
+name: Deploy Wijekoon Distributors Frontend to Droplet
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    name: Wijekoon Distributors Frontend
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout code
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Set up SSH agent
+      - name: Set up SSH agent
+        uses: webfactory/ssh-agent@v0.5.3
+        with:
+          ssh-private-key: ${{ secrets.PRIVATE_KEY }}
+
+      # Test SSH connection
+      - name: Test SSH Connection
+        run: |
+          ssh -o StrictHostKeyChecking=no ${{ secrets.DROPLET_USER }}@${{ secrets.DROPLET_HOST }} "echo 'SSH connection successful!'"
+
+      # Debug PATH and npm availability
+      - name: Test PATH and npm availability
+        run: |
+          ssh -o StrictHostKeyChecking=no ${{ secrets.DROPLET_USER }}@${{ secrets.DROPLET_HOST }} << 'EOF'
+            set -e
+            export NVM_DIR="$HOME/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+            [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
+            nvm use node
+            echo "Node version: $(node -v)"
+            echo "npm version: $(npm -v)"
+          EOF
+
+      # DeployWijekoon Distributors Frontend to Droplet
+      - name: Deploy Wijekoon Distributors Frontend to Droplet
+        run: |
+          ssh -o StrictHostKeyChecking=no ${{ secrets.DROPLET_USER }}@${{ secrets.DROPLET_HOST }} << 'EOF'
+            set -e
+            export NVM_DIR="$HOME/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # Load nvm
+            [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion" # Load nvm bash_completion (optional)
+            nvm use node # Ensure the correct Node.js version is active
+            cd /var/www/wijekoon-distributors/frontend
+            rm -rf dist
+            git pull
+            npm install --force
+            npm run lint
+            npm run build
+            sudo systemctl restart nginx.service
+          EOF
