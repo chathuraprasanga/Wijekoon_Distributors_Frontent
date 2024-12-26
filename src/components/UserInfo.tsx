@@ -68,7 +68,6 @@ const UserInfo = () => {
                                 style={{ width: rem(14), height: rem(14) }}
                             />
                         }
-                        disabled
                         onClick={() => navigate("/app/settings")}
                     >
                         Settings
