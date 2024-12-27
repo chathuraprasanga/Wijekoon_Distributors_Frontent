@@ -16,13 +16,13 @@ import { isNotEmpty, useForm } from "@mantine/form";
 import toNotify from "../../helpers/toNotify.tsx";
 import { addCheque } from "../../store/chequeSlice/chequeSlice.ts";
 import {
-    isValidBankCode,
     isValidBranchCode,
     isValidChequeNumber,
 } from "../../utils/inputValidators.ts";
 import { useEffect, useState } from "react";
 import { getCustomers } from "../../store/customerSlice/customerSlice.ts";
 import { DatePickerInput } from "@mantine/dates";
+import banks from "../../helpers/banks.json"
 
 const AddCheque = () => {
     const { setLoading } = useLoading();
@@ -32,6 +32,14 @@ const AddCheque = () => {
     const customerData = selectableCustomers.map((data: any) => {
         return { label: data.name, value: data._id };
     });
+    const [isBranchDisabled, setIsBranchDisabled] = useState(true);
+
+    const banksList = banks.map((b) => ({
+        label: b.name,
+        value: b.name,
+    }));
+
+
 
     useEffect(() => {
         fetchCustomers();
@@ -77,9 +85,9 @@ const AddCheque = () => {
             },
             bank: (value) => {
                 if (!value) {
-                    return "Bank code is required";
+                    return "Bank is required";
                 }
-                return isValidBankCode(value) ? null : "Enter valid bank code";
+                return null;
             },
             branch: (value) => {
                 if (!value) {
@@ -154,12 +162,18 @@ const AddCheque = () => {
                         key={chequeAddForm.key("number")}
                         {...chequeAddForm.getInputProps("number")}
                     />
-                    <TextInput
+                    <Select
                         label="Bank"
                         withAsterisk
-                        placeholder="Enter Customer Bank Name"
+                        placeholder="Select Customer Bank Name"
+                        searchable
                         key={chequeAddForm.key("bank")}
+                        data={banksList}
                         {...chequeAddForm.getInputProps("bank")}
+                        onChange={(value) => {
+                            chequeAddForm.getInputProps("bank").onChange(value); // Bind to form state
+                            setIsBranchDisabled(false); // Update branches
+                        }}
                     />
                     <TextInput
                         label="Branch"
@@ -167,6 +181,7 @@ const AddCheque = () => {
                         withAsterisk
                         key={chequeAddForm.key("branch")}
                         {...chequeAddForm.getInputProps("branch")}
+                        disabled={isBranchDisabled} // Disable branch field if no bank is selected
                     />
                     <NumberInput
                         hideControls

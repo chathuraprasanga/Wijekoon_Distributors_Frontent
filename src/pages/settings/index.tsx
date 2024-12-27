@@ -12,7 +12,7 @@ import {
 } from "@mantine/core";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store/store.ts";
-import { useDisclosure } from "@mantine/hooks";
+import { useDisclosure, useMediaQuery } from "@mantine/hooks";
 import { isNotEmpty, useForm } from "@mantine/form";
 import { useEffect, useState } from "react";
 import { changePassword } from "../../store/authSlice/authSlice.ts";
@@ -29,6 +29,7 @@ import { useLoading } from "../../helpers/loadingContext.tsx";
 import { isValidEmail, isValidPhone } from "../../utils/inputValidators.ts";
 
 const Settings = () => {
+    const isSmallScreen = useMediaQuery("(max-width: 1024px)");
     const { setLoading } = useLoading();
     const user = useSelector((state: RootState) => state.auth.user);
     const [passwordChangeModalOpened, passwordChangeHandler] =
@@ -178,7 +179,7 @@ const Settings = () => {
             opened={usersViewOpened}
             onClose={handleUsersView.close}
             title={<Text size="lg">Users</Text>}
-            size={"70%"}
+            size={isSmallScreen ? "100%" : "70%"}
             className="max-h-80"
         >
             <ScrollArea className="overflow-x-auto">
