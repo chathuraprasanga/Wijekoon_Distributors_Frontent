@@ -37,10 +37,10 @@ const UserInfo = () => {
                             <Box>
                                 <Box>
                                     <Text fw={700} size="sm">
-                                        {userDetails.username}
+                                        {userDetails?.username}
                                     </Text>
                                     <Text size="xs" c="gray.5">
-                                        {userDetails.email}
+                                        {userDetails?.email}
                                     </Text>
                                 </Box>
                             </Box>
@@ -55,9 +55,9 @@ const UserInfo = () => {
                 <Menu.Dropdown>
                     <Menu.Label hiddenFrom="lg">User Details</Menu.Label>
                     <Menu.Item hiddenFrom="lg">
-                        <Text>{userDetails.username}</Text>
+                        <Text>{userDetails?.username}</Text>
                         <Text size="xs" c="gray.6">
-                            {userDetails.email}
+                            {userDetails?.email}
                         </Text>
                     </Menu.Item>
                     <Menu.Divider />
