@@ -9,6 +9,7 @@ interface dashboardState {
     suppliersCount: number;
     chequesCount: number;
     invoicesCount: number;
+    chequesToDeposit: object;
     status: string;
     error: string;
 }
@@ -21,6 +22,7 @@ const initialState: dashboardState = {
     suppliersCount: 0,
     chequesCount: 0,
     invoicesCount: 0,
+    chequesToDeposit: {},
     status: "idle",
     error: "",
 };
