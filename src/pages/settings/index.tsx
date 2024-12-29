@@ -6,6 +6,7 @@ import {
     Modal,
     PasswordInput,
     ScrollArea,
+    Select,
     Table,
     Text,
     TextInput,
@@ -27,11 +28,14 @@ import {
 import { addUser, getUsers } from "../../store/userSlice/userSlice.ts";
 import { useLoading } from "../../helpers/loadingContext.tsx";
 import { isValidEmail, isValidPhone } from "../../utils/inputValidators.ts";
+import { rolePreview } from "../../helpers/preview.tsx";
+import { rolesData } from "../../utils/settings.ts";
 
 const Settings = () => {
     const isSmallScreen = useMediaQuery("(max-width: 1024px)");
     const { setLoading } = useLoading();
     const user = useSelector((state: RootState) => state.auth.user);
+    const role = user.role;
     const [passwordChangeModalOpened, passwordChangeHandler] =
         useDisclosure(false);
     const [usersViewOpened, handleUsersView] = useDisclosure(false);
@@ -80,6 +84,7 @@ const Settings = () => {
             username: "",
             email: "",
             phone: "",
+            role: "",
         },
         validate: {
             username: isNotEmpty("User name is required"),
@@ -101,6 +106,7 @@ const Settings = () => {
                 }
                 return null;
             },
+            role: isNotEmpty("Role is required"),
         },
     });
 
@@ -183,38 +189,52 @@ const Settings = () => {
             className="max-h-80"
         >
             <ScrollArea className="overflow-x-auto">
-                <Table className="min-w-full">
-                    <Table.Tr className="bg-gray-100">
-                        <Table.Th className="px-4 py-2 w-1/6">
-                            Username
-                        </Table.Th>
-                        <Table.Th className="px-4 py-2 w-1/4">Email</Table.Th>
-                        <Table.Th className="px-2 py-1 w-1/6">Phone</Table.Th>
-                        <Table.Th className="px-4 py-2 w-1/6">Role</Table.Th>
-                        <Table.Th className="px-4 py-2 w-1/6">Status</Table.Th>
-                        <Table.Th className="px-4 py-2 w-1/6">Actions</Table.Th>
+                <Table className="min-w-full" highlightOnHover>
+                    <Table.Thead>
+                    <Table.Tr className="bg-gray-100 hidden sm:table-row">
+                        <Table.Th className="px-2 py-2 text-sm sm:text-base">Username</Table.Th>
+                        <Table.Th className="px-2 py-2 text-sm sm:text-base">Email</Table.Th>
+                        <Table.Th className="px-2 py-2 text-sm sm:text-base">Phone</Table.Th>
+                        <Table.Th className="px-2 py-2 text-sm sm:text-base">Role</Table.Th>
+                        <Table.Th className="px-2 py-2 text-sm sm:text-base">Status</Table.Th>
+                        <Table.Th className="px-2 py-2 text-sm sm:text-base">Actions</Table.Th>
                     </Table.Tr>
+                    </Table.Thead>
                     <Table.Tbody>
                         {users?.map((user: any, index: any) => (
-                            <Table.Tr key={index} className="hover:bg-gray-50">
-                                <Table.Td className="px-4 py-2 w-1/6">
-                                    {user?.username}
+                            <Table.Tr
+                                key={index}
+                                className="sm:table-row flex flex-col sm:flex-row mb-4 sm:mb-0 border-b sm:border-none"
+                            >
+                                <Table.Td className="px-2 py-2 sm:w-1/6 text-sm truncate whitespace-nowrap">
+                                    <span className="sm:hidden font-semibold w-1/4">Username:</span> {user?.username}
                                 </Table.Td>
-                                <Table.Td className="px-4 py-2 w-1/4">
-                                    {user?.email}
+                                <Table.Td className="px-2 py-2 sm:w-1/4 text-sm truncate whitespace-nowrap">
+                                    <span className="sm:hidden font-semibold">Email:</span> {user?.email}
                                 </Table.Td>
-                                <Table.Td className="px-2 py-1 w-1/6 text-sm">
-                                    {user?.phone}
+                                <Table.Td className="px-2 py-2 sm:w-1/6 text-sm truncate whitespace-nowrap">
+                                    <span className="sm:hidden font-semibold">Phone:</span> {user?.phone}
                                 </Table.Td>
-                                <Table.Td className="px-4 py-2 w-1/6">
-                                    {user?.role ?? "-"}
+                                <Table.Td className="px-2 py-2 sm:w-1/6 text-sm truncate whitespace-nowrap">
+                                    <span className="sm:hidden font-semibold">Role:</span>
+                                    <Badge
+                                        variant="dot"
+                                        color={
+                                            rolesData.find((role) => role.value === user?.role)?.color || "gray"
+                                        }
+                                        className="truncate whitespace-nowrap"
+                                    >
+                                        {rolePreview(user?.role) ?? "-"}
+                                    </Badge>
                                 </Table.Td>
-                                <Table.Td className="px-4 py-2 w-1/6">
+                                <Table.Td className="px-2 py-2 sm:w-1/6 text-sm truncate whitespace-nowrap">
+                                    <span className="sm:hidden font-semibold">Status:</span>
                                     {user?.status ? (
                                         <Badge
                                             color="green"
                                             radius="xs"
                                             size="sm"
+                                            className="truncate whitespace-nowrap"
                                         >
                                             ACTIVE
                                         </Badge>
@@ -223,34 +243,27 @@ const Settings = () => {
                                             color="red"
                                             radius="xs"
                                             size="sm"
+                                            className="truncate whitespace-nowrap"
                                         >
                                             INACTIVE
                                         </Badge>
                                     )}
                                 </Table.Td>
-                                <Table.Td className="px-4 py-2 w-1/6">
+                                <Table.Td className="px-2 py-2 sm:w-1/6 text-sm truncate whitespace-nowrap">
                                     <Menu>
                                         <Menu.Target>
-                                            <IconDotsVertical size={16} />
+                                            <IconDotsVertical size={16} className="cursor-pointer" />
                                         </Menu.Target>
                                         <Menu.Dropdown>
                                             <Menu.Label>Actions</Menu.Label>
                                             <Menu.Item
-                                                color={
-                                                    user?.status
-                                                        ? "red"
-                                                        : "green"
-                                                }
+                                                color={user?.status ? "red" : "green"}
                                                 variant="light"
                                                 leftSection={
                                                     user?.status ? (
-                                                        <IconMobiledataOff
-                                                            size={16}
-                                                        />
+                                                        <IconMobiledataOff size={16} />
                                                     ) : (
-                                                        <IconMobiledata
-                                                            size={16}
-                                                        />
+                                                        <IconMobiledata size={16} />
                                                     )
                                                 }
                                             >
@@ -313,6 +326,13 @@ const Settings = () => {
                     placeholder="Enter phone"
                     {...addUserForm.getInputProps("phone")}
                 />
+                <Select
+                    label="Role"
+                    mt="sm"
+                    data={rolesData}
+                    placeholder="Select role"
+                    {...addUserForm.getInputProps("role")}
+                />
                 <Button
                     mt="md"
                     fullWidth
@@ -337,13 +357,13 @@ const Settings = () => {
                 </Box>
             </Box>
             <Box px="lg" mb="lg" className="gap-1">
-                <div className="flex flex-row sm:flex-row items-start sm:items-center mb-2">
+                <div className="flex flex-wrap sm:flex-nowrap items-start sm:items-center mb-2">
                     <Text className="w-1/4">Username:</Text>
                     <Text className="w-2/4">{user?.username}</Text>
                     <Button
                         size="xs"
                         variant="light"
-                        className="w-full sm:w-auto"
+                        className="w-full sm:w-auto mt-2 sm:mt-0 sm:ml-2"
                         onClick={passwordChangeHandler.open}
                     >
                         Change Password
@@ -362,7 +382,9 @@ const Settings = () => {
                 <hr />
                 <div className="flex flex-row sm:flex-row  items-start sm:items-center mb-2">
                     <Text className="w-1/4">Role:</Text>
-                    <Text className="w-3/4">{user?.role || "-"}</Text>
+                    <Text className="w-3/4">
+                        {rolePreview(user?.role) || "-"}
+                    </Text>
                 </div>
                 <hr />
 
@@ -387,15 +409,17 @@ const Settings = () => {
                     >
                         View Users
                     </Button>
-                    <Button
-                        size="xs"
-                        variant="light"
-                        className="w-full sm:w-auto"
-                        onClick={handleAddUser.open}
-                        leftSection={<IconPlus size={16} />}
-                    >
-                        Add User
-                    </Button>
+                    {role === "super_admin" && (
+                        <Button
+                            size="xs"
+                            variant="light"
+                            className="w-full sm:w-auto"
+                            onClick={handleAddUser.open}
+                            leftSection={<IconPlus size={16} />}
+                        >
+                            Add User
+                        </Button>
+                    )}
                 </div>
                 <hr />
             </Box>

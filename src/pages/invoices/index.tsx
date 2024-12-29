@@ -19,7 +19,7 @@ import {
     changeStatusInvoice, getPagedInvoices,
 } from "../../store/invoiceSlice/invoiceSlice.ts";
 import toNotify from "../../helpers/toNotify.tsx";
-import datePreview from "../../helpers/datePreview.tsx";
+import { datePreview } from "../../helpers/preview.tsx";
 import { DateInput } from "@mantine/dates";
 
 import { getSuppliers } from "../../store/supplierSlice/supplierSlice.ts";
