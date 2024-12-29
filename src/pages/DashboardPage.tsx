@@ -207,7 +207,7 @@ const DashboardPage = () => {
                                     Cheque Count: #{chequesToDeposit.count}
                                 </Text>
                                 <Text size="sm" c="dimmed">
-                                    Total Value: Rs. {chequesToDeposit.amount.toFixed(2) || 0.00}
+                                    Total Value: Rs. {chequesToDeposit?.amount?.toFixed(2) || 0.00}
                                 </Text>
                             </Box>
                         </Group>
