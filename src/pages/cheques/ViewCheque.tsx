@@ -1,4 +1,4 @@
-import { IconArrowLeft, } from "@tabler/icons-react";
+import { IconArrowLeft } from "@tabler/icons-react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store/store.ts";
 import { useLoading } from "../../helpers/loadingContext.tsx";
@@ -10,7 +10,7 @@ import {
     getCheque,
 } from "../../store/chequeSlice/chequeSlice.ts";
 import toNotify from "../../helpers/toNotify.tsx";
-import datePreview from "../../helpers/datePreview.tsx";
+import { datePreview } from "../../helpers/preview.tsx";
 
 type ChequeStatus = "PENDING" | "DEPOSITED" | "RETURNED" | "COMPLETED";
 
@@ -51,7 +51,11 @@ const ViewCheque = () => {
         if (response.type === "cheque/changeStatus/fulfilled") {
             await fetchSelectedCheque();
             setLoading(false);
-            toNotify("Success", "Cheque status changed successfully", "SUCCESS");
+            toNotify(
+                "Success",
+                "Cheque status changed successfully",
+                "SUCCESS"
+            );
         } else if (response.type === "cheque/changeStatus/rejected") {
             const error: any = response.payload.error;
             setLoading(false);
@@ -80,7 +84,7 @@ const ViewCheque = () => {
                 </Group>
             </Group>
             <Box mx="md" my="md">
-                <Card shadow="md" withBorder w={{ sm: "100%", lg: "50%"}}>
+                <Card shadow="md" withBorder w={{ sm: "100%", lg: "50%" }}>
                     <div className="flex flex-row">
                         <div className="w-2/4 lg:w-1/4">Customer:</div>
                         <div>{cheque?.customer?.name}</div>
@@ -119,7 +123,12 @@ const ViewCheque = () => {
                         </Badge>
                     </div>
                 </Card>
-                <Group display="flex" justify="flex-end" w={{sm: "100%", lg: "50%"}} mt="md" >
+                <Group
+                    display="flex"
+                    justify="flex-end"
+                    w={{ sm: "100%", lg: "50%" }}
+                    mt="md"
+                >
                     {cheque?.chequeStatus === "DEPOSITED" && (
                         <>
                             <Button

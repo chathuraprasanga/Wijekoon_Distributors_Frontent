@@ -7,7 +7,7 @@ import { useEffect } from "react";
 import { Badge, Box, Button, Card, Group } from "@mantine/core";
 import toNotify from "../../helpers/toNotify.tsx";
 import { changeStatusInvoice, getInvoice } from "../../store/invoiceSlice/invoiceSlice.ts";
-import datePreview from "../../helpers/datePreview.tsx";
+import { datePreview } from "../../helpers/preview.tsx";
 
 type ChequeStatus = "PAID" | "NOT PAID";
 

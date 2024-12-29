@@ -28,9 +28,9 @@ import {
     getPagedCheques,
 } from "../../store/chequeSlice/chequeSlice.ts";
 import toNotify from "../../helpers/toNotify.tsx";
-import datePreview from "../../helpers/datePreview.tsx";
 import { getCustomers } from "../../store/customerSlice/customerSlice.ts";
 import { DateInput } from "@mantine/dates";
+import { datePreview } from "../../helpers/preview.tsx";
 
 const Cheques = () => {
     const { setLoading } = useLoading();
@@ -358,7 +358,7 @@ const Cheques = () => {
                             <Text className="font-semibold">
                                 Customer: {c.customer?.name}
                             </Text>
-                            <Text>Cheque Number: {c.chequeNumber}</Text>
+                            <Text>Cheque Number: {c.number}</Text>
                             <Text>Bank: {c.bank}</Text>
                             <Text>Branch: {c.branch}</Text>
                             <Text>Amount: Rs. {c.amount.toFixed(2)}</Text>
