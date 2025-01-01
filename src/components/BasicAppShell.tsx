@@ -13,6 +13,7 @@ import { useDisclosure } from "@mantine/hooks";
 import logo from "../assets/logo1.png";
 import UserInfo from "./UserInfo.tsx";
 import {
+    IconCalendarDollar,
     IconCashBanknote,
     IconInvoice,
     IconLayoutDashboard, IconMoon,
@@ -132,6 +133,13 @@ const BasicAppShell = () => {
                     leftSection={<IconCashBanknote size="1rem" stroke={1.5} />}
                     variant="filled"
                     active={activePath === "cheques"}
+                />
+                <NavLink
+                    onClick={() => handleNavLinkClick("cheque-payments")}
+                    label="Cheque Payments"
+                    leftSection={<IconCalendarDollar size="1rem" stroke={1.5} />}
+                    variant="filled"
+                    active={activePath === "cheque-payments"}
                 />
                 <NavLink
                     onClick={() => handleNavLinkClick("invoices")}

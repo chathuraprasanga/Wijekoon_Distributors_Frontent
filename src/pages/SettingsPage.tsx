@@ -12,12 +12,12 @@ import {
     TextInput,
 } from "@mantine/core";
 import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "../../store/store.ts";
+import { AppDispatch, RootState } from "../store/store.ts";
 import { useDisclosure, useMediaQuery } from "@mantine/hooks";
 import { isNotEmpty, useForm } from "@mantine/form";
 import { useEffect, useState } from "react";
-import { changePassword } from "../../store/authSlice/authSlice.ts";
-import toNotify from "../../helpers/toNotify.tsx";
+import { changePassword } from "../store/authSlice/authSlice.ts";
+import toNotify from "../helpers/toNotify.tsx";
 import {
     IconDotsVertical,
     IconEye,
@@ -25,13 +25,18 @@ import {
     IconMobiledataOff,
     IconPlus,
 } from "@tabler/icons-react";
-import { addUser, getUsers } from "../../store/userSlice/userSlice.ts";
-import { useLoading } from "../../helpers/loadingContext.tsx";
-import { isValidEmail, isValidPhone } from "../../utils/inputValidators.ts";
-import { rolePreview } from "../../helpers/preview.tsx";
-import { rolesData } from "../../utils/settings.ts";
+import { addUser, getUsers } from "../store/userSlice/userSlice.ts";
+import { useLoading } from "../helpers/loadingContext.tsx";
+import { isValidEmail, isValidPhone } from "../utils/inputValidators.ts";
+import { bankPreview, rolePreview } from "../helpers/preview.tsx";
+import { rolesData } from "../utils/settings.ts";
+import {
+    addBankDetail,
+    getBankDetails,
+} from "../store/bankDetailSlice/bankDetailSlice.ts";
+import banks from "../helpers/banks.json";
 
-const Settings = () => {
+const SettingsPage = () => {
     const isSmallScreen = useMediaQuery("(max-width: 1024px)");
     const { setLoading } = useLoading();
     const user = useSelector((state: RootState) => state.auth.user);
@@ -39,13 +44,24 @@ const Settings = () => {
     const [passwordChangeModalOpened, passwordChangeHandler] =
         useDisclosure(false);
     const [usersViewOpened, handleUsersView] = useDisclosure(false);
+    const [bankDetailsOpened, handleBankDetailsView] = useDisclosure(false);
     const [adduserOpened, handleAddUser] = useDisclosure(false);
+    const [addBankDetailOpened, handleAddBankDetail] = useDisclosure(false);
     const [isLoading, setIsLoading] = useState(false);
     const dispatch = useDispatch<AppDispatch | any>();
     const users = useSelector((state: RootState) => state.user.users);
+    const bankDetails = useSelector(
+        (state: RootState) => state.bankDetails.bankDetails
+    );
+
+    const bankList = banks.map((bank) => ({
+        label: bank.name,
+        value: bank.ID.toString(),
+    }));
 
     useEffect(() => {
         getAllUsers();
+        getAllBankDetails();
     }, [dispatch]);
 
     const getAllUsers = async () => {
@@ -54,6 +70,20 @@ const Settings = () => {
         if (response.type === "user/getUsers/fulfilled") {
             setLoading(false);
         } else if (response.type === "user/getUsers/rejected") {
+            setLoading(false);
+            toNotify("Error", "Something went wrong", "ERROR");
+        } else {
+            setLoading(false);
+            toNotify("Warning", "Please contact system admin", "WARNING");
+        }
+    };
+
+    const getAllBankDetails = async () => {
+        setLoading(true);
+        const response = await dispatch(getBankDetails({}));
+        if (response.type === "bankDetail/getBankDetails/fulfilled") {
+            setLoading(false);
+        } else if (response.type === "bankDetail/getBankDetails/rejected") {
             setLoading(false);
             toNotify("Error", "Something went wrong", "ERROR");
         } else {
@@ -107,6 +137,19 @@ const Settings = () => {
                 return null;
             },
             role: isNotEmpty("Role is required"),
+        },
+    });
+
+    const addBankDetailForm = useForm({
+        initialValues: {
+            bank: "",
+            branch: "",
+            accountNumber: "",
+        },
+        validate: {
+            bank: isNotEmpty("Bank is required"),
+            branch: isNotEmpty("Branch is required"),
+            accountNumber: isNotEmpty("Account number is required"),
         },
     });
 
@@ -191,14 +234,26 @@ const Settings = () => {
             <ScrollArea className="overflow-x-auto">
                 <Table className="min-w-full" highlightOnHover>
                     <Table.Thead>
-                    <Table.Tr className="bg-gray-100 hidden sm:table-row">
-                        <Table.Th className="px-2 py-2 text-sm sm:text-base">Username</Table.Th>
-                        <Table.Th className="px-2 py-2 text-sm sm:text-base">Email</Table.Th>
-                        <Table.Th className="px-2 py-2 text-sm sm:text-base">Phone</Table.Th>
-                        <Table.Th className="px-2 py-2 text-sm sm:text-base">Role</Table.Th>
-                        <Table.Th className="px-2 py-2 text-sm sm:text-base">Status</Table.Th>
-                        <Table.Th className="px-2 py-2 text-sm sm:text-base">Actions</Table.Th>
-                    </Table.Tr>
+                        <Table.Tr className="bg-gray-100 hidden sm:table-row">
+                            <Table.Th className="px-2 py-2 text-sm sm:text-base">
+                                Username
+                            </Table.Th>
+                            <Table.Th className="px-2 py-2 text-sm sm:text-base">
+                                Email
+                            </Table.Th>
+                            <Table.Th className="px-2 py-2 text-sm sm:text-base">
+                                Phone
+                            </Table.Th>
+                            <Table.Th className="px-2 py-2 text-sm sm:text-base">
+                                Role
+                            </Table.Th>
+                            <Table.Th className="px-2 py-2 text-sm sm:text-base">
+                                Status
+                            </Table.Th>
+                            <Table.Th className="px-2 py-2 text-sm sm:text-base">
+                                Actions
+                            </Table.Th>
+                        </Table.Tr>
                     </Table.Thead>
                     <Table.Tbody>
                         {users?.map((user: any, index: any) => (
@@ -207,20 +262,34 @@ const Settings = () => {
                                 className="sm:table-row flex flex-col sm:flex-row mb-4 sm:mb-0 border-b sm:border-none"
                             >
                                 <Table.Td className="px-2 py-2 sm:w-1/6 text-sm truncate whitespace-nowrap">
-                                    <span className="sm:hidden font-semibold w-1/4">Username:</span> {user?.username}
+                                    <span className="sm:hidden font-semibold w-1/4">
+                                        Username:
+                                    </span>{" "}
+                                    {user?.username}
                                 </Table.Td>
                                 <Table.Td className="px-2 py-2 sm:w-1/4 text-sm truncate whitespace-nowrap">
-                                    <span className="sm:hidden font-semibold">Email:</span> {user?.email}
+                                    <span className="sm:hidden font-semibold">
+                                        Email:
+                                    </span>{" "}
+                                    {user?.email}
                                 </Table.Td>
                                 <Table.Td className="px-2 py-2 sm:w-1/6 text-sm truncate whitespace-nowrap">
-                                    <span className="sm:hidden font-semibold">Phone:</span> {user?.phone}
+                                    <span className="sm:hidden font-semibold">
+                                        Phone:
+                                    </span>{" "}
+                                    {user?.phone}
                                 </Table.Td>
                                 <Table.Td className="px-2 py-2 sm:w-1/6 text-sm truncate whitespace-nowrap">
-                                    <span className="sm:hidden font-semibold">Role:</span>
+                                    <span className="sm:hidden font-semibold">
+                                        Role:
+                                    </span>
                                     <Badge
                                         variant="dot"
                                         color={
-                                            rolesData.find((role) => role.value === user?.role)?.color || "gray"
+                                            rolesData.find(
+                                                (role) =>
+                                                    role.value === user?.role
+                                            )?.color || "gray"
                                         }
                                         className="truncate whitespace-nowrap"
                                     >
@@ -228,7 +297,9 @@ const Settings = () => {
                                     </Badge>
                                 </Table.Td>
                                 <Table.Td className="px-2 py-2 sm:w-1/6 text-sm truncate whitespace-nowrap">
-                                    <span className="sm:hidden font-semibold">Status:</span>
+                                    <span className="sm:hidden font-semibold">
+                                        Status:
+                                    </span>
                                     {user?.status ? (
                                         <Badge
                                             color="green"
@@ -252,18 +323,146 @@ const Settings = () => {
                                 <Table.Td className="px-2 py-2 sm:w-1/6 text-sm truncate whitespace-nowrap">
                                     <Menu>
                                         <Menu.Target>
-                                            <IconDotsVertical size={16} className="cursor-pointer" />
+                                            <IconDotsVertical
+                                                size={16}
+                                                className="cursor-pointer"
+                                            />
                                         </Menu.Target>
                                         <Menu.Dropdown>
                                             <Menu.Label>Actions</Menu.Label>
                                             <Menu.Item
-                                                color={user?.status ? "red" : "green"}
+                                                color={
+                                                    user?.status
+                                                        ? "red"
+                                                        : "green"
+                                                }
                                                 variant="light"
                                                 leftSection={
                                                     user?.status ? (
-                                                        <IconMobiledataOff size={16} />
+                                                        <IconMobiledataOff
+                                                            size={16}
+                                                        />
                                                     ) : (
-                                                        <IconMobiledata size={16} />
+                                                        <IconMobiledata
+                                                            size={16}
+                                                        />
+                                                    )
+                                                }
+                                            >
+                                                Deactivate
+                                            </Menu.Item>
+                                        </Menu.Dropdown>
+                                    </Menu>
+                                </Table.Td>
+                            </Table.Tr>
+                        ))}
+                    </Table.Tbody>
+                </Table>
+            </ScrollArea>
+        </Modal>
+    );
+
+    const viewBankDetailsModal = () => (
+        <Modal
+            opened={bankDetailsOpened}
+            onClose={handleBankDetailsView.close}
+            title={<Text size="lg">Bank Account Details</Text>}
+            size={isSmallScreen ? "100%" : "70%"}
+            className="max-h-80"
+        >
+            <ScrollArea className="overflow-x-auto">
+                <Table className="min-w-full" highlightOnHover>
+                    <Table.Thead>
+                        <Table.Tr className="bg-gray-100 hidden sm:table-row">
+                            <Table.Th className="px-2 py-2 text-sm sm:text-base">
+                                Bank Name
+                            </Table.Th>
+                            <Table.Th className="px-2 py-2 text-sm sm:text-base">
+                                Branch
+                            </Table.Th>
+                            <Table.Th className="px-2 py-2 text-sm sm:text-base">
+                                Account Number
+                            </Table.Th>
+                            <Table.Th className="px-2 py-2 text-sm sm:text-base">
+                                Status
+                            </Table.Th>
+                            <Table.Th className="px-2 py-2 text-sm sm:text-base">
+                                Actions
+                            </Table.Th>
+                        </Table.Tr>
+                    </Table.Thead>
+                    <Table.Tbody>
+                        {bankDetails?.map((bd: any, index: any) => (
+                            <Table.Tr
+                                key={index}
+                                className="sm:table-row flex flex-col sm:flex-row mb-4 sm:mb-0 border-b sm:border-none"
+                            >
+                                <Table.Td className="px-2 py-2 sm:w-1/6 text-sm truncate whitespace-nowrap">
+                                    <span className="sm:hidden font-semibold w-1/4">
+                                        Bank:
+                                    </span>{" "}
+                                    {bankPreview(bd?.bank)}
+                                </Table.Td>
+                                <Table.Td className="px-2 py-2 sm:w-1/4 text-sm truncate whitespace-nowrap">
+                                    <span className="sm:hidden font-semibold">
+                                        Branch:
+                                    </span>{" "}
+                                    {bd?.branch}
+                                </Table.Td>
+                                <Table.Td className="px-2 py-2 sm:w-1/6 text-sm truncate whitespace-nowrap">
+                                    <span className="sm:hidden font-semibold">
+                                        Account Number:
+                                    </span>{" "}
+                                    {bd?.accountNumber}
+                                </Table.Td>
+                                <Table.Td className="px-2 py-2 sm:w-1/6 text-sm truncate whitespace-nowrap">
+                                    <span className="sm:hidden font-semibold">
+                                        Status:
+                                    </span>
+                                    {bd?.status ? (
+                                        <Badge
+                                            color="green"
+                                            radius="xs"
+                                            size="sm"
+                                            className="truncate whitespace-nowrap"
+                                        >
+                                            ACTIVE
+                                        </Badge>
+                                    ) : (
+                                        <Badge
+                                            color="red"
+                                            radius="xs"
+                                            size="sm"
+                                            className="truncate whitespace-nowrap"
+                                        >
+                                            INACTIVE
+                                        </Badge>
+                                    )}
+                                </Table.Td>
+                                <Table.Td className="px-2 py-2 sm:w-1/6 text-sm truncate whitespace-nowrap">
+                                    <Menu>
+                                        <Menu.Target>
+                                            <IconDotsVertical
+                                                size={16}
+                                                className="cursor-pointer"
+                                            />
+                                        </Menu.Target>
+                                        <Menu.Dropdown>
+                                            <Menu.Label>Actions</Menu.Label>
+                                            <Menu.Item
+                                                color={
+                                                    bd?.status ? "red" : "green"
+                                                }
+                                                variant="light"
+                                                leftSection={
+                                                    bd?.status ? (
+                                                        <IconMobiledataOff
+                                                            size={16}
+                                                        />
+                                                    ) : (
+                                                        <IconMobiledata
+                                                            size={16}
+                                                        />
                                                     )
                                                 }
                                             >
@@ -346,6 +545,69 @@ const Settings = () => {
         </Modal>
     );
 
+    const addBankDetailModal = () => (
+        <Modal
+            opened={addBankDetailOpened}
+            onClose={() => {
+                handleAddBankDetail.close();
+                addBankDetailForm.reset();
+            }}
+            title={<Text size="lg">Add bank Detail</Text>}
+        >
+            <form
+                onSubmit={addBankDetailForm.onSubmit(handleAddBankDetailForm)}
+            >
+                <Select
+                    label="Bank"
+                    placeholder="Choose a bank"
+                    data={bankList}
+                    searchable
+                    {...addBankDetailForm.getInputProps("bank")}
+                />
+                <TextInput
+                    label="Branch"
+                    placeholder="Type your branch"
+                    {...addBankDetailForm.getInputProps("branch")}
+                />
+                <TextInput
+                    label="Account Number"
+                    mt="sm"
+                    placeholder="Enter accoun number"
+                    {...addBankDetailForm.getInputProps("accountNumber")}
+                />
+                <Button
+                    mt="md"
+                    fullWidth
+                    variant="filled"
+                    type="submit"
+                    loading={isLoading}
+                >
+                    Submit
+                </Button>
+            </form>
+        </Modal>
+    );
+
+    const handleAddBankDetailForm = async (
+        values: typeof addBankDetailForm.values
+    ) => {
+        setIsLoading(true);
+        const response = await dispatch(addBankDetail(values));
+        if (response.type === "bankDetail/addBankDetail/fulfilled") {
+            setIsLoading(false);
+            await dispatch(getBankDetails({}));
+            toNotify("Success", "Bank detail created successfully", "SUCCESS");
+            addBankDetailForm.reset();
+            handleAddBankDetail.close();
+        } else if (response.type === "bankDetail/addBankDetail/rejected") {
+            setIsLoading(false);
+            toNotify("Error", "Bank detail created failed", "ERROR");
+        } else {
+            setIsLoading(false);
+            toNotify("Warning", "Please contact system admin", "WARNING");
+        }
+    };
+
     return (
         <>
             {/* Header */}
@@ -423,11 +685,46 @@ const Settings = () => {
                 </div>
                 <hr />
             </Box>
+            <Box display="flex" p="lg" className="items-center justify-between">
+                <Box>
+                    <Text size="lg" fw={500}>
+                        Bank Details
+                    </Text>
+                </Box>
+            </Box>
+            <Box px="lg" mb="lg" className="gap-1">
+                <div className="flex gap-2 flex-row sm:flex-row items-start sm:items-center mb-2">
+                    <Button
+                        size="xs"
+                        variant="light"
+                        color="violet"
+                        className="w-full sm:w-auto"
+                        onClick={handleBankDetailsView.open}
+                        leftSection={<IconEye size={16} />}
+                    >
+                        View Bank Details
+                    </Button>
+                    {role === "super_admin" && (
+                        <Button
+                            size="xs"
+                            variant="light"
+                            className="w-full sm:w-auto"
+                            onClick={handleAddBankDetail.open}
+                            leftSection={<IconPlus size={16} />}
+                        >
+                            Add Bank Details
+                        </Button>
+                    )}
+                </div>
+                <hr />
+            </Box>
             {passwordChangeModal()}
             {viewUsersModal()}
             {adduserOpenedModal()}
+            {viewBankDetailsModal()}
+            {addBankDetailModal()}
         </>
     );
 };
 
-export default Settings;
+export default SettingsPage;

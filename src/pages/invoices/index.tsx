@@ -177,7 +177,7 @@ const Invoices = () => {
                                     <Table.Td style={{width: "30%"}}>{c.supplier?.name}</Table.Td>
                                     <Table.Td style={{width: "15%"}}>{datePreview(c.invoiceDate)}</Table.Td>
                                     <Table.Td style={{width: "20%"}}>{c.invoiceNumber}</Table.Td>
-                                    <Table.Td style={{width: "20%"}}>{c.amount}</Table.Td>
+                                    <Table.Td style={{width: "20%"}}>Rs. {c.amount.toFixed(2)}</Table.Td>
                                     <Table.Td style={{width: "10%"}}>
                                         <Badge
                                             size="sm"

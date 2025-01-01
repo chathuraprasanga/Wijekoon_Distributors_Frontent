@@ -88,8 +88,9 @@ const ViewCheque = React.lazy(() => import("./pages/cheques/ViewCheque.tsx"));
 const ViewInvoice = React.lazy(
     () => import("./pages/invoices/ViewInvoice.tsx")
 );
-const Settings = React.lazy(
-    () => import("./pages/settings/index.tsx")
+const SettingsPage = React.lazy(() => import("./pages/SettingsPage.tsx"));
+const ChequePayments = React.lazy(
+    () => import("./pages/chequePayments/index.tsx")
 );
 
 const router = createBrowserRouter([
@@ -184,7 +185,11 @@ const router = createBrowserRouter([
             },
             {
                 path: "settings",
-                element: <Settings />,
+                element: <SettingsPage />,
+            },
+            {
+                path: "cheque-payments",
+                element: <ChequePayments />,
             },
             {
                 path: "*",
@@ -211,7 +216,7 @@ createRoot(document.getElementById("root")!).render(
                     <LoadingProvider>
                         <Notifications position="top-right" mt={50} />
                         <StrictMode>
-                        <RouterProvider router={router} />
+                            <RouterProvider router={router} />
                         </StrictMode>
                     </LoadingProvider>
                 </Suspense>
