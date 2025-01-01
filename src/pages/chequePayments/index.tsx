@@ -122,7 +122,7 @@ const ChequePayments = () => {
                 </Box>
             </Box>
             {mode !== "development" ? (
-                <Box mx="lg" my="lg" className="flex flex-row gap-4"><IconBrandGithub color="gray"/><Text>This is still under development</Text></Box>
+                <Box mx="lg" my="lg" className="flex flex-row gap-4"><IconBrandGithub color="gray"/><Text>This page is still under development</Text></Box>
             ) : (
                 <>
                     {/* Search Input */}

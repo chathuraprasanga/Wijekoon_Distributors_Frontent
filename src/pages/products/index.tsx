@@ -300,7 +300,7 @@ const Products = () => {
                             </Text>
                             <Text>Product Code: {c.productCode}</Text>
                             <Text>Size: {c.size}</Text>
-                            <Text>Unit Price: {c.unitPrice}</Text>
+                            <Text>Unit Price: Rs. {c.unitPrice.toFixed(2)}</Text>
                             <Badge
                                 color={c.status ? "green" : "red"}
                                 size="sm"
