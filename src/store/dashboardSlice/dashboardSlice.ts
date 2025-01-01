@@ -10,6 +10,7 @@ interface dashboardState {
     chequesCount: number;
     invoicesCount: number;
     chequesToDeposit: object;
+    chequesComesToTransfer: object;
     invoicesToBePaid: object;
     status: string;
     error: string;
@@ -24,6 +25,7 @@ const initialState: dashboardState = {
     chequesCount: 0,
     invoicesCount: 0,
     chequesToDeposit: {},
+    chequesComesToTransfer: {},
     invoicesToBePaid:{},
     status: "idle",
     error: "",

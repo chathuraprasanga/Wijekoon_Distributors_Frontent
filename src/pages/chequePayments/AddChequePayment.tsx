@@ -14,45 +14,36 @@ import { AppDispatch } from "../../store/store.ts";
 import { useNavigate } from "react-router";
 import { isNotEmpty, useForm } from "@mantine/form";
 import toNotify from "../../helpers/toNotify.tsx";
-import { addCheque } from "../../store/chequeSlice/chequeSlice.ts";
-import {
-    isValidBranchCode,
-    isValidChequeNumber,
-} from "../../utils/inputValidators.ts";
+import { isValidChequeNumber } from "../../utils/inputValidators.ts";
 import { useEffect, useState } from "react";
-import { getCustomers } from "../../store/customerSlice/customerSlice.ts";
 import { DatePickerInput } from "@mantine/dates";
-import banks from "../../helpers/banks.json"
+import { getBankDetails } from "../../store/bankDetailSlice/bankDetailSlice.ts";
+import { bankPreview } from "../../helpers/preview.tsx";
+import { addChequePayment } from "../../store/chequePaymentSlice/chequePaymentSlice.ts";
 
-const AddCheque = () => {
+const AddChequePayment = () => {
     const { setLoading } = useLoading();
     const dispatch = useDispatch<AppDispatch | any>();
     const navigate = useNavigate();
-    const [selectableCustomers, setSelectableCustomers] = useState<any[]>([]);
-    const customerData = selectableCustomers.map((data: any) => {
-        return { label: data.name, value: data._id };
-    });
-    const [isBranchDisabled, setIsBranchDisabled] = useState(true);
-
-    const banksList = banks.map((b) => ({
-        label: b.name,
-        value: b.name,
+    const [bankDetails, setBankDetails] = useState<any[]>([]);
+    const bankAccounts = bankDetails.map((b: any) => ({
+        label: `${bankPreview(b.bank)} - ${b.accountNumber}`,
+        value: b._id,
     }));
 
 
-
     useEffect(() => {
-        fetchCustomers();
+        fetchBankDetails();
     }, [dispatch]);
 
-    const fetchCustomers = async () => {
+    const fetchBankDetails = async () => {
         setLoading(true);
         const response = await dispatch(
-            getCustomers({ filters: { status: true } })
+            getBankDetails({ filters: { status: true } })
         );
-        if (response.type === "customer/getCustomers/fulfilled") {
+        if (response.type === "bankDetail/getBankDetails/fulfilled") {
             setLoading(false);
-            setSelectableCustomers(response.payload.result);
+            setBankDetails(response.payload.result);
         } else {
             setLoading(false);
             toNotify(
@@ -63,18 +54,17 @@ const AddCheque = () => {
         }
     };
 
-    const chequeAddForm = useForm({
+    const chequePaymentAddForm = useForm({
         mode: "uncontrolled",
         initialValues: {
-            customer: "",
+            payFor: "",
             number: "",
-            bank: "",
-            branch: "",
+            bankAccount: "",
             amount: 0,
-            depositDate: null,
+            date: null,
         },
         validate: {
-            customer: isNotEmpty("Customer name is required"),
+            payFor: isNotEmpty("Receiver is required"),
             number: (value) => {
                 if (!value) {
                     return "Cheque number is required";
@@ -83,20 +73,7 @@ const AddCheque = () => {
                     ? null
                     : "Enter valid cheque number";
             },
-            bank: (value) => {
-                if (!value) {
-                    return "Bank is required";
-                }
-                return null;
-            },
-            branch: (value) => {
-                if (!value) {
-                    return "Branch code is required";
-                }
-                return isValidBranchCode(value)
-                    ? null
-                    : "Enter valid branch code";
-            },
+            bankAccount: isNotEmpty("Bank Account is required"),
             amount: (value) => {
                 if (!value) {
                     return "Cheque amount is required";
@@ -106,18 +83,20 @@ const AddCheque = () => {
                 }
                 return null;
             },
-            depositDate: isNotEmpty("Deposit date is required"),
+            date: isNotEmpty("Deposit date is required"),
         },
     });
 
-    const handleChequeAdd = async (values: typeof chequeAddForm.values) => {
+    const handleChequePaymentAdd = async (
+        values: typeof chequePaymentAddForm.values
+    ) => {
         setLoading(true);
-        const response = await dispatch(addCheque(values));
-        if (response.type === "cheque/addCheque/fulfilled") {
+        const response = await dispatch(addChequePayment(values));
+        if (response.type === "chequePayment/addChequePayment/fulfilled") {
             setLoading(false);
-            toNotify("Success", "Cheque added successfully", "SUCCESS");
-            navigate("/app/cheques");
-        } else if (response.type === "cheque/addCheque/rejected") {
+            toNotify("Success", "Cheque payment added successfully", "SUCCESS");
+            navigate("/app/cheque-payments");
+        } else if (response.type === "chequePayment/addChequePayment/rejected") {
             const error: any = response.payload.error;
             setLoading(false);
             toNotify("Error", `${error}`, "ERROR");
@@ -140,48 +119,34 @@ const AddCheque = () => {
                         onClick={() => history.back()}
                     />
                     <Text fw={500} ml="md" size="lg">
-                        Add Cheque
+                        Add Cheque Payment
                     </Text>
                 </Group>
             </Group>
             <Box w={{ sm: "100%", lg: "50%" }} px="lg">
-                <form onSubmit={chequeAddForm.onSubmit(handleChequeAdd)}>
-                    <Select
-                        label="Customer"
+                <form onSubmit={chequePaymentAddForm.onSubmit(handleChequePaymentAdd)}>
+                    <TextInput
+                        label="Payment For"
+                        placeholder="Enter Receiver Name"
                         withAsterisk
-                        placeholder="Select Customer"
+                        key={chequePaymentAddForm.key("payFor")}
+                        {...chequePaymentAddForm.getInputProps("payFor")}
+                    />
+                    <Select
+                        label="Bank"
+                        withAsterisk
+                        placeholder="Select Bank Account"
                         searchable
-                        data={customerData}
-                        key={chequeAddForm.key("customer")}
-                        {...chequeAddForm.getInputProps("customer")}
+                        data={bankAccounts}
+                        key={chequePaymentAddForm.key("bankAccount")}
+                        {...chequePaymentAddForm.getInputProps("bankAccount")}
                     />
                     <TextInput
                         label="Cheque Number"
                         placeholder="Enter Cheque Number"
                         withAsterisk
-                        key={chequeAddForm.key("number")}
-                        {...chequeAddForm.getInputProps("number")}
-                    />
-                    <Select
-                        label="Bank"
-                        withAsterisk
-                        placeholder="Select Customer Bank Name"
-                        searchable
-                        key={chequeAddForm.key("bank")}
-                        data={banksList}
-                        {...chequeAddForm.getInputProps("bank")}
-                        onChange={(value) => {
-                            chequeAddForm.getInputProps("bank").onChange(value); // Bind to form state
-                            setIsBranchDisabled(false); // Update branches
-                        }}
-                    />
-                    <TextInput
-                        label="Branch"
-                        placeholder="Enter Customer Bank Branch Code"
-                        withAsterisk
-                        key={chequeAddForm.key("branch")}
-                        {...chequeAddForm.getInputProps("branch")}
-                        disabled={isBranchDisabled} // Disable branch field if no bank is selected
+                        key={chequePaymentAddForm.key("number")}
+                        {...chequePaymentAddForm.getInputProps("number")}
                     />
                     <NumberInput
                         hideControls
@@ -193,23 +158,25 @@ const AddCheque = () => {
                         decimalScale={2}
                         fixedDecimalScale
                         placeholder="Enter Cheque Amount"
-                        key={chequeAddForm.key("amount")}
-                        {...chequeAddForm.getInputProps("amount")}
+                        key={chequePaymentAddForm.key("amount")}
+                        {...chequePaymentAddForm.getInputProps("amount")}
                     />
                     <DatePickerInput
-                        label="Deposit Date"
-                        placeholder="Enter Deposit Date"
+                        label="Date"
+                        placeholder="Enter Date"
                         withAsterisk
                         clearable
                         defaultValue={new Date()}
-                        key={chequeAddForm.key("depositDate")}
-                        {...chequeAddForm.getInputProps("depositDate")}
+                        key={chequePaymentAddForm.key("date")}
+                        {...chequePaymentAddForm.getInputProps("date")}
                     />
                     <Group justify="flex-end" display="flex" pb="md" mt="md">
                         <Button
                             size="xs"
                             type="submit"
-                            onClick={() => console.log(chequeAddForm.values)}
+                            onClick={() =>
+                                console.log(chequePaymentAddForm.values)
+                            }
                         >
                             Submit
                         </Button>
@@ -220,4 +187,4 @@ const AddCheque = () => {
     );
 };
 
-export default AddCheque;
+export default AddChequePayment;
