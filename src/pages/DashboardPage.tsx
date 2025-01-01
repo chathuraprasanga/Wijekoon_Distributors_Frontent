@@ -2,6 +2,7 @@ import {
     IconBuildingBank,
     IconCalendarTime,
     IconCashBanknote,
+    IconCreditCardPay,
     IconInvoice,
     IconPackages,
     IconUsersGroup,
@@ -12,14 +13,20 @@ import { useEffect } from "react";
 import { useLoading } from "../helpers/loadingContext.tsx";
 import { getDashboardDetails } from "../store/dashboardSlice/dashboardSlice.ts";
 import toNotify from "../helpers/toNotify.tsx";
-import { ActionIcon, Box, Grid, Group, Paper, Text } from "@mantine/core";
+import { ActionIcon, Box, Grid, Group, Paper, Text, useMantineColorScheme, useMantineTheme } from "@mantine/core";
 
 const DashboardPage = () => {
+    const { colorScheme } = useMantineColorScheme(); // Gets the current color scheme
+    const theme = useMantineTheme();
+    const borderColor = colorScheme === "dark" ? theme.colors.dark[4] : theme.colors.gray[3];
+    const textColor = colorScheme === "dark" ? theme.colors.gray[4] : theme.colors.dark[7];
+
     const { setLoading } = useLoading();
     const dispatch = useDispatch<AppDispatch | any>();
     const user = useSelector((state: RootState) => state.auth.user);
     const dashboardDetails = useSelector((state: RootState) => state.dashboard);
-    const chequesToDeposit:any = dashboardDetails.chequesToDeposit;
+    const chequesToDeposit: any = dashboardDetails.chequesToDeposit;
+    const invoicesToBePaid: any = dashboardDetails.invoicesToBePaid;
 
     useEffect(() => {
         fetchDashboardDetails();
@@ -28,7 +35,7 @@ const DashboardPage = () => {
     const fetchDashboardDetails = async () => {
         setLoading(true);
         const response = await dispatch(
-            getDashboardDetails({ userId: user._id})
+            getDashboardDetails({ userId: user._id })
         );
         if (response.type === "dashboard/getDetails/fulfilled") {
             setLoading(false);
@@ -207,7 +214,9 @@ const DashboardPage = () => {
                                     Cheque Count: #{chequesToDeposit.count}
                                 </Text>
                                 <Text size="sm" c="dimmed">
-                                    Total Value: Rs. {chequesToDeposit?.amount?.toFixed(2) || 0.00}
+                                    Total Value: Rs.{" "}
+                                    {chequesToDeposit?.amount?.toFixed(2) ||
+                                        0.0}
                                 </Text>
                             </Box>
                         </Group>
@@ -244,6 +253,81 @@ const DashboardPage = () => {
                         </Group>
                     </Paper>
                 </Grid.Col>
+            </Grid>
+            <Grid mt="md">
+                <Grid.Col span={{ lg: 6, md: 6, sm: 12 }} >
+                    <Paper
+                        shadow="md"
+                        p="md"
+                        radius="md"
+                        withBorder
+                        className="hover:shadow-lg transition-transform transform hover:scale-105"
+                    >
+                        <Group align="center">
+                            <ActionIcon
+                                size="xl"
+                                radius="md"
+                                variant="gradient"
+                                gradient={{
+                                    from: "orange",
+                                    to: "pink",
+                                    deg: 90,
+                                }}
+                            >
+                                <IconCreditCardPay size={28} />
+                            </ActionIcon>
+                            <Box>
+                                <Text size="lg" fw={600}>
+                                    Invoice Credit
+                                </Text>
+                                <Text size="sm" c="dimmed">
+                                    Invoice Count: #
+                                    {invoicesToBePaid?.toBePaid?.invoiceCount ||
+                                        0}
+                                </Text>
+                                <Text size="sm" c="dimmed">
+                                    Total Value: Rs.{" "}
+                                    {invoicesToBePaid?.toBePaid?.totalAmount?.toFixed(
+                                        2
+                                    ) || 0.0}
+                                </Text>
+                            </Box>
+                        </Group>
+                    </Paper>
+                    <Paper
+                        shadow="md"
+                        p="md"
+                        radius="md"
+                        withBorder
+                        mt="xs"
+                        className="hover:shadow-lg transition-transform transform hover:scale-105"
+                    >
+                        {invoicesToBePaid.supplierWise?.map((invoiceData: any, index: number) => (
+                            <div
+                                key={invoiceData._id}
+                                className={`flex flex-row justify-between items-center p-2`}
+                                style={{
+                                    borderTop: `1px solid ${borderColor}`,
+                                    borderBottom:
+                                        index === invoicesToBePaid.supplierWise.length - 1
+                                            ? `1px solid ${borderColor}`
+                                            : "none",
+                                }}
+                            >
+                                <Text size="sm" style={{ color: textColor }}>
+                                    {invoiceData?.supplierName}
+                                </Text>
+                                <Text size="sm" style={{ color: textColor }}>
+                                    {invoiceData.invoiceCount}
+                                </Text>
+                                <Text size="sm" style={{ color: textColor }}>
+                                    Rs. {invoiceData.totalAmount.toFixed(2)}
+                                </Text>
+                            </div>
+                        ))}
+                    </Paper>
+                </Grid.Col>
+                <Grid.Col span={{ lg: 6, md: 6, sm: 12 }}></Grid.Col>
             </Grid>
         </Paper>
     );
