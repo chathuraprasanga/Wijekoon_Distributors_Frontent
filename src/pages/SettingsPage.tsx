@@ -40,7 +40,6 @@ import xcorpion from "../../public/xcorpion.png";
 import { useNavigate } from "react-router";
 
 const SettingsPage = () => {
-    const navigate = useNavigate();
     const isSmallScreen = useMediaQuery("(max-width: 1024px)");
     const { setLoading } = useLoading();
     const user = useSelector((state: RootState) => state.auth.user);
