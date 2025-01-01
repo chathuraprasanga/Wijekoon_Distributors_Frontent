@@ -37,7 +37,6 @@ import {
 } from "../store/bankDetailSlice/bankDetailSlice.ts";
 import banks from "../helpers/banks.json";
 import xcorpion from "../../public/xcorpion.png";
-import { useNavigate } from "react-router";
 
 const SettingsPage = () => {
     const isSmallScreen = useMediaQuery("(max-width: 1024px)");
