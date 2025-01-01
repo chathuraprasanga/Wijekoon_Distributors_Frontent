@@ -10,7 +10,7 @@ import {
     getCheque,
 } from "../../store/chequeSlice/chequeSlice.ts";
 import toNotify from "../../helpers/toNotify.tsx";
-import { datePreview } from "../../helpers/preview.tsx";
+import { amountPreview, datePreview } from "../../helpers/preview.tsx";
 
 type ChequeStatus = "PENDING" | "DEPOSITED" | "RETURNED" | "COMPLETED";
 
@@ -103,7 +103,7 @@ const ViewCheque = () => {
                     </div>
                     <div className="flex flex-row">
                         <div className="w-2/4 lg:w-1/4">Amount:</div>
-                        <div>Rs. {cheque?.amount?.toFixed(2)}</div>
+                        <div>{amountPreview(cheque?.amount)}</div>
                     </div>
                     <div className="flex flex-row">
                         <div className="w-2/4 lg:w-1/4">Deposit Date:</div>

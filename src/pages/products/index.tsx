@@ -30,6 +30,7 @@ import {
     changeStatusProduct, getPagedProducts,
 } from "../../store/productSlice/productSlice.ts";
 import toNotify from "../../helpers/toNotify.tsx";
+import { amountPreview } from "../../helpers/preview.tsx";
 
 const Products = () => {
     const { setLoading } = useLoading();
@@ -183,7 +184,7 @@ const Products = () => {
                                         {c.size}
                                     </Table.Td>
                                     <Table.Td style={{ width: "15%" }}>
-                                        RS. {c.unitPrice.toFixed(2)}
+                                        {amountPreview(c.unitPrice)}
                                     </Table.Td>
                                     <Table.Td style={{ width: "10%" }}>
                                         <Badge
@@ -300,7 +301,7 @@ const Products = () => {
                             </Text>
                             <Text>Product Code: {c.productCode}</Text>
                             <Text>Size: {c.size}</Text>
-                            <Text>Unit Price: Rs. {c.unitPrice.toFixed(2)}</Text>
+                            <Text>Unit Price: {amountPreview(c.unitPrice)}</Text>
                             <Badge
                                 color={c.status ? "green" : "red"}
                                 size="sm"
