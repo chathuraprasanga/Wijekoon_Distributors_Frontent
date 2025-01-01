@@ -281,7 +281,7 @@ const Invoices = () => {
                             </Text>
                             <Text>Invoiced Date: {datePreview(c.invoiceDate)}</Text>
                             <Text>Invoice Number: {c.invoiceNumber}</Text>
-                            <Text>Amount: {c.amount}</Text>
+                            <Text>Amount: Rs. {c.amount.toFixed(2)}</Text>
                             <Badge
                                 size="sm"
                                 radius="xs"

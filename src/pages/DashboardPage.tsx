@@ -314,15 +314,28 @@ const DashboardPage = () => {
                                             : "none",
                                 }}
                             >
-                                <Text size="sm" style={{ color: textColor }}>
+                                <Text
+                                    size="sm"
+                                    style={{ color: textColor }}
+                                    className="max-w-[50%] sm:max-w-full text-sm sm:text-xs"
+                                >
                                     {invoiceData?.supplierName}
                                 </Text>
-                                <Text size="sm" style={{ color: textColor }}>
+                                <Text
+                                    size="sm"
+                                    style={{ color: textColor }}
+                                    className="max-w-[20%] sm:max-w-1/3 text-sm sm:text-xs"
+                                >
                                     {invoiceData.invoiceCount}
                                 </Text>
-                                <Text size="sm" style={{ color: textColor }}>
+                                <Text
+                                    size="sm"
+                                    style={{ color: textColor }}
+                                    className="max-w-[30%] sm:max-w-1/2 text-sm sm:text-xs"
+                                >
                                     Rs. {invoiceData.totalAmount.toFixed(2)}
                                 </Text>
+
                             </div>
                         ))}
                     </Paper>
