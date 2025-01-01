@@ -7,7 +7,7 @@ import { useEffect } from "react";
 import { Badge, Box, Button, Card, Group } from "@mantine/core";
 import toNotify from "../../helpers/toNotify.tsx";
 import { changeStatusInvoice, getInvoice } from "../../store/invoiceSlice/invoiceSlice.ts";
-import { datePreview } from "../../helpers/preview.tsx";
+import { amountPreview, datePreview } from "../../helpers/preview.tsx";
 
 type ChequeStatus = "PAID" | "NOT PAID";
 
@@ -90,7 +90,7 @@ const ViewInvoice = () => {
                     </div>
                     <div className="flex flex-row">
                         <div className="w-2/4 lg:w-1/4">Amount:</div>
-                        <div>Rs. {invoice?.amount?.toFixed(2)}</div>
+                        <div>{amountPreview(invoice?.amount)}</div>
                     </div>
                     <div className="flex items-end mt-4">
                         <Badge

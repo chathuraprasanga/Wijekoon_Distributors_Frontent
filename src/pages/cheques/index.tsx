@@ -30,7 +30,7 @@ import {
 import toNotify from "../../helpers/toNotify.tsx";
 import { getCustomers } from "../../store/customerSlice/customerSlice.ts";
 import { DateInput } from "@mantine/dates";
-import { datePreview } from "../../helpers/preview.tsx";
+import { amountPreview, datePreview } from "../../helpers/preview.tsx";
 
 const Cheques = () => {
     const { setLoading } = useLoading();
@@ -220,7 +220,7 @@ const Cheques = () => {
                                         {c.branch}
                                     </Table.Td>
                                     <Table.Td style={{ width: "15%" }}>
-                                        Rs. {c.amount.toFixed(2)}
+                                       {amountPreview(c.amount)}
                                     </Table.Td>
                                     <Table.Td style={{ width: "10%" }}>
                                         {datePreview(c.depositDate)}
@@ -361,7 +361,7 @@ const Cheques = () => {
                             <Text>Cheque Number: {c.number}</Text>
                             <Text>Bank: {c.bank}</Text>
                             <Text>Branch: {c.branch}</Text>
-                            <Text>Amount: Rs. {c.amount.toFixed(2)}</Text>
+                            <Text>Amount: {amountPreview(c.amount)}</Text>
                             <Text>
                                 Deposit Date: {datePreview(c.depositDate)}
                             </Text>

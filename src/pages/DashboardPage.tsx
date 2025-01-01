@@ -13,13 +13,25 @@ import { useEffect } from "react";
 import { useLoading } from "../helpers/loadingContext.tsx";
 import { getDashboardDetails } from "../store/dashboardSlice/dashboardSlice.ts";
 import toNotify from "../helpers/toNotify.tsx";
-import { ActionIcon, Box, Grid, Group, Paper, Text, useMantineColorScheme, useMantineTheme } from "@mantine/core";
+import {
+    ActionIcon,
+    Box,
+    Grid,
+    Group,
+    Paper,
+    Text,
+    useMantineColorScheme,
+    useMantineTheme,
+} from "@mantine/core";
+import { amountPreview } from "../helpers/preview.tsx";
 
 const DashboardPage = () => {
     const { colorScheme } = useMantineColorScheme(); // Gets the current color scheme
     const theme = useMantineTheme();
-    const borderColor = colorScheme === "dark" ? theme.colors.dark[4] : theme.colors.gray[3];
-    const textColor = colorScheme === "dark" ? theme.colors.gray[4] : theme.colors.dark[7];
+    const borderColor =
+        colorScheme === "dark" ? theme.colors.dark[4] : theme.colors.gray[3];
+    const textColor =
+        colorScheme === "dark" ? theme.colors.gray[4] : theme.colors.dark[7];
 
     const { setLoading } = useLoading();
     const dispatch = useDispatch<AppDispatch | any>();
@@ -211,12 +223,11 @@ const DashboardPage = () => {
                                     Cheques to Deposit Today
                                 </Text>
                                 <Text size="sm" c="dimmed">
-                                    Cheque Count: #{chequesToDeposit.count}
+                                    Cheque Count: # {chequesToDeposit.count}
                                 </Text>
                                 <Text size="sm" c="dimmed">
-                                    Total Value: Rs.{" "}
-                                    {chequesToDeposit?.amount?.toFixed(2) ||
-                                        0.0}
+                                    Total Value: {" "}
+                                    {amountPreview(chequesToDeposit?.amount)}
                                 </Text>
                             </Box>
                         </Group>
@@ -244,10 +255,10 @@ const DashboardPage = () => {
                                     Cheques Comes to Transfer
                                 </Text>
                                 <Text size="sm" c="dimmed">
-                                    Cheque Count: #4
+                                    Cheque Count: # 4
                                 </Text>
                                 <Text size="sm" c="dimmed">
-                                    Total Value: Rs. 11000
+                                    Total Value: Rs. 11000.00
                                 </Text>
                             </Box>
                         </Group>
@@ -255,7 +266,7 @@ const DashboardPage = () => {
                 </Grid.Col>
             </Grid>
             <Grid mt="md">
-                <Grid.Col span={{ lg: 6, md: 6, sm: 12 }} >
+                <Grid.Col span={{ lg: 6, md: 6, sm: 12 }}>
                     <Paper
                         shadow="md"
                         p="md"
@@ -286,10 +297,8 @@ const DashboardPage = () => {
                                         0}
                                 </Text>
                                 <Text size="sm" c="dimmed">
-                                    Total Value: Rs.{" "}
-                                    {invoicesToBePaid?.toBePaid?.totalAmount?.toFixed(
-                                        2
-                                    ) || 0.0}
+                                    Total Value: {" "}
+                                    {amountPreview(invoicesToBePaid?.toBePaid?.totalAmount)}
                                 </Text>
                             </Box>
                         </Group>
@@ -302,42 +311,46 @@ const DashboardPage = () => {
                         mt="xs"
                         className="hover:shadow-lg transition-transform transform hover:scale-105"
                     >
-                        {invoicesToBePaid.supplierWise?.map((invoiceData: any, index: number) => (
-                            <div
-                                key={invoiceData._id}
-                                className={`flex flex-row justify-between items-center p-2`}
-                                style={{
-                                    borderTop: `1px solid ${borderColor}`,
-                                    borderBottom:
-                                        index === invoicesToBePaid.supplierWise.length - 1
-                                            ? `1px solid ${borderColor}`
-                                            : "none",
-                                }}
-                            >
-                                <Text
-                                    size="sm"
-                                    style={{ color: textColor }}
-                                    className="max-w-[50%] sm:max-w-full text-sm sm:text-xs"
+                        {invoicesToBePaid.supplierWise?.map(
+                            (invoiceData: any, index: number) => (
+                                <div
+                                    key={invoiceData._id}
+                                    className={`flex flex-row justify-between items-center p-2`}
+                                    style={{
+                                        borderTop: `1px solid ${borderColor}`,
+                                        borderBottom:
+                                            index ===
+                                            invoicesToBePaid.supplierWise
+                                                .length -
+                                                1
+                                                ? `1px solid ${borderColor}`
+                                                : "none",
+                                    }}
                                 >
-                                    {invoiceData?.supplierName}
-                                </Text>
-                                <Text
-                                    size="sm"
-                                    style={{ color: textColor }}
-                                    className="max-w-[20%] sm:max-w-1/3 text-sm sm:text-xs"
-                                >
-                                    {invoiceData.invoiceCount}
-                                </Text>
-                                <Text
-                                    size="sm"
-                                    style={{ color: textColor }}
-                                    className="max-w-[30%] sm:max-w-1/2 text-sm sm:text-xs"
-                                >
-                                    Rs. {invoiceData.totalAmount.toFixed(2)}
-                                </Text>
-
-                            </div>
-                        ))}
+                                    <Text
+                                        size="sm"
+                                        style={{ color: textColor }}
+                                        className="max-w-[50%] sm:max-w-full text-sm sm:text-xs"
+                                    >
+                                        {invoiceData?.supplierName}
+                                    </Text>
+                                    <Text
+                                        size="sm"
+                                        style={{ color: textColor }}
+                                        className="max-w-[20%] sm:max-w-1/3 text-sm sm:text-xs"
+                                    >
+                                        {invoiceData.invoiceCount}
+                                    </Text>
+                                    <Text
+                                        size="sm"
+                                        style={{ color: textColor }}
+                                        className="max-w-[30%] sm:max-w-1/2 text-sm sm:text-xs"
+                                    >
+                                        {amountPreview(invoiceData.totalAmount)}
+                                    </Text>
+                                </div>
+                            )
+                        )}
                     </Paper>
                 </Grid.Col>
                 <Grid.Col span={{ lg: 6, md: 6, sm: 12 }}></Grid.Col>

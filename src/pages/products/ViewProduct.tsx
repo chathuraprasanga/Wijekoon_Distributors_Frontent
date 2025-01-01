@@ -6,6 +6,7 @@ import { useParams } from "react-router";
 import { useEffect } from "react";
 import { Badge, Box, Card, Group, Text } from "@mantine/core";
 import { getProduct } from "../../store/productSlice/productSlice.ts";
+import { amountPreview } from "../../helpers/preview.tsx";
 
 const ViewProduct = () => {
     const { setLoading } = useLoading();
@@ -56,7 +57,7 @@ const ViewProduct = () => {
                     </div>
                     <div className="flex flex-row">
                         <div className="w-1/4">Unit Price:</div>
-                        <div>Rs. {product?.unitPrice?.toFixed(2)}</div>
+                        <div>{amountPreview(product?.unitPrice)}</div>
                     </div>
                     <div className="flex items-end mt-4">
                         <Badge

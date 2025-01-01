@@ -19,7 +19,7 @@ import {
     changeStatusInvoice, getPagedInvoices,
 } from "../../store/invoiceSlice/invoiceSlice.ts";
 import toNotify from "../../helpers/toNotify.tsx";
-import { datePreview } from "../../helpers/preview.tsx";
+import { amountPreview, datePreview } from "../../helpers/preview.tsx";
 import { DateInput } from "@mantine/dates";
 
 import { getSuppliers } from "../../store/supplierSlice/supplierSlice.ts";
@@ -177,7 +177,7 @@ const Invoices = () => {
                                     <Table.Td style={{width: "30%"}}>{c.supplier?.name}</Table.Td>
                                     <Table.Td style={{width: "15%"}}>{datePreview(c.invoiceDate)}</Table.Td>
                                     <Table.Td style={{width: "20%"}}>{c.invoiceNumber}</Table.Td>
-                                    <Table.Td style={{width: "20%"}}>Rs. {c.amount.toFixed(2)}</Table.Td>
+                                    <Table.Td style={{width: "20%"}}>{amountPreview(c.amount)}</Table.Td>
                                     <Table.Td style={{width: "10%"}}>
                                         <Badge
                                             size="sm"
@@ -281,7 +281,7 @@ const Invoices = () => {
                             </Text>
                             <Text>Invoiced Date: {datePreview(c.invoiceDate)}</Text>
                             <Text>Invoice Number: {c.invoiceNumber}</Text>
-                            <Text>Amount: Rs. {c.amount.toFixed(2)}</Text>
+                            <Text>Amount: {amountPreview(c.amount)}</Text>
                             <Badge
                                 size="sm"
                                 radius="xs"
