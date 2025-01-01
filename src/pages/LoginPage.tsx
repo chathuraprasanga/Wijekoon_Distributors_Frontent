@@ -1,5 +1,12 @@
 import logo from "../assets/logo1.png";
-import { Box, Button, Group, PasswordInput, TextInput } from "@mantine/core";
+import {
+    Box,
+    Button,
+    Group,
+    PasswordInput,
+    Text,
+    TextInput,
+} from "@mantine/core";
 import { useNavigate } from "react-router";
 import { useForm } from "@mantine/form";
 import { useDispatch } from "react-redux";
@@ -7,6 +14,7 @@ import { AppDispatch } from "../store/store.ts";
 import { login } from "../store/authSlice/authSlice.ts";
 import toNotify from "../helpers/toNotify.tsx";
 import { useLoading } from "../helpers/loadingContext.tsx";
+import xcorpion from "../../public/xcorpion.png";
 
 const LoginPage = () => {
     const { setLoading } = useLoading();
@@ -25,7 +33,7 @@ const LoginPage = () => {
                     return "Email or phone is required";
                 }
                 // Regex for validating email
-                const emailRegex =  /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
                 // Regex for validating phone number
                 const phoneRegex = /^07[0-9]\d{7}$/;
 
@@ -48,36 +56,36 @@ const LoginPage = () => {
                 case "auth/login/rejected": {
                     const error = payload.payload.error;
                     console.log("error", error);
-                    setLoading(false)
+                    setLoading(false);
                     toNotify("Login Error", `${error}`, "ERROR");
                     break;
                 }
                 case "auth/login/fulfilled":
                     console.log("Login successful");
-                    setLoading(false)
+                    setLoading(false);
                     navigate("/");
                     break;
                 default:
-                    setLoading(false)
+                    setLoading(false);
                     break;
             }
-        } catch (e:any) {
-            setLoading(false)
+        } catch (e: any) {
+            setLoading(false);
             console.error("Unexpected error:", e.message);
             toNotify("Login Error", "An unexpected error occurred", "ERROR");
         }
     };
 
     return (
-        <div className="w-screen h-screen flex flex-row">
-            <div className="lg:w-1/2 bg-black text-white p-4 flex-col hidden sm:flex">
-                <div>
+        <Box className="w-screen h-screen flex flex-row">
+            <Box className="lg:w-1/2 bg-black text-white p-4 flex-col hidden sm:flex">
+                <Box>
                     <img src={logo} alt="logo" className="h-16" />
-                </div>
-                <div className="h-screen place-content-end">
-                    <span className="text-lg">Wijekoon Distributors ⌘ </span>
+                </Box>
+                <Box className="h-screen place-content-end">
+                    <Text className="text-lg">Wijekoon Distributors ⌘ </Text>
                     <br />
-                    <span className="text-sm">
+                    <Text className="text-sm">
                         Wijekoon Distributors is a company located in
                         Mawathagama, Kurunegala, Sri Lanka, specializing in
                         business operations across the North Western Province.
@@ -86,14 +94,14 @@ const LoginPage = () => {
                         Minerals and Chemicals (Pvt) Limited. Their expertise in
                         combining these products ensures efficient and reliable
                         supply chain operations within the region.
-                    </span>
-                </div>
-            </div>
-            <div className="w-full md:w-1/2 h-full bg-white flex flex-col justify-center items-center p-4">
+                    </Text>
+                </Box>
+            </Box>
+            <Box className="w-full md:w-1/2 h-full bg-white flex flex-col justify-center items-center p-4">
                 {/* Logo on Mobile */}
-                <div className="flex md:hidden justify-center mb-4">
+                <Box className="flex md:hidden justify-center mb-4">
                     <img src={logo} alt="logo" className="h-32" />
-                </div>
+                </Box>
                 <Box maw={400} w="100%">
                     <form onSubmit={loginForm.onSubmit(handleLogin)}>
                         <TextInput
@@ -122,8 +130,15 @@ const LoginPage = () => {
                         </Group>
                     </form>
                 </Box>
-            </div>
-        </div>
+                <Group
+                    className="mt-4 flex flex-row items-center gap-4 border w-fit px-2 py-2 cursor-pointer"
+                    onClick={() => window.open("https://xcorpion.xyz", "_blank")}
+                >
+                    <img src={xcorpion} className="w-4" />
+                    <Text size="xs">XCORPION</Text>
+                </Group>
+            </Box>
+        </Box>
     );
 };
 

@@ -2,6 +2,7 @@ import {
     Badge,
     Box,
     Button,
+    Group,
     Menu,
     Modal,
     PasswordInput,
@@ -35,8 +36,11 @@ import {
     getBankDetails,
 } from "../store/bankDetailSlice/bankDetailSlice.ts";
 import banks from "../helpers/banks.json";
+import xcorpion from "../../public/xcorpion.png";
+import { useNavigate } from "react-router";
 
 const SettingsPage = () => {
+    const navigate = useNavigate();
     const isSmallScreen = useMediaQuery("(max-width: 1024px)");
     const { setLoading } = useLoading();
     const user = useSelector((state: RootState) => state.auth.user);
@@ -717,6 +721,13 @@ const SettingsPage = () => {
                     )}
                 </div>
                 <hr />
+                <Group
+                    className="mt-4 flex flex-row items-center gap-4 border w-fit px-2 py-2 cursor-pointer"
+                    onClick={() => window.open("https://xcorpion.xyz", "_blank")}
+                >
+                    <img src={xcorpion} className="w-6" />
+                    <Text>XCORPION</Text>
+                </Group>
             </Box>
             {passwordChangeModal()}
             {viewUsersModal()}
