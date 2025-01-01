@@ -92,6 +92,15 @@ const SettingsPage = React.lazy(() => import("./pages/SettingsPage.tsx"));
 const ChequePayments = React.lazy(
     () => import("./pages/chequePayments/index.tsx")
 );
+const AddChequePayment = React.lazy(
+    () => import("./pages/chequePayments/AddChequePayment.tsx")
+);
+const EditChequePayment = React.lazy(
+    () => import("./pages/chequePayments/EditChequePayment.tsx")
+);
+const ViewChequePayment = React.lazy(
+    () => import("./pages/chequePayments/ViewChequePayments.tsx")
+);
 
 const router = createBrowserRouter([
     {
@@ -190,6 +199,18 @@ const router = createBrowserRouter([
             {
                 path: "cheque-payments",
                 element: <ChequePayments />,
+            },
+            {
+                path: "cheque-payments/add-cheque-payment",
+                element: <AddChequePayment />,
+            },
+            {
+                path: "cheque-payments/edit-cheque-payment/:id",
+                element: <EditChequePayment />,
+            },
+            {
+                path: "cheque-payments/view-cheque-payment/:id",
+                element: <ViewChequePayment />,
             },
             {
                 path: "*",

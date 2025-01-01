@@ -8,6 +8,7 @@ import invoiceReducer from "./invoiceSlice/invoiceSlice";
 import dashboardReducer from "./dashboardSlice/dashboardSlice";
 import userReducer from "./userSlice/userSlice";
 import bankDetailReducer from "./bankDetailSlice/bankDetailSlice";
+import chequePaymentReducer from "./chequePaymentSlice/chequePaymentSlice";
 
 export const store = configureStore({
     reducer: {
@@ -20,6 +21,7 @@ export const store = configureStore({
         dashboard: dashboardReducer,
         user: userReducer,
         bankDetails: bankDetailReducer,
+        chequePayments: chequePaymentReducer,
     },
 });
 

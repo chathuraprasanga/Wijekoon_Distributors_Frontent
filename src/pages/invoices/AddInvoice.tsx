@@ -51,7 +51,7 @@ const AddInvoice = () => {
         mode: "uncontrolled",
         initialValues: {
             supplier: "",
-            invoiceDate:  new Date(),
+            invoiceDate:  null,
             invoiceNumber: "",
             amount: 0,
         },

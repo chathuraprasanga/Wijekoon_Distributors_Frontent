@@ -80,7 +80,7 @@ export const updateBankDetail = createAsyncThunk(
 );
 
 export const changeStatusBankDetail = createAsyncThunk(
-    "user/changeStatusBankDetail",
+    "bankDetail/changeStatusBankDetail",
     async (payload: any, { rejectWithValue }) => {
         try {
             const response = await axiosInstance.put(

@@ -39,6 +39,7 @@ const DashboardPage = () => {
     const dashboardDetails = useSelector((state: RootState) => state.dashboard);
     const chequesToDeposit: any = dashboardDetails.chequesToDeposit;
     const invoicesToBePaid: any = dashboardDetails.invoicesToBePaid;
+    const chequesComesToTransfer: any = dashboardDetails.chequesComesToTransfer;
 
     useEffect(() => {
         fetchDashboardDetails();
@@ -226,7 +227,7 @@ const DashboardPage = () => {
                                     Cheque Count: # {chequesToDeposit.count}
                                 </Text>
                                 <Text size="sm" c="dimmed">
-                                    Total Value: {" "}
+                                    Total Value:{" "}
                                     {amountPreview(chequesToDeposit?.amount)}
                                 </Text>
                             </Box>
@@ -255,10 +256,10 @@ const DashboardPage = () => {
                                     Cheques Comes to Transfer
                                 </Text>
                                 <Text size="sm" c="dimmed">
-                                    Cheque Count: # 4
+                                    Cheque Count: # {chequesComesToTransfer?.count}
                                 </Text>
                                 <Text size="sm" c="dimmed">
-                                    Total Value: Rs. 11000.00
+                                    Total Value: {amountPreview(chequesComesToTransfer?.amount)}
                                 </Text>
                             </Box>
                         </Group>
@@ -292,13 +293,15 @@ const DashboardPage = () => {
                                     Invoice Credit
                                 </Text>
                                 <Text size="sm" c="dimmed">
-                                    Invoice Count: #
+                                    Invoice Count: #{" "}
                                     {invoicesToBePaid?.toBePaid?.invoiceCount ||
                                         0}
                                 </Text>
                                 <Text size="sm" c="dimmed">
-                                    Total Value: {" "}
-                                    {amountPreview(invoicesToBePaid?.toBePaid?.totalAmount)}
+                                    Total Value:{" "}
+                                    {amountPreview(
+                                        invoicesToBePaid?.toBePaid?.totalAmount
+                                    )}
                                 </Text>
                             </Box>
                         </Group>
