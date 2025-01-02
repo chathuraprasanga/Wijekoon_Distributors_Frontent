@@ -24,8 +24,10 @@ import {
     useMantineTheme,
 } from "@mantine/core";
 import { amountPreview } from "../helpers/preview.tsx";
+import { useNavigate } from "react-router";
 
 const DashboardPage = () => {
+    const navigate = useNavigate();
     const { colorScheme } = useMantineColorScheme(); // Gets the current color scheme
     const theme = useMantineTheme();
     const borderColor =
@@ -72,7 +74,8 @@ const DashboardPage = () => {
                         p="md"
                         radius="md"
                         withBorder
-                        className="hover:shadow-lg transition-transform transform hover:scale-105"
+                        className="hover:shadow-lg transition-transform transform hover:scale-105 cursor-pointer"
+                        onClick={() => navigate("/app/cheques")}
                     >
                         <Group align="center">
                             <ActionIcon
@@ -102,7 +105,8 @@ const DashboardPage = () => {
                         p="md"
                         radius="md"
                         withBorder
-                        className="hover:shadow-lg transition-transform transform hover:scale-105"
+                        className="hover:shadow-lg transition-transform transform hover:scale-105 cursor-pointer"
+                        onClick={() => navigate("/app/invoices")}
                     >
                         <Group align="center">
                             <ActionIcon
@@ -136,7 +140,8 @@ const DashboardPage = () => {
                         p="md"
                         radius="md"
                         withBorder
-                        className="hover:shadow-lg transition-transform transform hover:scale-105"
+                        className="hover:shadow-lg transition-transform transform hover:scale-105 cursor-pointer"
+                        onClick={() => navigate("/app/customers")}
                     >
                         <Group align="center">
                             <ActionIcon
@@ -170,7 +175,8 @@ const DashboardPage = () => {
                         p="md"
                         radius="md"
                         withBorder
-                        className="hover:shadow-lg transition-transform transform hover:scale-105"
+                        className="hover:shadow-lg transition-transform transform hover:scale-105 cursor-pointer"
+                        onClick={() => navigate("/app/products")}
                     >
                         <Group align="center">
                             <ActionIcon
@@ -256,10 +262,14 @@ const DashboardPage = () => {
                                     Cheques Comes to Transfer
                                 </Text>
                                 <Text size="sm" c="dimmed">
-                                    Cheque Count: # {chequesComesToTransfer?.count}
+                                    Cheque Count: #{" "}
+                                    {chequesComesToTransfer?.count}
                                 </Text>
                                 <Text size="sm" c="dimmed">
-                                    Total Value: {amountPreview(chequesComesToTransfer?.amount)}
+                                    Total Value:{" "}
+                                    {amountPreview(
+                                        chequesComesToTransfer?.amount
+                                    )}
                                 </Text>
                             </Box>
                         </Group>
