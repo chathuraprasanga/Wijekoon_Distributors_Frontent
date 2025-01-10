@@ -191,7 +191,6 @@ const SettingsPage = () => {
                 setIsLoading(false);
             }}
             title={<Text size="lg">Change Password</Text>}
-            centered
         >
             <form onSubmit={pwForm.onSubmit(handlePasswordChange)}>
                 <TextInput
