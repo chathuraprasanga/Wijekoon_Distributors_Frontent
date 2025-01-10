@@ -7,16 +7,24 @@ import {
     Card,
     Group,
     Menu,
-    Pagination, Select,
+    Pagination,
+    Select,
     Table,
     Text,
 } from "@mantine/core";
-import { IconCertificate, IconDatabaseOff, IconDotsVertical, IconEdit, IconEye } from "@tabler/icons-react";
+import {
+    IconCertificate,
+    IconDatabaseOff,
+    IconDotsVertical,
+    IconEdit,
+    IconEye,
+} from "@tabler/icons-react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store/store.ts";
 import { useLoading } from "../../helpers/loadingContext.tsx";
 import {
-    changeStatusInvoice, getPagedInvoices,
+    changeStatusInvoice,
+    getPagedInvoices,
 } from "../../store/invoiceSlice/invoiceSlice.ts";
 import toNotify from "../../helpers/toNotify.tsx";
 import { amountPreview, datePreview } from "../../helpers/preview.tsx";
@@ -49,7 +57,14 @@ const Invoices = () => {
     const fetchInvoices = async () => {
         setLoading(true);
         await dispatch(getSuppliers({}));
-        const filters = { pageSize, pageIndex, supplier, sort, status, invoicedDate };
+        const filters = {
+            pageSize,
+            pageIndex,
+            supplier,
+            sort,
+            status,
+            invoicedDate,
+        };
         const response = await dispatch(getPagedInvoices({ filters: filters }));
         setMetadata(response.payload.result.metadata);
         setLoading(false);
@@ -96,7 +111,9 @@ const Invoices = () => {
             {/* Header */}
             <Box display="flex" p="lg" className="items-center justify-between">
                 <Box>
-                    <Text size="lg" fw={500}>Invoices</Text>
+                    <Text size="lg" fw={500}>
+                        Invoices
+                    </Text>
                 </Box>
                 <Box>
                     <Button
@@ -120,10 +137,11 @@ const Invoices = () => {
                         clearable
                         onChange={(value: string | null) => {
                             if (value) {
-                                setSupplier(value);
+                                setSupplier(value); // Update the supplier
                             } else {
-                                setSupplier("");
+                                setSupplier(""); // Clear the supplier
                             }
+                            setPageIndex(1); // Reset the page index to 1
                         }}
                     />
 
@@ -135,10 +153,11 @@ const Invoices = () => {
                         clearable
                         onChange={(value: string | null) => {
                             if (value) {
-                                setStatus(value);
+                                setStatus(value); // Update the status
                             } else {
-                                setStatus("");
+                                setStatus(""); // Clear the status
                             }
+                            setPageIndex(1); // Reset the page index to 1
                         }}
                     />
 
@@ -147,7 +166,10 @@ const Invoices = () => {
                         size="xs"
                         placeholder="Select invoice date"
                         clearable
-                        onChange={(e:any) => setInvoicedDate(e)}
+                        onChange={(e: any) => {
+                            setInvoicedDate(e); // Update the invoice date
+                            setPageIndex(1); // Reset the page index to 1
+                        }}
                     />
                 </Group>
             </Box>
@@ -162,23 +184,39 @@ const Invoices = () => {
                 >
                     <Table.Thead>
                         <Table.Tr>
-                            <Table.Th style={{width: "30%"}}>Supplier</Table.Th>
-                            <Table.Th style={{width: "15%"}}>Invoiced Date</Table.Th>
-                            <Table.Th style={{width: "20%"}}>Invoice Number</Table.Th>
-                            <Table.Th style={{width: "20%"}}>Amount</Table.Th>
-                            <Table.Th style={{width: "10%"}}>Invoice Status</Table.Th>
-                            <Table.Th style={{width: "5%"}}></Table.Th>
+                            <Table.Th style={{ width: "30%" }}>
+                                Supplier
+                            </Table.Th>
+                            <Table.Th style={{ width: "15%" }}>
+                                Invoiced Date
+                            </Table.Th>
+                            <Table.Th style={{ width: "20%" }}>
+                                Invoice Number
+                            </Table.Th>
+                            <Table.Th style={{ width: "20%" }}>Amount</Table.Th>
+                            <Table.Th style={{ width: "10%" }}>
+                                Invoice Status
+                            </Table.Th>
+                            <Table.Th style={{ width: "5%" }}></Table.Th>
                         </Table.Tr>
                     </Table.Thead>
                     <Table.Tbody>
                         {invoices?.length !== 0 ? (
                             invoices?.map((c: any, i: number) => (
                                 <Table.Tr key={i}>
-                                    <Table.Td style={{width: "30%"}}>{c.supplier?.name}</Table.Td>
-                                    <Table.Td style={{width: "15%"}}>{datePreview(c.invoiceDate)}</Table.Td>
-                                    <Table.Td style={{width: "20%"}}>{c.invoiceNumber}</Table.Td>
-                                    <Table.Td style={{width: "20%"}}>{amountPreview(c.amount)}</Table.Td>
-                                    <Table.Td style={{width: "10%"}}>
+                                    <Table.Td style={{ width: "30%" }}>
+                                        {c.supplier?.name}
+                                    </Table.Td>
+                                    <Table.Td style={{ width: "15%" }}>
+                                        {datePreview(c.invoiceDate)}
+                                    </Table.Td>
+                                    <Table.Td style={{ width: "20%" }}>
+                                        {c.invoiceNumber}
+                                    </Table.Td>
+                                    <Table.Td style={{ width: "20%" }}>
+                                        {amountPreview(c.amount)}
+                                    </Table.Td>
+                                    <Table.Td style={{ width: "10%" }}>
                                         <Badge
                                             size="sm"
                                             radius="xs"
@@ -191,7 +229,7 @@ const Invoices = () => {
                                             {c.invoiceStatus}
                                         </Badge>
                                     </Table.Td>
-                                    <Table.Td style={{width: "5%"}}>
+                                    <Table.Td style={{ width: "5%" }}>
                                         <Menu width={150}>
                                             <Menu.Target>
                                                 <IconDotsVertical
@@ -211,7 +249,9 @@ const Invoices = () => {
                                                             String(pageIndex)
                                                         );
                                                     }}
-                                                    rightSection={<IconEye size={16}/>}
+                                                    rightSection={
+                                                        <IconEye size={16} />
+                                                    }
                                                 >
                                                     View
                                                 </Menu.Item>
@@ -229,7 +269,9 @@ const Invoices = () => {
                                                             String(pageIndex)
                                                         );
                                                     }}
-                                                    rightSection={<IconEdit size={16}/>}
+                                                    rightSection={
+                                                        <IconEdit size={16} />
+                                                    }
                                                 >
                                                     Edit
                                                 </Menu.Item>
@@ -243,7 +285,11 @@ const Invoices = () => {
                                                                 "PAID"
                                                             )
                                                         }
-                                                        rightSection={<IconCertificate size={16}/>}
+                                                        rightSection={
+                                                            <IconCertificate
+                                                                size={16}
+                                                            />
+                                                        }
                                                     >
                                                         Paid
                                                     </Menu.Item>
@@ -279,7 +325,9 @@ const Invoices = () => {
                             <Text className="font-semibold">
                                 Supplier: {c.supplier?.name}
                             </Text>
-                            <Text>Invoiced Date: {datePreview(c.invoiceDate)}</Text>
+                            <Text>
+                                Invoiced Date: {datePreview(c.invoiceDate)}
+                            </Text>
                             <Text>Invoice Number: {c.invoiceNumber}</Text>
                             <Text>Amount: {amountPreview(c.amount)}</Text>
                             <Badge
@@ -312,7 +360,7 @@ const Invoices = () => {
                                                     String(pageIndex)
                                                 );
                                             }}
-                                            rightSection={<IconEye size={16}/>}
+                                            rightSection={<IconEye size={16} />}
                                         >
                                             View
                                         </Menu.Item>
@@ -329,7 +377,9 @@ const Invoices = () => {
                                                     String(pageIndex)
                                                 );
                                             }}
-                                            rightSection={<IconEdit size={16}/>}
+                                            rightSection={
+                                                <IconEdit size={16} />
+                                            }
                                         >
                                             Edit
                                         </Menu.Item>
@@ -342,7 +392,11 @@ const Invoices = () => {
                                                         "PAID"
                                                     )
                                                 }
-                                                rightSection={<IconCertificate size={16}/>}
+                                                rightSection={
+                                                    <IconCertificate
+                                                        size={16}
+                                                    />
+                                                }
                                             >
                                                 Paid
                                             </Menu.Item>
@@ -363,7 +417,7 @@ const Invoices = () => {
             {/* Pagination */}
             <Group my="md" ms="md" px="lg" justify="flex-end">
                 <Pagination.Root
-                    total={Math.ceil( metadata?.total / pageSize)}
+                    total={Math.ceil(metadata?.total / pageSize)}
                     value={pageIndex}
                     onChange={setPageIndex}
                     size="sm"
