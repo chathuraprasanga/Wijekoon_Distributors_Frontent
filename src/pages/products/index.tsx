@@ -5,7 +5,8 @@ import {
     Card,
     Group,
     Menu,
-    Pagination, Select,
+    Pagination,
+    Select,
     Table,
     Text,
     TextInput,
@@ -27,7 +28,8 @@ import { useLoading } from "../../helpers/loadingContext.tsx";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store/store.ts";
 import {
-    changeStatusProduct, getPagedProducts,
+    changeStatusProduct,
+    getPagedProducts,
 } from "../../store/productSlice/productSlice.ts";
 import toNotify from "../../helpers/toNotify.tsx";
 import { amountPreview } from "../../helpers/preview.tsx";
@@ -114,13 +116,19 @@ const Products = () => {
                         className="w-full lg:w-1/4"
                         size="xs"
                         placeholder="Name, ProductCode"
-                        onChange={(event) => setSearchQuery(event.target.value)}
+                        onChange={(event) => {
+                            setSearchQuery(event.target.value); // Update the search query
+                            setPageIndex(1); // Reset the page index to 1
+                        }}
                         value={searchQuery}
                         rightSection={
                             searchQuery ? (
                                 <IconX
                                     className="cursor-pointer"
-                                    onClick={() => setSearchQuery("")}
+                                    onClick={() => {
+                                        setSearchQuery(""); // Clear the search query
+                                        setPageIndex(1); // Reset the page index to 1
+                                    }}
                                     size={14}
                                 />
                             ) : (
@@ -138,13 +146,13 @@ const Products = () => {
                         clearable
                         onChange={(value: string | null) => {
                             if (value) {
-                                setStatus(value);
+                                setStatus(value); // Update the status
                             } else {
-                                setStatus("");
+                                setStatus(""); // Clear the status
                             }
+                            setPageIndex(1); // Reset the page index to 1
                         }}
                     />
-
                 </Group>
             </Box>
 
@@ -301,7 +309,9 @@ const Products = () => {
                             </Text>
                             <Text>Product Code: {c.productCode}</Text>
                             <Text>Size: {c.size}</Text>
-                            <Text>Unit Price: {amountPreview(c.unitPrice)}</Text>
+                            <Text>
+                                Unit Price: {amountPreview(c.unitPrice)}
+                            </Text>
                             <Badge
                                 color={c.status ? "green" : "red"}
                                 size="sm"

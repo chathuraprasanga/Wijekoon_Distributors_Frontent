@@ -57,7 +57,14 @@ const Cheques = () => {
     const fetchCheques = async () => {
         setLoading(true);
         await dispatch(getCustomers({}));
-        const filters = { pageSize, pageIndex, customer, sort, status, depositDate };
+        const filters = {
+            pageSize,
+            pageIndex,
+            customer,
+            sort,
+            status,
+            depositDate,
+        };
         const response = await dispatch(getPagedCheques({ filters: filters }));
         setMetadata(response.payload.result.metadata);
         setLoading(false);
@@ -143,10 +150,11 @@ const Cheques = () => {
                         clearable
                         onChange={(value: string | null) => {
                             if (value) {
-                                setCustomer(value);
+                                setCustomer(value); // Update the selected customer
                             } else {
-                                setCustomer("");
+                                setCustomer(""); // Clear the selected customer
                             }
+                            setPageIndex(1); // Reset the page index to 1
                         }}
                     />
 
@@ -158,10 +166,11 @@ const Cheques = () => {
                         clearable
                         onChange={(value: string | null) => {
                             if (value) {
-                                setStatus(value);
+                                setStatus(value); // Update the selected status
                             } else {
-                                setStatus("");
+                                setStatus(""); // Clear the selected status
                             }
+                            setPageIndex(1); // Reset the page index to 1
                         }}
                     />
 
@@ -170,7 +179,10 @@ const Cheques = () => {
                         size="xs"
                         placeholder="Select deposit date"
                         clearable
-                        onChange={(e:any) => setDepositDate(e)}
+                        onChange={(e: any) => {
+                            setDepositDate(e); // Update the deposit date
+                            setPageIndex(1); // Reset the page index to 1
+                        }}
                     />
                 </Group>
             </Box>
@@ -220,7 +232,7 @@ const Cheques = () => {
                                         {c.branch}
                                     </Table.Td>
                                     <Table.Td style={{ width: "15%" }}>
-                                       {amountPreview(c.amount)}
+                                        {amountPreview(c.amount)}
                                     </Table.Td>
                                     <Table.Td style={{ width: "10%" }}>
                                         {datePreview(c.depositDate)}

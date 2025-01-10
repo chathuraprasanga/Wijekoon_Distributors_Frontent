@@ -119,13 +119,19 @@ const Customers = () => {
                         className="w-full lg:w-1/4"
                         size="xs"
                         placeholder="Name, Phone, Email"
-                        onChange={(event) => setSearchQuery(event.target.value)}
+                        onChange={(event) => {
+                            setSearchQuery(event.target.value); // Update the search query
+                            setPageIndex(1); // Reset the page index to 1
+                        }}
                         value={searchQuery}
                         rightSection={
                             searchQuery ? (
                                 <IconX
                                     className="cursor-pointer"
-                                    onClick={() => setSearchQuery("")}
+                                    onClick={() => {
+                                        setSearchQuery(""); // Clear the search query
+                                        setPageIndex(1); // Reset the page index to 1
+                                    }}
                                     size={14}
                                 />
                             ) : (
@@ -134,7 +140,6 @@ const Customers = () => {
                         }
                         leftSection={<IconSearch size={14} />}
                     />
-
                     <Select
                         className="w-full lg:w-1/4"
                         size="xs"
@@ -142,11 +147,8 @@ const Customers = () => {
                         data={["ACTIVE", "INACTIVE"]}
                         clearable
                         onChange={(value: string | null) => {
-                            if (value) {
-                                setStatus(value);
-                            } else {
-                                setStatus("");
-                            }
+                            setStatus(value || ""); // Update the status
+                            setPageIndex(1); // Reset the page index to 1
                         }}
                     />
                 </Group>

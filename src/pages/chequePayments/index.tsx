@@ -63,7 +63,7 @@ const ChequePayments = () => {
     const [searchQuery, setSearchQuery] = useState<string>("");
 
     useEffect(() => {
-        fetchChequePaymentsWithoutSearch()
+        fetchChequePaymentsWithoutSearch();
     }, [dispatch]);
 
     const fetchChequePaymentsWithoutSearch = async () => {
@@ -86,7 +86,7 @@ const ChequePayments = () => {
 
     useEffect(() => {
         fetchChequePayments();
-    }, [ pageIndex, status, date, searchQuery]);
+    }, [pageIndex, status, date, searchQuery]);
 
     const fetchChequePayments = async () => {
         setLoading(true);
@@ -166,447 +166,440 @@ const ChequePayments = () => {
                     </Button>
                 </Box>
             </Box>
-                <>
-                    {!isBankDetailsAdded && (
-                        <Box mx="xs" p="sm" my="lg">
-                            <Alert
-                                icon={<IconInfoCircle size={24} />}
-                                color="red"
-                                radius="sm"
-                                variant="light"
-                                className="w-full"
-                                style={{
-                                    display: "flex",
-                                    alignItems: "center",
-                                    justifyContent: "space-between",
-                                }}
-                            >
-                                <Group className="flex justify-between">
-                                    <Text size="sm" c="red" style={{ flex: 1 }}>
-                                        Please Add Bank Account Details First.
-                                    </Text>
-                                    <Button
-                                        size="compact-xs"
-                                        variant="outline"
-                                        color="red"
-                                        onClick={() =>
-                                            navigate("/app/settings")
-                                        }
-                                    >
-                                        Click here
-                                    </Button>
-                                </Group>
-                            </Alert>
-                        </Box>
-                    )}
-
-                    {/* Search Input */}
-                    <Box px="lg">
-                        <Group w={{ lg: "60%", sm: "100%" }}>
-                            <TextInput
-                                className="w-full lg:w-1/4"
-                                size="xs"
-                                placeholder="Receiver"
-                                onChange={(event) =>
-                                    setSearchQuery(event.target.value)
-                                }
-                                value={searchQuery}
-                                rightSection={
-                                    searchQuery ? (
-                                        <IconX
-                                            className="cursor-pointer"
-                                            onClick={() => setSearchQuery("")}
-                                            size={14}
-                                        />
-                                    ) : (
-                                        ""
-                                    )
-                                }
-                                leftSection={<IconSearch size={14} />}
-                            />
-
-                            <Select
-                                className="w-full lg:w-1/4"
-                                size="xs"
-                                placeholder="Select a status"
-                                data={["PENDING", "RETURNED", "COMPLETED"]}
-                                clearable
-                                onChange={(value: string | null) => {
-                                    if (value) {
-                                        setStatus(value);
-                                    } else {
-                                        setStatus("");
-                                    }
-                                }}
-                            />
-
-                            <DateInput
-                                className="w-full lg:w-1/4"
-                                size="xs"
-                                placeholder="Select deposit date"
-                                clearable
-                                onChange={(e: any) => setDate(e)}
-                            />
-                        </Group>
-                    </Box>
-
-                    {/* Desktop Table */}
-                    <Box
-                        visibleFrom="lg"
-                        mx="lg"
-                        my="lg"
-                        className="overflow-x-auto"
-                    >
-                        <Table
-                            striped
-                            highlightOnHover
-                            withTableBorder
-                            withColumnBorders
+            <>
+                {!isBankDetailsAdded && (
+                    <Box mx="xs" p="sm" my="lg">
+                        <Alert
+                            icon={<IconInfoCircle size={24} />}
+                            color="red"
+                            radius="sm"
+                            variant="light"
+                            className="w-full"
+                            style={{
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "space-between",
+                            }}
                         >
-                            <Table.Thead>
-                                <Table.Tr>
-                                    <Table.Th style={{ width: "20%" }}>
-                                        Payment For
-                                    </Table.Th>
-                                    <Table.Th style={{ width: "20%" }}>
-                                        Bank
-                                    </Table.Th>
-                                    <Table.Th style={{ width: "15%" }}>
-                                        Cheque Number
-                                    </Table.Th>
-                                    <Table.Th style={{ width: "15%" }}>
-                                        Amount
-                                    </Table.Th>
-                                    <Table.Th style={{ width: "10%" }}>
-                                        Date
-                                    </Table.Th>
-                                    <Table.Th style={{ width: "10%" }}>
-                                        Cheque Status
-                                    </Table.Th>
-                                    <Table.Th
-                                        style={{ width: "5%" }}
-                                    ></Table.Th>
-                                </Table.Tr>
-                            </Table.Thead>
-                            <Table.Tbody>
-                                {chequePayments?.length !== 0 ? (
-                                    chequePayments?.map((c: any, i: number) => (
-                                        <Table.Tr key={i}>
-                                            <Table.Td style={{ width: "20%" }}>
-                                                {c.payFor}
-                                            </Table.Td>
-                                            <Table.Td style={{ width: "15%" }}>
-                                                {bankPreview(
-                                                    c.bankAccount.bank
-                                                )}
-                                            </Table.Td>
-                                            <Table.Td style={{ width: "15%" }}>
-                                                {c.number}
-                                            </Table.Td>
-                                            <Table.Td style={{ width: "15%" }}>
-                                                {amountPreview(c.amount)}
-                                            </Table.Td>
-                                            <Table.Td style={{ width: "10%" }}>
-                                                {datePreview(c.date)}
-                                            </Table.Td>
-                                            <Table.Td style={{ width: "10%" }}>
-                                                <Badge
-                                                    size="sm"
-                                                    radius="xs"
-                                                    color={getColor(
-                                                        c.paymentStatus
-                                                    )}
-                                                >
-                                                    {c.paymentStatus}
-                                                </Badge>
-                                            </Table.Td>
-                                            <Table.Td style={{ width: "5%" }}>
-                                                <Menu width={150}>
-                                                    <Menu.Target>
-                                                        <IconDotsVertical
-                                                            size="16"
-                                                            className="cursor-pointer"
-                                                        />
-                                                    </Menu.Target>
-                                                    <Menu.Dropdown>
-                                                        <Menu.Label>
-                                                            Actions
-                                                        </Menu.Label>
-                                                        <Menu.Item
-                                                            onClick={() => {
-                                                                navigate(
-                                                                    `/app/cheque-payments/view-cheque-payment/${c._id}`
-                                                                );
-                                                                sessionStorage.setItem(
-                                                                    "pageIndex",
-                                                                    String(
-                                                                        pageIndex
-                                                                    )
-                                                                );
-                                                            }}
-                                                            rightSection={
-                                                                <IconEye
-                                                                    size={16}
-                                                                />
-                                                            }
-                                                        >
-                                                            View
-                                                        </Menu.Item>
-                                                        <Menu.Item
-                                                            disabled={
-                                                                c.paymentStatus !==
-                                                                "PENDING"
-                                                            }
-                                                            onClick={() => {
-                                                                navigate(
-                                                                    `/app/cheque-payments/edit-cheque-payment/${c._id}`
-                                                                );
-                                                                sessionStorage.setItem(
-                                                                    "pageIndex",
-                                                                    String(
-                                                                        pageIndex
-                                                                    )
-                                                                );
-                                                            }}
-                                                            rightSection={
-                                                                <IconEdit
-                                                                    size={16}
-                                                                />
-                                                            }
-                                                        >
-                                                            Edit
-                                                        </Menu.Item>
-                                                        {c.chequeStatus !==
-                                                            "COMPLETED" &&
-                                                            c.chequeStatus !==
-                                                                "RETURNED" && (
-                                                                <>
-                                                                    <Menu.Item
-                                                                        color="green"
-                                                                        onClick={() =>
-                                                                            chequePaymentStatusUpdate(
-                                                                                c._id,
-                                                                                "COMPLETED"
-                                                                            )
-                                                                        }
-                                                                        rightSection={
-                                                                            <IconCertificate
-                                                                                size={
-                                                                                    16
-                                                                                }
-                                                                            />
-                                                                        }
-                                                                    >
-                                                                        <span>
-                                                                            Completed
-                                                                        </span>
-                                                                    </Menu.Item>
-                                                                    <Menu.Item
-                                                                        color="red"
-                                                                        onClick={() =>
-                                                                            chequePaymentStatusUpdate(
-                                                                                c._id,
-                                                                                "RETURNED"
-                                                                            )
-                                                                        }
-                                                                        rightSection={
-                                                                            <IconCertificateOff
-                                                                                size={
-                                                                                    16
-                                                                                }
-                                                                            />
-                                                                        }
-                                                                    >
-                                                                        <span>
-                                                                            Returned
-                                                                        </span>
-                                                                    </Menu.Item>
-                                                                </>
-                                                            )}
-                                                    </Menu.Dropdown>
-                                                </Menu>
-                                            </Table.Td>
-                                        </Table.Tr>
-                                    ))
+                            <Group className="flex justify-between">
+                                <Text size="sm" c="red" style={{ flex: 1 }}>
+                                    Please Add Bank Account Details First.
+                                </Text>
+                                <Button
+                                    size="compact-xs"
+                                    variant="outline"
+                                    color="red"
+                                    onClick={() => navigate("/app/settings")}
+                                >
+                                    Click here
+                                </Button>
+                            </Group>
+                        </Alert>
+                    </Box>
+                )}
+
+                {/* Search Input */}
+                <Box px="lg">
+                    <Group w={{ lg: "60%", sm: "100%" }}>
+                        <TextInput
+                            className="w-full lg:w-1/4"
+                            size="xs"
+                            placeholder="Receiver"
+                            onChange={(event) => {
+                                setSearchQuery(event.target.value); // Update the search query
+                                setPageIndex(1); // Reset the page index to 1
+                            }}
+                            value={searchQuery}
+                            rightSection={
+                                searchQuery ? (
+                                    <IconX
+                                        className="cursor-pointer"
+                                        onClick={() => {
+                                            setSearchQuery(""); // Clear the search query
+                                            setPageIndex(1); // Reset the page index to 1
+                                        }}
+                                        size={14}
+                                    />
                                 ) : (
-                                    <Table.Tr>
-                                        <Table.Td
-                                            colSpan={7}
-                                            className="text-center"
-                                        >
-                                            <div className="flex justify-center items-center">
-                                                <IconDatabaseOff
-                                                    color="red"
-                                                    size="24"
-                                                    className="mr-2 self-center"
-                                                />
-                                                No data available
-                                            </div>
+                                    ""
+                                )
+                            }
+                            leftSection={<IconSearch size={14} />}
+                        />
+
+                        <Select
+                            className="w-full lg:w-1/4"
+                            size="xs"
+                            placeholder="Select a status"
+                            data={["PENDING", "RETURNED", "COMPLETED"]}
+                            clearable
+                            onChange={(value: string | null) => {
+                                if (value) {
+                                    setStatus(value); // Update the status
+                                } else {
+                                    setStatus(""); // Clear the status
+                                }
+                                setPageIndex(1); // Reset the page index to 1
+                            }}
+                        />
+
+                        <DateInput
+                            className="w-full lg:w-1/4"
+                            size="xs"
+                            placeholder="Select deposit date"
+                            clearable
+                            onChange={(e: any) => {
+                                setDate(e); // Update the date
+                                setPageIndex(1); // Reset the page index to 1
+                            }}
+                        />
+                    </Group>
+                </Box>
+
+                {/* Desktop Table */}
+                <Box
+                    visibleFrom="lg"
+                    mx="lg"
+                    my="lg"
+                    className="overflow-x-auto"
+                >
+                    <Table
+                        striped
+                        highlightOnHover
+                        withTableBorder
+                        withColumnBorders
+                    >
+                        <Table.Thead>
+                            <Table.Tr>
+                                <Table.Th style={{ width: "20%" }}>
+                                    Payment For
+                                </Table.Th>
+                                <Table.Th style={{ width: "20%" }}>
+                                    Bank
+                                </Table.Th>
+                                <Table.Th style={{ width: "15%" }}>
+                                    Cheque Number
+                                </Table.Th>
+                                <Table.Th style={{ width: "15%" }}>
+                                    Amount
+                                </Table.Th>
+                                <Table.Th style={{ width: "10%" }}>
+                                    Date
+                                </Table.Th>
+                                <Table.Th style={{ width: "10%" }}>
+                                    Cheque Status
+                                </Table.Th>
+                                <Table.Th style={{ width: "5%" }}></Table.Th>
+                            </Table.Tr>
+                        </Table.Thead>
+                        <Table.Tbody>
+                            {chequePayments?.length !== 0 ? (
+                                chequePayments?.map((c: any, i: number) => (
+                                    <Table.Tr key={i}>
+                                        <Table.Td style={{ width: "20%" }}>
+                                            {c.payFor}
+                                        </Table.Td>
+                                        <Table.Td style={{ width: "15%" }}>
+                                            {bankPreview(c.bankAccount.bank)}
+                                        </Table.Td>
+                                        <Table.Td style={{ width: "15%" }}>
+                                            {c.number}
+                                        </Table.Td>
+                                        <Table.Td style={{ width: "15%" }}>
+                                            {amountPreview(c.amount)}
+                                        </Table.Td>
+                                        <Table.Td style={{ width: "10%" }}>
+                                            {datePreview(c.date)}
+                                        </Table.Td>
+                                        <Table.Td style={{ width: "10%" }}>
+                                            <Badge
+                                                size="sm"
+                                                radius="xs"
+                                                color={getColor(
+                                                    c.paymentStatus
+                                                )}
+                                            >
+                                                {c.paymentStatus}
+                                            </Badge>
+                                        </Table.Td>
+                                        <Table.Td style={{ width: "5%" }}>
+                                            <Menu width={150}>
+                                                <Menu.Target>
+                                                    <IconDotsVertical
+                                                        size="16"
+                                                        className="cursor-pointer"
+                                                    />
+                                                </Menu.Target>
+                                                <Menu.Dropdown>
+                                                    <Menu.Label>
+                                                        Actions
+                                                    </Menu.Label>
+                                                    <Menu.Item
+                                                        onClick={() => {
+                                                            navigate(
+                                                                `/app/cheque-payments/view-cheque-payment/${c._id}`
+                                                            );
+                                                            sessionStorage.setItem(
+                                                                "pageIndex",
+                                                                String(
+                                                                    pageIndex
+                                                                )
+                                                            );
+                                                        }}
+                                                        rightSection={
+                                                            <IconEye
+                                                                size={16}
+                                                            />
+                                                        }
+                                                    >
+                                                        View
+                                                    </Menu.Item>
+                                                    <Menu.Item
+                                                        disabled={
+                                                            c.paymentStatus !==
+                                                            "PENDING"
+                                                        }
+                                                        onClick={() => {
+                                                            navigate(
+                                                                `/app/cheque-payments/edit-cheque-payment/${c._id}`
+                                                            );
+                                                            sessionStorage.setItem(
+                                                                "pageIndex",
+                                                                String(
+                                                                    pageIndex
+                                                                )
+                                                            );
+                                                        }}
+                                                        rightSection={
+                                                            <IconEdit
+                                                                size={16}
+                                                            />
+                                                        }
+                                                    >
+                                                        Edit
+                                                    </Menu.Item>
+                                                    {c.chequeStatus !==
+                                                        "COMPLETED" &&
+                                                        c.chequeStatus !==
+                                                            "RETURNED" && (
+                                                            <>
+                                                                <Menu.Item
+                                                                    color="green"
+                                                                    onClick={() =>
+                                                                        chequePaymentStatusUpdate(
+                                                                            c._id,
+                                                                            "COMPLETED"
+                                                                        )
+                                                                    }
+                                                                    rightSection={
+                                                                        <IconCertificate
+                                                                            size={
+                                                                                16
+                                                                            }
+                                                                        />
+                                                                    }
+                                                                >
+                                                                    <span>
+                                                                        Completed
+                                                                    </span>
+                                                                </Menu.Item>
+                                                                <Menu.Item
+                                                                    color="red"
+                                                                    onClick={() =>
+                                                                        chequePaymentStatusUpdate(
+                                                                            c._id,
+                                                                            "RETURNED"
+                                                                        )
+                                                                    }
+                                                                    rightSection={
+                                                                        <IconCertificateOff
+                                                                            size={
+                                                                                16
+                                                                            }
+                                                                        />
+                                                                    }
+                                                                >
+                                                                    <span>
+                                                                        Returned
+                                                                    </span>
+                                                                </Menu.Item>
+                                                            </>
+                                                        )}
+                                                </Menu.Dropdown>
+                                            </Menu>
                                         </Table.Td>
                                     </Table.Tr>
-                                )}
-                            </Table.Tbody>
-                        </Table>
-                    </Box>
-
-                    {/* Mobile Cards */}
-                    <Box my="lg" mx="sm" hiddenFrom="lg">
-                        {chequePayments?.length !== 0 ? (
-                            chequePayments?.map((c: any, i: number) => (
-                                <Card
-                                    key={i}
-                                    shadow="sm"
-                                    withBorder
-                                    mx="xs"
-                                    my="lg"
-                                >
-                                    <Text className="font-semibold">
-                                        Payment For: {c.customer?.name}
-                                    </Text>
-                                    <Text>
-                                        Bank: {bankPreview(c.bankAccount.bank)}
-                                    </Text>
-                                    <Text>Cheque Number: {c.number}</Text>
-                                    <Text>
-                                        Amount: {amountPreview(c.amount)}
-                                    </Text>
-                                    <Text>
-                                        Date: {datePreview(c.depositDate)}
-                                    </Text>
-                                    <Badge
-                                        size="sm"
-                                        radius="xs"
-                                        color={getColor(c.paymentStatus)}
-                                        className="mt-2"
+                                ))
+                            ) : (
+                                <Table.Tr>
+                                    <Table.Td
+                                        colSpan={7}
+                                        className="text-center"
                                     >
-                                        {c.paymentStatus}
-                                    </Badge>
-                                    <Group mt="md">
-                                        <Menu width={150}>
-                                            <Menu.Target>
-                                                <IconDotsVertical
-                                                    size="16"
-                                                    className="cursor-pointer"
-                                                />
-                                            </Menu.Target>
-                                            <Menu.Dropdown>
-                                                <Menu.Label>Actions</Menu.Label>
-                                                <Menu.Item
-                                                    onClick={() => {
-                                                        navigate(
-                                                            `/app/cheque-payments/view-cheque-payment/${c._id}`
-                                                        );
-                                                        sessionStorage.setItem(
-                                                            "pageIndex",
-                                                            String(pageIndex)
-                                                        );
-                                                    }}
-                                                    rightSection={
-                                                        <IconEye size={16} />
-                                                    }
-                                                >
-                                                    View
-                                                </Menu.Item>
-                                                <Menu.Item
-                                                    disabled={
-                                                        c.paymentStatus !==
-                                                        "PENDING"
-                                                    }
-                                                    onClick={() => {
-                                                        navigate(
-                                                            `/app/cheque-payments/edit-cheque-payment/${c._id}`
-                                                        );
-                                                        sessionStorage.setItem(
-                                                            "pageIndex",
-                                                            String(pageIndex)
-                                                        );
-                                                    }}
-                                                    rightSection={
-                                                        <IconEdit size={16} />
-                                                    }
-                                                >
-                                                    Edit
-                                                </Menu.Item>
-                                                {c.chequeStatus !==
-                                                    "COMPLETED" &&
-                                                    c.chequeStatus !==
-                                                        "RETURNED" && (
-                                                        <>
-                                                            <Menu.Item
-                                                                color="green"
-                                                                onClick={() =>
-                                                                    chequePaymentStatusUpdate(
-                                                                        c._id,
-                                                                        "COMPLETED"
-                                                                    )
-                                                                }
-                                                                rightSection={
-                                                                    <IconCertificate
-                                                                        size={
-                                                                            16
-                                                                        }
-                                                                    />
-                                                                }
-                                                            >
-                                                                <span>
-                                                                    Completed
-                                                                </span>
-                                                            </Menu.Item>
-                                                            <Menu.Item
-                                                                color="red"
-                                                                onClick={() =>
-                                                                    chequePaymentStatusUpdate(
-                                                                        c._id,
-                                                                        "RETURNED"
-                                                                    )
-                                                                }
-                                                                rightSection={
-                                                                    <IconCertificateOff
-                                                                        size={
-                                                                            16
-                                                                        }
-                                                                    />
-                                                                }
-                                                            >
-                                                                <span>
-                                                                    Returned
-                                                                </span>
-                                                            </Menu.Item>
-                                                        </>
-                                                    )}
-                                            </Menu.Dropdown>
-                                        </Menu>
-                                    </Group>
-                                </Card>
-                            ))
-                        ) : (
-                            <Group mx="xs" my="lg">
-                                <IconDatabaseOff color="red" size={24} />
-                                <Text>No data available</Text>
-                            </Group>
-                        )}
-                    </Box>
+                                        <div className="flex justify-center items-center">
+                                            <IconDatabaseOff
+                                                color="red"
+                                                size="24"
+                                                className="mr-2 self-center"
+                                            />
+                                            No data available
+                                        </div>
+                                    </Table.Td>
+                                </Table.Tr>
+                            )}
+                        </Table.Tbody>
+                    </Table>
+                </Box>
 
-                    {/* Pagination */}
-                    <Group my="md" ms="md" px="lg" justify="flex-end">
-                        <Pagination.Root
-                            total={Math.ceil(metadata?.total / pageSize)}
-                            value={pageIndex}
-                            onChange={setPageIndex}
-                            size="sm"
-                            siblings={1}
-                            boundaries={0}
-                        >
-                            <Group gap={5} justify="center">
-                                <Pagination.First />
-                                <Pagination.Previous />
-                                <Pagination.Items />
-                                <Pagination.Next />
-                                <Pagination.Last />
-                            </Group>
-                        </Pagination.Root>
-                    </Group>
-                </>
+                {/* Mobile Cards */}
+                <Box my="lg" mx="sm" hiddenFrom="lg">
+                    {chequePayments?.length !== 0 ? (
+                        chequePayments?.map((c: any, i: number) => (
+                            <Card
+                                key={i}
+                                shadow="sm"
+                                withBorder
+                                mx="xs"
+                                my="lg"
+                            >
+                                <Text className="font-semibold">
+                                    Payment For: {c.customer?.name}
+                                </Text>
+                                <Text>
+                                    Bank: {bankPreview(c.bankAccount.bank)}
+                                </Text>
+                                <Text>Cheque Number: {c.number}</Text>
+                                <Text>Amount: {amountPreview(c.amount)}</Text>
+                                <Text>Date: {datePreview(c.depositDate)}</Text>
+                                <Badge
+                                    size="sm"
+                                    radius="xs"
+                                    color={getColor(c.paymentStatus)}
+                                    className="mt-2"
+                                >
+                                    {c.paymentStatus}
+                                </Badge>
+                                <Group mt="md">
+                                    <Menu width={150}>
+                                        <Menu.Target>
+                                            <IconDotsVertical
+                                                size="16"
+                                                className="cursor-pointer"
+                                            />
+                                        </Menu.Target>
+                                        <Menu.Dropdown>
+                                            <Menu.Label>Actions</Menu.Label>
+                                            <Menu.Item
+                                                onClick={() => {
+                                                    navigate(
+                                                        `/app/cheque-payments/view-cheque-payment/${c._id}`
+                                                    );
+                                                    sessionStorage.setItem(
+                                                        "pageIndex",
+                                                        String(pageIndex)
+                                                    );
+                                                }}
+                                                rightSection={
+                                                    <IconEye size={16} />
+                                                }
+                                            >
+                                                View
+                                            </Menu.Item>
+                                            <Menu.Item
+                                                disabled={
+                                                    c.paymentStatus !==
+                                                    "PENDING"
+                                                }
+                                                onClick={() => {
+                                                    navigate(
+                                                        `/app/cheque-payments/edit-cheque-payment/${c._id}`
+                                                    );
+                                                    sessionStorage.setItem(
+                                                        "pageIndex",
+                                                        String(pageIndex)
+                                                    );
+                                                }}
+                                                rightSection={
+                                                    <IconEdit size={16} />
+                                                }
+                                            >
+                                                Edit
+                                            </Menu.Item>
+                                            {c.chequeStatus !== "COMPLETED" &&
+                                                c.chequeStatus !==
+                                                    "RETURNED" && (
+                                                    <>
+                                                        <Menu.Item
+                                                            color="green"
+                                                            onClick={() =>
+                                                                chequePaymentStatusUpdate(
+                                                                    c._id,
+                                                                    "COMPLETED"
+                                                                )
+                                                            }
+                                                            rightSection={
+                                                                <IconCertificate
+                                                                    size={16}
+                                                                />
+                                                            }
+                                                        >
+                                                            <span>
+                                                                Completed
+                                                            </span>
+                                                        </Menu.Item>
+                                                        <Menu.Item
+                                                            color="red"
+                                                            onClick={() =>
+                                                                chequePaymentStatusUpdate(
+                                                                    c._id,
+                                                                    "RETURNED"
+                                                                )
+                                                            }
+                                                            rightSection={
+                                                                <IconCertificateOff
+                                                                    size={16}
+                                                                />
+                                                            }
+                                                        >
+                                                            <span>
+                                                                Returned
+                                                            </span>
+                                                        </Menu.Item>
+                                                    </>
+                                                )}
+                                        </Menu.Dropdown>
+                                    </Menu>
+                                </Group>
+                            </Card>
+                        ))
+                    ) : (
+                        <Group mx="xs" my="lg">
+                            <IconDatabaseOff color="red" size={24} />
+                            <Text>No data available</Text>
+                        </Group>
+                    )}
+                </Box>
+
+                {/* Pagination */}
+                <Group my="md" ms="md" px="lg" justify="flex-end">
+                    <Pagination.Root
+                        total={Math.ceil(metadata?.total / pageSize)}
+                        value={pageIndex}
+                        onChange={setPageIndex}
+                        size="sm"
+                        siblings={1}
+                        boundaries={0}
+                    >
+                        <Group gap={5} justify="center">
+                            <Pagination.First />
+                            <Pagination.Previous />
+                            <Pagination.Items />
+                            <Pagination.Next />
+                            <Pagination.Last />
+                        </Group>
+                    </Pagination.Root>
+                </Group>
+            </>
         </>
     );
 };
