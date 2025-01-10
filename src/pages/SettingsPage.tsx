@@ -37,6 +37,8 @@ import {
 } from "../store/bankDetailSlice/bankDetailSlice.ts";
 import banks from "../helpers/banks.json";
 import xcorpion from "../../public/xcorpion.png";
+import { hasAnyPrivilege } from "../helpers/previlleges.ts";
+import { USER_ROLES } from "../helpers/types.ts";
 
 const SettingsPage = () => {
     const isSmallScreen = useMediaQuery("(max-width: 1024px)");
@@ -653,79 +655,105 @@ const SettingsPage = () => {
 
                 <div className="flex flex-row sm:flex-row  items-start sm:items-center mb-2"></div>
             </Box>
-            <Box display="flex" p="lg" className="items-center justify-between">
-                <Box>
-                    <Text size="lg" fw={500}>
-                        Users
-                    </Text>
-                </Box>
-            </Box>
-            <Box px="lg" mb="lg" className="gap-1">
-                <div className="flex gap-2 flex-row sm:flex-row items-start sm:items-center mb-2">
-                    <Button
-                        size="xs"
-                        variant="light"
-                        color="violet"
-                        className="w-full sm:w-auto"
-                        onClick={handleUsersView.open}
-                        leftSection={<IconEye size={16} />}
+            {hasAnyPrivilege(role, [
+                USER_ROLES.OWNER,
+                USER_ROLES.ADMIN,
+                USER_ROLES.SUPER_ADMIN,
+            ]) && (
+                <>
+                    <Box
+                        display="flex"
+                        p="lg"
+                        className="items-center justify-between"
                     >
-                        View Users
-                    </Button>
-                    {role === "super_admin" && (
-                        <Button
-                            size="xs"
-                            variant="light"
-                            className="w-full sm:w-auto"
-                            onClick={handleAddUser.open}
-                            leftSection={<IconPlus size={16} />}
-                        >
-                            Add User
-                        </Button>
-                    )}
-                </div>
-                <hr />
-            </Box>
-            <Box display="flex" p="lg" className="items-center justify-between">
-                <Box>
-                    <Text size="lg" fw={500}>
-                        Bank Details
-                    </Text>
-                </Box>
-            </Box>
-            <Box px="lg" mb="lg" className="gap-1">
-                <div className="flex gap-2 flex-row sm:flex-row items-start sm:items-center mb-2">
-                    <Button
-                        size="xs"
-                        variant="light"
-                        color="violet"
-                        className="w-full sm:w-auto"
-                        onClick={handleBankDetailsView.open}
-                        leftSection={<IconEye size={16} />}
+                        <Box>
+                            <Text size="lg" fw={500}>
+                                Users
+                            </Text>
+                        </Box>
+                    </Box>
+                    <Box px="lg" mb="lg" className="gap-1">
+                        <div className="flex gap-2 flex-row sm:flex-row items-start sm:items-center mb-2">
+                            <Button
+                                size="xs"
+                                variant="light"
+                                color="violet"
+                                className="w-full sm:w-auto"
+                                onClick={handleUsersView.open}
+                                leftSection={<IconEye size={16} />}
+                            >
+                                View Users
+                            </Button>
+                            {role === "super_admin" && (
+                                <Button
+                                    size="xs"
+                                    variant="light"
+                                    className="w-full sm:w-auto"
+                                    onClick={handleAddUser.open}
+                                    leftSection={<IconPlus size={16} />}
+                                >
+                                    Add User
+                                </Button>
+                            )}
+                        </div>
+                        <hr />
+                    </Box>
+                </>
+            )}
+
+            {hasAnyPrivilege(role, [
+                USER_ROLES.OWNER,
+                USER_ROLES.ADMIN,
+                USER_ROLES.SUPER_ADMIN,
+            ]) && (
+                <>
+                    <Box
+                        display="flex"
+                        p="lg"
+                        className="items-center justify-between"
                     >
-                        View Bank Details
-                    </Button>
-                    {role === "super_admin" && (
-                        <Button
-                            size="xs"
-                            variant="light"
-                            className="w-full sm:w-auto"
-                            onClick={handleAddBankDetail.open}
-                            leftSection={<IconPlus size={16} />}
-                        >
-                            Add Bank Details
-                        </Button>
-                    )}
-                </div>
-                <hr />
-                <Group
-                    className="mt-4 flex flex-row items-center gap-4 border w-fit px-2 py-2 cursor-pointer"
-                    onClick={() => window.open("https://xcorpion.xyz", "_blank")}
-                >
-                    <img src={xcorpion} className="w-6" />
-                    <Text>XCORPION</Text>
-                </Group>
-            </Box>
+                        <Box>
+                            <Text size="lg" fw={500}>
+                                Bank Details
+                            </Text>
+                        </Box>
+                    </Box>
+                    <Box px="lg" mb="lg" className="gap-1">
+                        <div className="flex gap-2 flex-row sm:flex-row items-start sm:items-center mb-2">
+                            <Button
+                                size="xs"
+                                variant="light"
+                                color="violet"
+                                className="w-full sm:w-auto"
+                                onClick={handleBankDetailsView.open}
+                                leftSection={<IconEye size={16} />}
+                            >
+                                View Bank Details
+                            </Button>
+                            {role === "super_admin" && (
+                                <Button
+                                    size="xs"
+                                    variant="light"
+                                    className="w-full sm:w-auto"
+                                    onClick={handleAddBankDetail.open}
+                                    leftSection={<IconPlus size={16} />}
+                                >
+                                    Add Bank Details
+                                </Button>
+                            )}
+                        </div>
+                        <hr />
+                    </Box>
+                </>
+            )}
+            <Group
+                className="mt-4 flex flex-row items-center gap-4 border w-fit px-2 py-2 cursor-pointer mx-4 my-4"
+                onClick={() => window.open("https://xcorpion.xyz", "_blank")}
+            >
+                <img src={xcorpion} className="w-6" />
+                <Text>XCORPION</Text>
+            </Group>
+
             {passwordChangeModal()}
             {viewUsersModal()}
             {adduserOpenedModal()}

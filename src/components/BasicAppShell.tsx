@@ -7,7 +7,9 @@ import {
     Group,
     NavLink,
     Paper,
-    Text, useComputedColorScheme, useMantineColorScheme,
+    Text,
+    useComputedColorScheme,
+    useMantineColorScheme,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import logo from "../assets/logo1.png";
@@ -16,20 +18,26 @@ import {
     IconCalendarDollar,
     IconCashBanknote,
     IconInvoice,
-    IconLayoutDashboard, IconMoon,
-    IconPackages, IconSun,
+    IconLayoutDashboard,
+    IconMoon,
+    IconPackages,
+    IconSun,
     IconTruck,
     IconUsersGroup,
 } from "@tabler/icons-react";
 import { Outlet, useLocation, useNavigate } from "react-router";
 import { useSelector } from "react-redux";
 import { RootState } from "../store/store.ts";
-import cx from 'clsx';
-import classes from './Demo.module.css';
+import cx from "clsx";
+import classes from "./Demo.module.css";
+import { hasAnyPrivilege } from "../helpers/previlleges.ts";
+import { USER_ROLES } from "../helpers/types.ts";
 
 const BasicAppShell = () => {
     const { setColorScheme } = useMantineColorScheme();
-    const computedColorScheme = useComputedColorScheme('light', { getInitialValueInEffect: true });
+    const computedColorScheme = useComputedColorScheme("light", {
+        getInitialValueInEffect: true,
+    });
     const navigate = useNavigate();
     const location = useLocation();
     const userDetails = useSelector((state: RootState) => state.auth.user);
@@ -83,20 +91,32 @@ const BasicAppShell = () => {
                     </Box>
                     <Group display="flex" justify="center">
                         <ActionIcon
-                            onClick={() => setColorScheme(computedColorScheme === 'light' ? 'dark' : 'light')}
+                            onClick={() =>
+                                setColorScheme(
+                                    computedColorScheme === "light"
+                                        ? "dark"
+                                        : "light"
+                                )
+                            }
                             variant="light"
                             size="md"
                             aria-label="Toggle color scheme"
                             mr="sm"
                         >
-                            <IconSun className={cx(classes.icon, classes.light)} stroke={1.5} />
-                            <IconMoon className={cx(classes.icon, classes.dark)} stroke={1.5} />
+                            <IconSun
+                                className={cx(classes.icon, classes.light)}
+                                stroke={1.5}
+                            />
+                            <IconMoon
+                                className={cx(classes.icon, classes.dark)}
+                                stroke={1.5}
+                            />
                         </ActionIcon>
                         <UserInfo />
                     </Group>
                 </Group>
             </AppShell.Header>
-            <AppShell.Navbar >
+            <AppShell.Navbar>
                 <NavLink
                     onClick={() => handleNavLinkClick("dashboard")}
                     label="Dashboard"
@@ -106,63 +126,110 @@ const BasicAppShell = () => {
                     variant="filled"
                     active={activePath === "dashboard"}
                 />
-                <NavLink
-                    onClick={() => handleNavLinkClick("customers")}
-                    label="Customers"
-                    leftSection={<IconUsersGroup size="1rem" stroke={1.5} />}
-                    variant="filled"
-                    active={activePath === "customers"}
-                />
-                <NavLink
-                    onClick={() => handleNavLinkClick("products")}
-                    label="Products"
-                    leftSection={<IconPackages size="1rem" stroke={1.5} />}
-                    variant="filled"
-                    active={activePath === "products"}
-                />
-                <NavLink
-                    onClick={() => handleNavLinkClick("suppliers")}
-                    label="Suppliers"
-                    leftSection={<IconTruck size="1rem" stroke={1.5} />}
-                    variant="filled"
-                    active={activePath === "suppliers"}
-                />
-                <NavLink
-                    onClick={() => handleNavLinkClick("cheques")}
-                    label="Cheques"
-                    leftSection={<IconCashBanknote size="1rem" stroke={1.5} />}
-                    variant="filled"
-                    active={activePath === "cheques"}
-                />
-                <NavLink
-                    onClick={() => handleNavLinkClick("cheque-payments")}
-                    label="Cheque Payments"
-                    leftSection={<IconCalendarDollar size="1rem" stroke={1.5} />}
-                    variant="filled"
-                    active={activePath === "cheque-payments"}
-                />
-                <NavLink
-                    onClick={() => handleNavLinkClick("invoices")}
-                    label="Invoices"
-                    leftSection={<IconInvoice size="1rem" stroke={1.5} />}
-                    variant="filled"
-                    active={activePath === "invoices"}
-                />
+                {hasAnyPrivilege(userDetails.role, [
+                    USER_ROLES.SUPER_ADMIN,
+                    USER_ROLES.ADMIN,
+                    USER_ROLES.OWNER,
+                    USER_ROLES.SALES_REP,
+                    USER_ROLES.SALES_MANAGER,
+                    USER_ROLES.DRIVER,
+                ]) && (
+                    <NavLink
+                        onClick={() => handleNavLinkClick("customers")}
+                        label="Customers"
+                        leftSection={
+                            <IconUsersGroup size="1rem" stroke={1.5} />
+                        }
+                        variant="filled"
+                        active={activePath === "customers"}
+                    />
+                )}
+                {hasAnyPrivilege(userDetails.role, [
+                    USER_ROLES.SUPER_ADMIN,
+                    USER_ROLES.ADMIN,
+                    USER_ROLES.OWNER,
+                    USER_ROLES.SALES_REP,
+                    USER_ROLES.SALES_MANAGER,
+                ]) && (
+                    <NavLink
+                        onClick={() => handleNavLinkClick("products")}
+                        label="Products"
+                        leftSection={<IconPackages size="1rem" stroke={1.5} />}
+                        variant="filled"
+                        active={activePath === "products"}
+                    />
+                )}
+                {hasAnyPrivilege(userDetails.role, [
+                    USER_ROLES.SUPER_ADMIN,
+                    USER_ROLES.ADMIN,
+                    USER_ROLES.OWNER,
+                ]) && (
+                    <NavLink
+                        onClick={() => handleNavLinkClick("suppliers")}
+                        label="Suppliers"
+                        leftSection={<IconTruck size="1rem" stroke={1.5} />}
+                        variant="filled"
+                        active={activePath === "suppliers"}
+                    />
+                )}
+                {hasAnyPrivilege(userDetails.role, [
+                    USER_ROLES.SUPER_ADMIN,
+                    USER_ROLES.ADMIN,
+                    USER_ROLES.OWNER,
+                    USER_ROLES.SALES_REP,
+                    USER_ROLES.SALES_MANAGER,
+                ]) && (
+                    <NavLink
+                        onClick={() => handleNavLinkClick("cheques")}
+                        label="Cheques"
+                        leftSection={
+                            <IconCashBanknote size="1rem" stroke={1.5} />
+                        }
+                        variant="filled"
+                        active={activePath === "cheques"}
+                    />
+                )}
+                {hasAnyPrivilege(userDetails.role, [
+                    USER_ROLES.SUPER_ADMIN,
+                    USER_ROLES.ADMIN,
+                    USER_ROLES.OWNER,
+                ]) && (
+                    <NavLink
+                        onClick={() => handleNavLinkClick("cheque-payments")}
+                        label="Cheque Payments"
+                        leftSection={
+                            <IconCalendarDollar size="1rem" stroke={1.5} />
+                        }
+                        variant="filled"
+                        active={activePath === "cheque-payments"}
+                    />
+                )}
+                {hasAnyPrivilege(userDetails.role, [
+                    USER_ROLES.SUPER_ADMIN,
+                    USER_ROLES.ADMIN,
+                    USER_ROLES.OWNER,
+                ]) && (
+                    <NavLink
+                        onClick={() => handleNavLinkClick("invoices")}
+                        label="Invoices"
+                        leftSection={<IconInvoice size="1rem" stroke={1.5} />}
+                        variant="filled"
+                        active={activePath === "invoices"}
+                    />
+                )}
             </AppShell.Navbar>
 
             <AppShell.Main>
                 {activePath === "dashboard" && (
                     <>
-                    <Group>
-                        <Text size="xl" fw={500}>
-                            Hello {greetingName}.!
-                        </Text>
-                    </Group>
-                    <Group>
-                        <Text size="xs">
-                            {displayDate}
-                        </Text>
-                    </Group>
+                        <Group>
+                            <Text size="xl" fw={500}>
+                                Hello {greetingName}.!
+                            </Text>
+                        </Group>
+                        <Group>
+                            <Text size="xs">{displayDate}</Text>
+                        </Group>
                     </>
                 )}
                 <Divider mt="sm" />
