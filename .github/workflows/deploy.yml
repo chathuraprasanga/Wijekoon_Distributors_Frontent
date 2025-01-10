@@ -26,15 +26,15 @@ jobs:
         run: |
           ssh -o ServerAliveInterval=60 -o StrictHostKeyChecking=no ${{ secrets.DROPLET_USER }}@${{ secrets.DROPLET_HOST }} "echo 'SSH connection successful!'"
 
-      # Debug PATH and npm availability
-      - name: Test PATH and npm availability
+      # Debug Node.js and npm availability
+      - name: Test Node.js and npm availability
         run: |
           ssh -o ServerAliveInterval=60 -o StrictHostKeyChecking=no ${{ secrets.DROPLET_USER }}@${{ secrets.DROPLET_HOST }} << 'EOF'
             set -e
             export NVM_DIR="$HOME/.nvm"
-            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-            [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
-            nvm use node
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # Load nvm
+            [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion" # Load nvm bash_completion
+            nvm use node # Activate the correct Node.js version
             echo "Node version: $(node -v)"
             echo "npm version: $(npm -v)"
           EOF
@@ -46,12 +46,12 @@ jobs:
             set -e
             export NVM_DIR="$HOME/.nvm"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # Load nvm
-            [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion" # Load nvm bash_completion (optional)
-            nvm use node # Activate the Node.js version
+            [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion" # Load nvm bash_completion
+            nvm use node # Activate the correct Node.js version
             cd /var/www/wijekoon-distributors/frontend
-            git pull
-            npm install --force
-          EOF 
+            git pull origin main # Ensure pulling the latest code from the main branch
+            npm ci # Clean install dependencies for a consistent environment
+          EOF
 
       # Build Frontend
       - name: Build Frontend
@@ -59,9 +59,9 @@ jobs:
           ssh -o ServerAliveInterval=60 -o StrictHostKeyChecking=no ${{ secrets.DROPLET_USER }}@${{ secrets.DROPLET_HOST }} << 'EOF'
             set -e
             export NVM_DIR="$HOME/.nvm"
-            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-            [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
-            nvm use node
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # Load nvm
+            [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion" # Load nvm bash_completion
+            nvm use node # Activate the correct Node.js version
             cd /var/www/wijekoon-distributors/frontend
             npm run lint
             npm run build
