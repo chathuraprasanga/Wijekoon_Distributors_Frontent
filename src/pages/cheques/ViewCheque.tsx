@@ -99,11 +99,11 @@ const ViewCheque = () => {
                     </div>
                     <div className="flex flex-row">
                         <div className="w-2/4 lg:w-1/4">Deposit Date:</div>
-                        <div>{datePreview(cheque.depositDate)}</div>
+                        <div>{datePreview(cheque?.depositDate)}</div>
                     </div>
                     <div className="flex items-end mt-4">
                         <Badge
-                            color={CHEQUES_STATUS_COLORS[cheque.chequeStatus as keyof typeof CHEQUES_STATUS_COLORS] || "gray"}
+                            color={CHEQUES_STATUS_COLORS[cheque?.chequeStatus as keyof typeof CHEQUES_STATUS_COLORS] || "gray"}
                             radius="xs"
                             size="sm"
                         >

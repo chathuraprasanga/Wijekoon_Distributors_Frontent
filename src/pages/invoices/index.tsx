@@ -119,10 +119,17 @@ const Invoices = () => {
                 <Box>
                     <Button
                         size="xs"
+                        color="violet"
+                        onClick={() => navigate("/app/invoices/bulk-invoice-payment")}
+                    >
+                        Bulk Invoice Payment
+                    </Button>{" "}
+                    <Button
+                        size="xs"
                         onClick={() => navigate("/app/invoices/add-invoice")}
                     >
                         Add Invoice
-                    </Button>
+                    </Button>{" "}
                 </Box>
             </Box>
 
@@ -221,7 +228,11 @@ const Invoices = () => {
                                         <Badge
                                             size="sm"
                                             radius="xs"
-                                            color={PAYMENT_STATUS_COLORS[c.invoiceStatus as keyof typeof PAYMENT_STATUS_COLORS] || "gray"}
+                                            color={
+                                                PAYMENT_STATUS_COLORS[
+                                                    c.invoiceStatus as keyof typeof PAYMENT_STATUS_COLORS
+                                                ] || "gray"
+                                            }
                                         >
                                             {c.invoiceStatus}
                                         </Badge>
@@ -330,7 +341,11 @@ const Invoices = () => {
                             <Badge
                                 size="sm"
                                 radius="xs"
-                                color={PAYMENT_STATUS_COLORS[c.invoiceStatus as keyof typeof PAYMENT_STATUS_COLORS] || "gray"}
+                                color={
+                                    PAYMENT_STATUS_COLORS[
+                                        c.invoiceStatus as keyof typeof PAYMENT_STATUS_COLORS
+                                    ] || "gray"
+                                }
                                 className="mt-2"
                             >
                                 {c.invoiceStatus}
