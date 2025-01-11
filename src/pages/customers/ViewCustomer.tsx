@@ -6,6 +6,7 @@ import { getCustomer } from "../../store/customerSlice/customerSlice.ts";
 import { useParams } from "react-router";
 import { useEffect } from "react";
 import { Badge, Box, Button, Card, Group, Text } from "@mantine/core";
+import { BASIC_STATUS_COLORS } from "../../helpers/types.ts";
 
 const ViewCustomer = () => {
     const { setLoading } = useLoading();
@@ -68,7 +69,7 @@ const ViewCustomer = () => {
                     </div>
                     <div className="flex items-end mt-4">
                         <Badge
-                            color={customer?.status ? "green" : "red"}
+                            color={BASIC_STATUS_COLORS[customer.status as keyof typeof BASIC_STATUS_COLORS] || "gray"}
                             radius="xs"
                             size="sm"
                         >

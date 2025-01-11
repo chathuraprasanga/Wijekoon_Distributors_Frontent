@@ -8,8 +8,7 @@ import { Badge, Box, Button, Card, Group } from "@mantine/core";
 import toNotify from "../../helpers/toNotify.tsx";
 import { changeStatusInvoice, getInvoice } from "../../store/invoiceSlice/invoiceSlice.ts";
 import { amountPreview, datePreview } from "../../helpers/preview.tsx";
-
-type ChequeStatus = "PAID" | "NOT PAID";
+import { PAYMENT_STATUS_COLORS } from "../../helpers/types.ts";
 
 const ViewInvoice = () => {
     const { setLoading } = useLoading();
@@ -29,11 +28,6 @@ const ViewInvoice = () => {
         setLoading(true);
         await dispatch(getInvoice(id));
         setLoading(false);
-    };
-
-    const colorsForInvoice: Record<ChequeStatus, string> = {
-        PAID: "green",
-        "NOT PAID": "red",
     };
 
     const chequeStatusUpdate = async (status: string) => {
@@ -94,11 +88,7 @@ const ViewInvoice = () => {
                     </div>
                     <div className="flex items-end mt-4">
                         <Badge
-                            color={
-                                colorsForInvoice[
-                                    invoice?.invoiceStatus as ChequeStatus
-                                    ] || "gray"
-                            }
+                            color={PAYMENT_STATUS_COLORS[invoice.invoiceStatus as keyof typeof PAYMENT_STATUS_COLORS] || "gray"}
                             radius="xs"
                             size="sm"
                         >

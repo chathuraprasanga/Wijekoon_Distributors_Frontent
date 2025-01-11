@@ -31,6 +31,7 @@ import { amountPreview, datePreview } from "../../helpers/preview.tsx";
 import { DateInput } from "@mantine/dates";
 
 import { getSuppliers } from "../../store/supplierSlice/supplierSlice.ts";
+import { PAYMENT_STATUS_COLORS } from "../../helpers/types.ts";
 
 const Invoices = () => {
     const { setLoading } = useLoading();
@@ -118,10 +119,17 @@ const Invoices = () => {
                 <Box>
                     <Button
                         size="xs"
+                        color="violet"
+                        onClick={() => navigate("/app/invoices/bulk-invoice-payment")}
+                    >
+                        Bulk Invoice Payment
+                    </Button>{" "}
+                    <Button
+                        size="xs"
                         onClick={() => navigate("/app/invoices/add-invoice")}
                     >
                         Add Invoice
-                    </Button>
+                    </Button>{" "}
                 </Box>
             </Box>
 
@@ -221,9 +229,9 @@ const Invoices = () => {
                                             size="sm"
                                             radius="xs"
                                             color={
-                                                c.invoiceStatus === "PAID"
-                                                    ? "green"
-                                                    : "red"
+                                                PAYMENT_STATUS_COLORS[
+                                                    c.invoiceStatus as keyof typeof PAYMENT_STATUS_COLORS
+                                                ] || "gray"
                                             }
                                         >
                                             {c.invoiceStatus}
@@ -334,7 +342,9 @@ const Invoices = () => {
                                 size="sm"
                                 radius="xs"
                                 color={
-                                    c.invoiceStatus === "PAID" ? "green" : "red"
+                                    PAYMENT_STATUS_COLORS[
+                                        c.invoiceStatus as keyof typeof PAYMENT_STATUS_COLORS
+                                    ] || "gray"
                                 }
                                 className="mt-2"
                             >

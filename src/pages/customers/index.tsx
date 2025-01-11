@@ -32,6 +32,7 @@ import {
 } from "../../store/customerSlice/customerSlice.ts";
 import { useLoading } from "../../helpers/loadingContext.tsx";
 import toNotify from "../../helpers/toNotify.tsx";
+import { BASIC_STATUS_COLORS } from "../../helpers/types.ts";
 
 const Customers = () => {
     const { setLoading } = useLoading();
@@ -242,11 +243,7 @@ const Customers = () => {
                                                     Edit
                                                 </Menu.Item>
                                                 <Menu.Item
-                                                    color={
-                                                        c.status
-                                                            ? "red"
-                                                            : "green"
-                                                    }
+                                                    color={BASIC_STATUS_COLORS[c.status as keyof typeof BASIC_STATUS_COLORS] || "gray"}
                                                     onClick={() =>
                                                         handleChangeStatus(c)
                                                     }
@@ -307,7 +304,7 @@ const Customers = () => {
                             <Text>Email: {c.email}</Text>
                             <Text>Address: {c.address}</Text>
                             <Badge
-                                color={c.status ? "green" : "red"}
+                                color={BASIC_STATUS_COLORS[c.status as keyof typeof BASIC_STATUS_COLORS] || "gray"}
                                 size="sm"
                                 radius="xs"
                                 className="mt-2"

@@ -135,7 +135,7 @@ const AddInvoice = () => {
                         hideControls
                         allowNegative={false}
                         prefix="Rs. "
-                        label="Cheque Amount"
+                        label="Invoice Amount"
                         decimalSeparator="."
                         decimalScale={2}
                         fixedDecimalScale

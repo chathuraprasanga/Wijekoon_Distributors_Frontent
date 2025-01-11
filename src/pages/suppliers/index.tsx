@@ -7,9 +7,11 @@ import {
     Card,
     Group,
     Menu,
-    Pagination, Select,
+    Pagination,
+    Select,
     Table,
-    Text, TextInput,
+    Text,
+    TextInput,
 } from "@mantine/core";
 import {
     IconDatabaseOff,
@@ -17,15 +19,19 @@ import {
     IconEdit,
     IconEye,
     IconMobiledata,
-    IconMobiledataOff, IconSearch, IconX,
+    IconMobiledataOff,
+    IconSearch,
+    IconX,
 } from "@tabler/icons-react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store/store.ts";
 import { useLoading } from "../../helpers/loadingContext.tsx";
 import {
-    changeStatusSupplier, getPagedSuppliers,
+    changeStatusSupplier,
+    getPagedSuppliers,
 } from "../../store/supplierSlice/supplierSlice.ts";
 import toNotify from "../../helpers/toNotify.tsx";
+import { BASIC_STATUS_COLORS } from "../../helpers/types.ts";
 
 const Suppliers = () => {
     const { setLoading } = useLoading();
@@ -51,7 +57,9 @@ const Suppliers = () => {
 
     const fetchSuppliers = async () => {
         setLoading(true);
-        const response = await dispatch(getPagedSuppliers({ filters: filters }));
+        const response = await dispatch(
+            getPagedSuppliers({ filters: filters })
+        );
         setMetadata(response.payload.result.metadata);
         setLoading(false);
     };
@@ -65,7 +73,7 @@ const Suppliers = () => {
             })
         );
         if (response.type === "supplier/changeStatus/fulfilled") {
-            dispatch(getPagedSuppliers({filters: filters}));
+            dispatch(getPagedSuppliers({ filters: filters }));
             setLoading(false);
             toNotify(
                 "Success",
@@ -90,7 +98,9 @@ const Suppliers = () => {
             {/* Header */}
             <Box display="flex" p="lg" className="items-center justify-between">
                 <Box>
-                    <Text size="lg" fw={500}>Suppliers</Text>
+                    <Text size="lg" fw={500}>
+                        Suppliers
+                    </Text>
                 </Box>
                 <Box>
                     <Button
@@ -146,7 +156,6 @@ const Suppliers = () => {
                             setPageIndex(1); // Reset the page index to 1
                         }}
                     />
-
                 </Group>
             </Box>
 
@@ -188,7 +197,11 @@ const Suppliers = () => {
                                     </Table.Td>
                                     <Table.Td style={{ width: "10%" }}>
                                         <Badge
-                                            color={c.status ? "green" : "red"}
+                                            color={
+                                                BASIC_STATUS_COLORS[
+                                                    c.status as keyof typeof BASIC_STATUS_COLORS
+                                                ] || "gray"
+                                            }
                                             size="sm"
                                             radius="xs"
                                         >
@@ -303,7 +316,11 @@ const Suppliers = () => {
                             <Text>Email: {c.email}</Text>
                             <Text>Address: {c.address}</Text>
                             <Badge
-                                color={c.status ? "green" : "red"}
+                                color={
+                                    BASIC_STATUS_COLORS[
+                                        c.status as keyof typeof BASIC_STATUS_COLORS
+                                    ] || "gray"
+                                }
                                 size="sm"
                                 radius="xs"
                                 className="mt-2"
@@ -391,7 +408,7 @@ const Suppliers = () => {
             {/* Pagination */}
             <Group my="md" ms="md" px="lg" justify="flex-end">
                 <Pagination.Root
-                    total={Math.ceil( metadata?.total / pageSize)}
+                    total={Math.ceil(metadata?.total / pageSize)}
                     value={pageIndex}
                     onChange={setPageIndex}
                     size="sm"

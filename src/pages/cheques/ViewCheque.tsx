@@ -11,8 +11,7 @@ import {
 } from "../../store/chequeSlice/chequeSlice.ts";
 import toNotify from "../../helpers/toNotify.tsx";
 import { amountPreview, datePreview } from "../../helpers/preview.tsx";
-
-type ChequeStatus = "PENDING" | "DEPOSITED" | "RETURNED" | "COMPLETED";
+import { CHEQUES_STATUS_COLORS } from "../../helpers/types.ts";
 
 const ViewCheque = () => {
     const { setLoading } = useLoading();
@@ -32,13 +31,6 @@ const ViewCheque = () => {
         setLoading(true);
         await dispatch(getCheque(id));
         setLoading(false);
-    };
-
-    const colorsForCheque: Record<ChequeStatus, string> = {
-        PENDING: "yellow",
-        DEPOSITED: "blue",
-        RETURNED: "red",
-        COMPLETED: "green",
     };
 
     const chequeStatusUpdate = async (status: string) => {
@@ -107,15 +99,11 @@ const ViewCheque = () => {
                     </div>
                     <div className="flex flex-row">
                         <div className="w-2/4 lg:w-1/4">Deposit Date:</div>
-                        <div>{datePreview(cheque.depositDate)}</div>
+                        <div>{datePreview(cheque?.depositDate)}</div>
                     </div>
                     <div className="flex items-end mt-4">
                         <Badge
-                            color={
-                                colorsForCheque[
-                                    cheque?.chequeStatus as ChequeStatus
-                                ] || "gray"
-                            }
+                            color={CHEQUES_STATUS_COLORS[cheque?.chequeStatus as keyof typeof CHEQUES_STATUS_COLORS] || "gray"}
                             radius="xs"
                             size="sm"
                         >
