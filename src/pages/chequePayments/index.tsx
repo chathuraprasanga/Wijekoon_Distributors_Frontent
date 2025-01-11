@@ -40,6 +40,7 @@ import {
     getPagedChequePayments,
 } from "../../store/chequePaymentSlice/chequePaymentSlice.ts";
 import { getBankDetails } from "../../store/bankDetailSlice/bankDetailSlice.ts";
+import { CHEQUES_STATUS_COLORS } from "../../helpers/types.ts";
 
 const ChequePayments = () => {
     const { setLoading } = useLoading();
@@ -131,17 +132,6 @@ const ChequePayments = () => {
                 `Please contact system admin`,
                 "WARNING"
             );
-        }
-    };
-
-    const getColor = (status: any) => {
-        switch (status) {
-            case "PENDING":
-                return "yellow";
-            case "RETURNED":
-                return "red";
-            default:
-                return "green";
         }
     };
 
@@ -315,9 +305,7 @@ const ChequePayments = () => {
                                             <Badge
                                                 size="sm"
                                                 radius="xs"
-                                                color={getColor(
-                                                    c.paymentStatus
-                                                )}
+                                                color={CHEQUES_STATUS_COLORS[c.status as keyof typeof CHEQUES_STATUS_COLORS] || "gray"}
                                             >
                                                 {c.paymentStatus}
                                             </Badge>
@@ -474,7 +462,7 @@ const ChequePayments = () => {
                                 <Badge
                                     size="sm"
                                     radius="xs"
-                                    color={getColor(c.paymentStatus)}
+                                    color={CHEQUES_STATUS_COLORS[c.status as keyof typeof CHEQUES_STATUS_COLORS] || "gray"}
                                     className="mt-2"
                                 >
                                     {c.paymentStatus}

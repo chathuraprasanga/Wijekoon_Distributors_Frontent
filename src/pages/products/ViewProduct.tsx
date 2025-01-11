@@ -7,6 +7,7 @@ import { useEffect } from "react";
 import { Badge, Box, Card, Group, Text } from "@mantine/core";
 import { getProduct } from "../../store/productSlice/productSlice.ts";
 import { amountPreview } from "../../helpers/preview.tsx";
+import { BASIC_STATUS_COLORS } from "../../helpers/types.ts";
 
 const ViewProduct = () => {
     const { setLoading } = useLoading();
@@ -61,7 +62,7 @@ const ViewProduct = () => {
                     </div>
                     <div className="flex items-end mt-4">
                         <Badge
-                            color={product?.status ? "green" : "red"}
+                            color={BASIC_STATUS_COLORS[product.status as keyof typeof BASIC_STATUS_COLORS] || "gray"}
                             radius="xs"
                             size="sm"
                         >

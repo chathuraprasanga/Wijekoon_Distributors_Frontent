@@ -31,6 +31,7 @@ import toNotify from "../../helpers/toNotify.tsx";
 import { getCustomers } from "../../store/customerSlice/customerSlice.ts";
 import { DateInput } from "@mantine/dates";
 import { amountPreview, datePreview } from "../../helpers/preview.tsx";
+import { CHEQUES_STATUS_COLORS } from "../../helpers/types.ts";
 
 const Cheques = () => {
     const { setLoading } = useLoading();
@@ -96,19 +97,6 @@ const Cheques = () => {
                 `Please contact system admin`,
                 "WARNING"
             );
-        }
-    };
-
-    const getColor = (status: any) => {
-        switch (status) {
-            case "PENDING":
-                return "yellow";
-            case "RETURNED":
-                return "red";
-            case "DEPOSITED":
-                return "blue";
-            default:
-                return "green";
         }
     };
 
@@ -241,7 +229,7 @@ const Cheques = () => {
                                         <Badge
                                             size="sm"
                                             radius="xs"
-                                            color={getColor(c.chequeStatus)}
+                                            color={CHEQUES_STATUS_COLORS[c.chequeStatus as keyof typeof CHEQUES_STATUS_COLORS] || "gray"}
                                         >
                                             {c.chequeStatus}
                                         </Badge>
@@ -380,7 +368,7 @@ const Cheques = () => {
                             <Badge
                                 size="sm"
                                 radius="xs"
-                                color={getColor(c.chequeStatus)}
+                                color={CHEQUES_STATUS_COLORS[c.chequeStatus as keyof typeof CHEQUES_STATUS_COLORS] || "gray"}
                                 className="mt-2"
                             >
                                 {c.chequeStatus}

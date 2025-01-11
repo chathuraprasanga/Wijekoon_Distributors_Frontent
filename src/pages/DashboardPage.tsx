@@ -270,7 +270,7 @@ const DashboardPage = () => {
                                 </ActionIcon>
                                 <Box>
                                     <Text size="lg" fw={600}>
-                                        Cheques to Deposit Today
+                                        Cheques Have to Deposit
                                     </Text>
                                     <Text size="sm" c="dimmed">
                                         Cheque Count: # {chequesToDeposit.count}
@@ -314,7 +314,7 @@ const DashboardPage = () => {
                                 </ActionIcon>
                                 <Box>
                                     <Text size="lg" fw={600}>
-                                        Cheques Comes to Transfer
+                                        Cheques Come to Transfer
                                     </Text>
                                     <Text size="sm" c="dimmed">
                                         Cheque Count: #{" "}

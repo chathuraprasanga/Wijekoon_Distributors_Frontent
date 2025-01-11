@@ -33,6 +33,7 @@ import {
 } from "../../store/productSlice/productSlice.ts";
 import toNotify from "../../helpers/toNotify.tsx";
 import { amountPreview } from "../../helpers/preview.tsx";
+import { BASIC_STATUS_COLORS } from "../../helpers/types.ts";
 
 const Products = () => {
     const { setLoading } = useLoading();
@@ -196,7 +197,7 @@ const Products = () => {
                                     </Table.Td>
                                     <Table.Td style={{ width: "10%" }}>
                                         <Badge
-                                            color={c.status ? "green" : "red"}
+                                            color={BASIC_STATUS_COLORS[c.status as keyof typeof BASIC_STATUS_COLORS] || "gray"}
                                             size="sm"
                                             radius="xs"
                                         >
@@ -313,7 +314,7 @@ const Products = () => {
                                 Unit Price: {amountPreview(c.unitPrice)}
                             </Text>
                             <Badge
-                                color={c.status ? "green" : "red"}
+                                color={BASIC_STATUS_COLORS[c.status as keyof typeof BASIC_STATUS_COLORS] || "gray"}
                                 size="sm"
                                 radius="xs"
                                 className="mt-2"
