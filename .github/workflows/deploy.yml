@@ -39,21 +39,6 @@ jobs:
             echo "npm version: $(npm -v)"
           EOF
 
-      # Pull Latest Code and Install Dependencies
-      - name: Pull Latest Code and Install Dependencies
-        run: |
-          ssh -o ServerAliveInterval=60 -o StrictHostKeyChecking=no ${{ secrets.DROPLET_USER }}@${{ secrets.DROPLET_HOST }} << 'EOF'
-            set -e
-            export NVM_DIR="$HOME/.nvm"
-            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # Load nvm
-            [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion" # Load nvm bash_completion
-            nvm use node # Activate the correct Node.js version
-            cd /var/www/wijekoon-distributors/frontend
-            sudo rm -rf dist
-            git pull origin main # Ensure pulling the latest code from the main branch
-            npm ci # Clean install dependencies for a consistent environment
-          EOF
-
       # Build Frontend
       - name: Build Frontend
         run: |
@@ -64,7 +49,11 @@ jobs:
             [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion" # Load nvm bash_completion
             nvm use node # Activate the correct Node.js version
             cd /var/www/wijekoon-distributors/frontend
+            sudo rm -rf dist
+            echo "Previous Build Deleted"
+            git pull origin main # Ensure pulling the latest code from the main branch
             npm run lint
+            npm i --force
             npm run build
           EOF
 
