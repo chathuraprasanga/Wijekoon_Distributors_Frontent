@@ -10,6 +10,8 @@ import cheques from "../../pages/cheques";
 interface InvoiceState {
     invoices: any;
     selectedInvoice: any;
+    bulkInvoicePayments:any;
+    selectedBulkInvoicePayment:any;
     status: string;
     error: string;
 }
@@ -17,6 +19,8 @@ interface InvoiceState {
 const initialState: InvoiceState = {
     invoices: [],
     selectedInvoice: {},
+    bulkInvoicePayments: [],
+    selectedBulkInvoicePayment: {},
     status: "idle",
     error: "",
 };
@@ -125,6 +129,35 @@ export const addBulkInvoicePayment = createAsyncThunk(
     }
 );
 
+export const getPagedBulkInvoicePayments = createAsyncThunk(
+    "invoice/getPagedBulkInvoicePayments",
+    async (payload: any, { rejectWithValue }) => {
+        try {
+            const response = await axiosInstance.post(
+                `/invoices/paged-bulk-invoice-payments`,
+                payload
+            );
+            return response.data;
+        } catch (err: any) {
+            throw rejectWithValue(err.response.data);
+        }
+    }
+);
+
+export const getBulkInvoicePayment = createAsyncThunk(
+    "invoice/getBulkInvoicePayment",
+    async (id: any, { rejectWithValue }) => {
+        try {
+            const response = await axiosInstance.get(
+                `/invoices/bulk-invoice-payment/${id}`
+            );
+            return response.data;
+        } catch (err: any) {
+            throw rejectWithValue(err.response.data);
+        }
+    }
+);
+
 const invoiceSlice = createSlice({
     name: "invoice",
     initialState,
@@ -149,9 +182,21 @@ const invoiceSlice = createSlice({
             }
         );
         builder.addCase(
+            getPagedBulkInvoicePayments.fulfilled,
+            (state: Draft<InvoiceState>, action: PayloadAction<any>) => {
+                state.bulkInvoicePayments = action.payload.result.response;
+            }
+        );
+        builder.addCase(
             getInvoice.fulfilled,
             (state: Draft<InvoiceState>, action: PayloadAction<any>) => {
                 state.selectedInvoice = action.payload.result;
+            }
+        );
+        builder.addCase(
+            getBulkInvoicePayment.fulfilled,
+            (state: Draft<InvoiceState>, action: PayloadAction<any>) => {
+                state.selectedBulkInvoicePayment = action.payload.result;
             }
         );
         builder.addCase(

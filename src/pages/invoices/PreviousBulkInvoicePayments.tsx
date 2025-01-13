@@ -13,22 +13,15 @@ import {
 } from "@mantine/core";
 import {
     IconArrowLeft,
-    IconCertificate,
     IconDatabaseOff,
     IconDotsVertical,
-    IconEdit,
     IconEye,
 } from "@tabler/icons-react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store/store.ts";
 import { useLoading } from "../../helpers/loadingContext.tsx";
-import {
-    changeStatusInvoice,
-    getPagedInvoices,
-} from "../../store/invoiceSlice/invoiceSlice.ts";
-import toNotify from "../../helpers/toNotify.tsx";
+import { getPagedBulkInvoicePayments } from "../../store/invoiceSlice/invoiceSlice.ts";
 import { amountPreview, datePreview } from "../../helpers/preview.tsx";
-import { DateInput } from "@mantine/dates";
 
 import { getSuppliers } from "../../store/supplierSlice/supplierSlice.ts";
 import { PAYMENT_STATUS_COLORS } from "../../helpers/types.ts";
@@ -41,21 +34,21 @@ const PreviousBulkInvoicePayments = () => {
     const [pageIndex, setPageIndex] = useState(1);
     const pageSize = 5;
     const [supplier, setSupplier] = useState<string>("");
-    const [status, setStatus] = useState<string>("");
-    const [invoicedDate, setInvoicedDate] = useState<any>();
     const sort = -1;
     const [metadata, setMetadata] = useState<any>();
 
-    const invoices = useSelector((state: RootState) => state.invoice.invoices);
+    const bulkInvoicePayments = useSelector(
+        (state: RootState) => state.invoice.bulkInvoicePayments
+    );
     const suppliers = useSelector(
         (state: RootState) => state.supplier.suppliers
     );
 
     useEffect(() => {
-        fetchInvoices();
-    }, [dispatch, pageIndex, status, supplier, invoicedDate]);
+        fetchBulkInvoicePayments();
+    }, [dispatch, pageIndex, supplier]);
 
-    const fetchInvoices = async () => {
+    const fetchBulkInvoicePayments = async () => {
         setLoading(true);
         await dispatch(getSuppliers({}));
         const filters = {
@@ -63,41 +56,12 @@ const PreviousBulkInvoicePayments = () => {
             pageIndex,
             supplier,
             sort,
-            status,
-            invoicedDate,
         };
-        const response = await dispatch(getPagedInvoices({ filters: filters }));
+        const response = await dispatch(
+            getPagedBulkInvoicePayments({ filters: filters })
+        );
         setMetadata(response.payload.result.metadata);
         setLoading(false);
-    };
-
-    const invoiceStatusUpdate = async (id: string, status: string) => {
-        setLoading(true);
-        const payload = {
-            id,
-            values: { invoiceStatus: status },
-        };
-        const response = await dispatch(changeStatusInvoice(payload));
-        if (response.type === "invoice/changeStatus/fulfilled") {
-            await fetchInvoices();
-            setLoading(false);
-            toNotify(
-                "Success",
-                "Invoice status changed successfully",
-                "SUCCESS"
-            );
-        } else if (response.type === "invoice/changeStatus/rejected") {
-            const error: any = response.payload.error;
-            setLoading(false);
-            toNotify("Error", `${error}`, "ERROR");
-        } else {
-            setLoading(false);
-            toNotify(
-                "Something went wrong",
-                `Please contact system admin`,
-                "WARNING"
-            );
-        }
     };
 
     const selectableSuppliers = suppliers.map((c: any) => {
@@ -106,6 +70,13 @@ const PreviousBulkInvoicePayments = () => {
             value: c?._id,
         };
     });
+
+    const getInvoiceIds = (invoices: any[]) =>
+        invoices.map((i: any) => i.invoiceNumber);
+
+    const getInvoiceAmount = (invoices: any[]) => {
+        return invoices.reduce((total, i) => total + (i?.amount || 0), 0);
+    };
 
     return (
         <>
@@ -141,33 +112,6 @@ const PreviousBulkInvoicePayments = () => {
                             setPageIndex(1); // Reset the page index to 1
                         }}
                     />
-
-                    <Select
-                        className="w-full lg:w-1/4"
-                        size="xs"
-                        placeholder="Select a status"
-                        data={["PAID", "NOT PAID"]}
-                        clearable
-                        onChange={(value: string | null) => {
-                            if (value) {
-                                setStatus(value); // Update the status
-                            } else {
-                                setStatus(""); // Clear the status
-                            }
-                            setPageIndex(1); // Reset the page index to 1
-                        }}
-                    />
-
-                    <DateInput
-                        className="w-full lg:w-1/4"
-                        size="xs"
-                        placeholder="Select invoice date"
-                        clearable
-                        onChange={(e: any) => {
-                            setInvoicedDate(e); // Update the invoice date
-                            setPageIndex(1); // Reset the page index to 1
-                        }}
-                    />
                 </Group>
             </Box>
 
@@ -181,37 +125,45 @@ const PreviousBulkInvoicePayments = () => {
                 >
                     <Table.Thead>
                         <Table.Tr>
-                            <Table.Th style={{ width: "30%" }}>
+                            <Table.Th style={{ width: "10%" }}>
+                                Payment Id
+                            </Table.Th>
+                            <Table.Th style={{ width: "25%" }}>
                                 Supplier
                             </Table.Th>
                             <Table.Th style={{ width: "15%" }}>
-                                Invoiced Date
+                                Payment Date
                             </Table.Th>
-                            <Table.Th style={{ width: "20%" }}>
-                                Invoice Number
+                            <Table.Th style={{ width: "15%" }}>
+                                Invoice Numbers
                             </Table.Th>
                             <Table.Th style={{ width: "20%" }}>Amount</Table.Th>
-                            <Table.Th style={{ width: "10%" }}>
-                                Invoice Status
+                            <Table.Th style={{ width: "20%" }}>
+                                Payment Status
                             </Table.Th>
                             <Table.Th style={{ width: "5%" }}></Table.Th>
                         </Table.Tr>
                     </Table.Thead>
                     <Table.Tbody>
-                        {invoices?.length !== 0 ? (
-                            invoices?.map((c: any, i: number) => (
+                        {bulkInvoicePayments?.length !== 0 ? (
+                            bulkInvoicePayments?.map((c: any, i: number) => (
                                 <Table.Tr key={i}>
+                                    <Table.Td style={{ width: "10%" }}>
+                                        {c.paymentId || "-"}
+                                    </Table.Td>
                                     <Table.Td style={{ width: "30%" }}>
                                         {c.supplier?.name}
                                     </Table.Td>
                                     <Table.Td style={{ width: "15%" }}>
-                                        {datePreview(c.invoiceDate)}
+                                        {datePreview(c.createdAt)}
                                     </Table.Td>
                                     <Table.Td style={{ width: "20%" }}>
-                                        {c.invoiceNumber}
+                                        {getInvoiceIds(c.invoices).join(", ")}
                                     </Table.Td>
                                     <Table.Td style={{ width: "20%" }}>
-                                        {amountPreview(c.amount)}
+                                        {amountPreview(
+                                            getInvoiceAmount(c.invoices)
+                                        )}
                                     </Table.Td>
                                     <Table.Td style={{ width: "10%" }}>
                                         <Badge
@@ -219,11 +171,11 @@ const PreviousBulkInvoicePayments = () => {
                                             radius="xs"
                                             color={
                                                 PAYMENT_STATUS_COLORS[
-                                                    c.invoiceStatus as keyof typeof PAYMENT_STATUS_COLORS
-                                                    ] || "gray"
+                                                    c.paymentStatus as keyof typeof PAYMENT_STATUS_COLORS
+                                                ] || "gray"
                                             }
                                         >
-                                            {c.invoiceStatus}
+                                            {c.paymentStatus}
                                         </Badge>
                                     </Table.Td>
                                     <Table.Td style={{ width: "5%" }}>
@@ -239,7 +191,7 @@ const PreviousBulkInvoicePayments = () => {
                                                 <Menu.Item
                                                     onClick={() => {
                                                         navigate(
-                                                            `/app/invoices/view-invoice/${c._id}`
+                                                            `/app/invoices/bulk-invoice-payments/${c._id}`
                                                         );
                                                         sessionStorage.setItem(
                                                             "pageIndex",
@@ -252,45 +204,6 @@ const PreviousBulkInvoicePayments = () => {
                                                 >
                                                     View
                                                 </Menu.Item>
-                                                <Menu.Item
-                                                    disabled={
-                                                        c.invoiceStatus ===
-                                                        "PAID"
-                                                    }
-                                                    onClick={() => {
-                                                        navigate(
-                                                            `/app/invoices/edit-invoice/${c._id}`
-                                                        );
-                                                        sessionStorage.setItem(
-                                                            "pageIndex",
-                                                            String(pageIndex)
-                                                        );
-                                                    }}
-                                                    rightSection={
-                                                        <IconEdit size={16} />
-                                                    }
-                                                >
-                                                    Edit
-                                                </Menu.Item>
-                                                {c.invoiceStatus ===
-                                                    "NOT PAID" && (
-                                                        <Menu.Item
-                                                            color="green"
-                                                            onClick={() =>
-                                                                invoiceStatusUpdate(
-                                                                    c._id,
-                                                                    "PAID"
-                                                                )
-                                                            }
-                                                            rightSection={
-                                                                <IconCertificate
-                                                                    size={16}
-                                                                />
-                                                            }
-                                                        >
-                                                            Paid
-                                                        </Menu.Item>
-                                                    )}
                                             </Menu.Dropdown>
                                         </Menu>
                                     </Table.Td>
@@ -316,28 +229,37 @@ const PreviousBulkInvoicePayments = () => {
 
             {/* Mobile Cards */}
             <Box my="lg" mx="sm" hiddenFrom="lg">
-                {invoices?.length !== 0 ? (
-                    invoices?.map((c: any, i: number) => (
+                {bulkInvoicePayments?.length !== 0 ? (
+                    bulkInvoicePayments?.map((c: any, i: number) => (
                         <Card key={i} shadow="sm" withBorder mx="xs" my="lg">
+                            <Text className="font-semibold">
+                                payment Id: {c.paymentId || "-"}
+                            </Text>
                             <Text className="font-semibold">
                                 Supplier: {c.supplier?.name}
                             </Text>
                             <Text>
-                                Invoiced Date: {datePreview(c.invoiceDate)}
+                                Payment Date: {datePreview(c.createdAt)}
                             </Text>
-                            <Text>Invoice Number: {c.invoiceNumber}</Text>
-                            <Text>Amount: {amountPreview(c.amount)}</Text>
+                            <Text>
+                                Invoice Numbers:{" "}
+                                {getInvoiceIds(c.invoices).join(", ")}
+                            </Text>
+                            <Text>
+                                Amount:{" "}
+                                {amountPreview(getInvoiceAmount(c.invoices))}
+                            </Text>
                             <Badge
                                 size="sm"
                                 radius="xs"
                                 color={
                                     PAYMENT_STATUS_COLORS[
-                                        c.invoiceStatus as keyof typeof PAYMENT_STATUS_COLORS
-                                        ] || "gray"
+                                        c.paymentStatus as keyof typeof PAYMENT_STATUS_COLORS
+                                    ] || "gray"
                                 }
                                 className="mt-2"
                             >
-                                {c.invoiceStatus}
+                                {c.paymentStatus}
                             </Badge>
                             <Group mt="md">
                                 <Menu width={150}>
@@ -352,7 +274,7 @@ const PreviousBulkInvoicePayments = () => {
                                         <Menu.Item
                                             onClick={() => {
                                                 navigate(
-                                                    `/app/invoices/view-invoice/${c._id}`
+                                                    `/app/invoices/bulk-invoice-payments/${c._id}`
                                                 );
                                                 sessionStorage.setItem(
                                                     "pageIndex",
@@ -363,43 +285,6 @@ const PreviousBulkInvoicePayments = () => {
                                         >
                                             View
                                         </Menu.Item>
-                                        <Menu.Item
-                                            disabled={
-                                                c.invoiceStatus === "PAID"
-                                            }
-                                            onClick={() => {
-                                                navigate(
-                                                    `/app/invoices/edit-invoice/${c._id}`
-                                                );
-                                                sessionStorage.setItem(
-                                                    "pageIndex",
-                                                    String(pageIndex)
-                                                );
-                                            }}
-                                            rightSection={
-                                                <IconEdit size={16} />
-                                            }
-                                        >
-                                            Edit
-                                        </Menu.Item>
-                                        {c.invoiceStatus === "NOT PAID" && (
-                                            <Menu.Item
-                                                color="green"
-                                                onClick={() =>
-                                                    invoiceStatusUpdate(
-                                                        c._id,
-                                                        "PAID"
-                                                    )
-                                                }
-                                                rightSection={
-                                                    <IconCertificate
-                                                        size={16}
-                                                    />
-                                                }
-                                            >
-                                                Paid
-                                            </Menu.Item>
-                                        )}
                                     </Menu.Dropdown>
                                 </Menu>
                             </Group>
