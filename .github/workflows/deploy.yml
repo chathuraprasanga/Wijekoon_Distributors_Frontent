@@ -49,6 +49,7 @@ jobs:
             [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion" # Load nvm bash_completion
             nvm use node # Activate the correct Node.js version
             cd /var/www/wijekoon-distributors/frontend
+            sudo rm -rf dist
             git pull origin main # Ensure pulling the latest code from the main branch
             npm ci # Clean install dependencies for a consistent environment
           EOF
