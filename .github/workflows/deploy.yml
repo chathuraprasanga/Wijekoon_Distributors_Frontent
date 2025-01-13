@@ -26,14 +26,6 @@ jobs:
         run: |
           ssh -o ServerAliveInterval=60 -o StrictHostKeyChecking=no ${{ secrets.DROPLET_USER }}@${{ secrets.DROPLET_HOST }} "echo 'SSH connection successful!'"
 
-      # Stop PM2 process before build
-      - name: Stop PM2 process
-        run: |
-          ssh -o ServerAliveInterval=60 -o StrictHostKeyChecking=no ${{ secrets.DROPLET_USER }}@${{ secrets.DROPLET_HOST }} << 'EOF'
-            echo "Stopping PM2 process"
-            pm2 stop all || echo "No PM2 process running"
-          EOF
-
       # Build Frontend
       - name: Build Frontend
         run: |
@@ -74,18 +66,17 @@ jobs:
             npm run build
           EOF
 
-      # Restart PM2 process after build
-      - name: Restart PM2 process
-        run: |
-          ssh -o ServerAliveInterval=60 -o StrictHostKeyChecking=no ${{ secrets.DROPLET_USER }}@${{ secrets.DROPLET_HOST }} << 'EOF'
-            echo "Starting PM2 process"
-            cd /var/www/wijekoon-distributors/backend/dist/src
-            pm2 start npm --name "wd-server" -- start
-          EOF
-
       # Restart Nginx
       - name: Restart Nginx
         run: |
           ssh -o ServerAliveInterval=60 -o StrictHostKeyChecking=no ${{ secrets.DROPLET_USER }}@${{ secrets.DROPLET_HOST }} << 'EOF'
             sudo systemctl restart nginx.service
+          EOF
+
+      # Logout all users
+      - name: Logout all users
+        run: |
+          ssh -o ServerAliveInterval=60 -o StrictHostKeyChecking=no ${{ secrets.DROPLET_USER }}@${{ secrets.DROPLET_HOST }} << 'EOF'
+            # Kill all active user sessions
+            sudo pkill -KILL -u $(whoami)
           EOF
