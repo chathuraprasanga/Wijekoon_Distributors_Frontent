@@ -37,25 +37,30 @@ jobs:
             nvm use node # Activate the correct Node.js version
             echo "Node version: $(node -v)"
             echo "npm version: $(npm -v)"
-          
+
             # Navigate to the frontend directory
             cd /var/www/wijekoon-distributors/frontend
-          
+
             # Ensure the latest code from the main branch is pulled
             git pull origin main
-          
+
             # Clean previous build (only if the build exists)
             if [ -d "dist" ]; then
               sudo rm -rf dist
               echo "Previous build deleted."
             fi
-          
-            # Install dependencies (use --force only if necessary)
-            npm install
-          
-            # Run linting to check for any code style or errors
+
+            # Cache node_modules (using npm ci instead of npm install for faster installs)
+            if [ ! -d "node_modules" ]; then
+              npm install --production --legacy-peer-deps
+            fi
+
+            # Set node memory limit to reduce memory pressure
+            export NODE_OPTIONS="--max_old_space_size=512"
+
+            # Run linting
             npm run lint
-          
+
             # Build the project
             npm run build
           EOF
