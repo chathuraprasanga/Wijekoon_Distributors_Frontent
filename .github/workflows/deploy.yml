@@ -64,6 +64,9 @@ jobs:
 
             # Build the project
             npm run build
+          
+            # Clean up unused npm and node_modules cache to free up memory
+            npm cache clean --force
           EOF
 
       # Restart Nginx
@@ -73,10 +76,17 @@ jobs:
             sudo systemctl restart nginx.service
           EOF
 
-      # Logout all users
-      - name: Logout all users
-        run: |
-          ssh -o ServerAliveInterval=60 -o StrictHostKeyChecking=no ${{ secrets.DROPLET_USER }}@${{ secrets.DROPLET_HOST }} << 'EOF'
-            # Kill all active user sessions
-            sudo pkill -KILL -u $(whoami)
-          EOF
+#      # Logout all users except for current session
+#      - name: Logout all users except for current session
+#        run: |
+#          ssh -o ServerAliveInterval=60 -o StrictHostKeyChecking=no ${{ secrets.DROPLET_USER }}@${{ secrets.DROPLET_HOST }} << 'EOF'
+#            # Get the current user's PID
+#            current_pid=$(ps -u $(whoami) -o pid= | grep -v $$)
+#
+#            # Kill all user sessions except for the current SSH session
+#            for pid in $current_pid; do
+#              if [ "$pid" != "$$" ]; then
+#                sudo kill -9 $pid
+#              fi
+#            done
+#          EOF
