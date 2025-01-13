@@ -110,6 +110,21 @@ export const changeStatusInvoice = createAsyncThunk(
     }
 );
 
+export const addBulkInvoicePayment = createAsyncThunk(
+    "invoice/addBulkInvoicePayment",
+    async (payload: any, { rejectWithValue }) => {
+        try {
+            const response = await axiosInstance.post(
+                `/invoices/bulk-invoice-payment`,
+                payload
+            );
+            return response.data;
+        } catch (err: any) {
+            throw rejectWithValue(err.response.data);
+        }
+    }
+);
+
 const invoiceSlice = createSlice({
     name: "invoice",
     initialState,
@@ -159,6 +174,12 @@ const invoiceSlice = createSlice({
                         : invoice
                 );
                 state.selectedInvoice = null;
+            }
+        );
+        builder.addCase(
+            addBulkInvoicePayment.fulfilled,
+            (_, action: PayloadAction<any>) => {
+                return action.payload;
             }
         );
     },

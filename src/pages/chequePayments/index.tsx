@@ -305,7 +305,7 @@ const ChequePayments = () => {
                                             <Badge
                                                 size="sm"
                                                 radius="xs"
-                                                color={CHEQUES_STATUS_COLORS[c.status as keyof typeof CHEQUES_STATUS_COLORS] || "gray"}
+                                                color={CHEQUES_STATUS_COLORS[c.paymentStatus as keyof typeof CHEQUES_STATUS_COLORS] || "gray"}
                                             >
                                                 {c.paymentStatus}
                                             </Badge>
@@ -462,7 +462,7 @@ const ChequePayments = () => {
                                 <Badge
                                     size="sm"
                                     radius="xs"
-                                    color={CHEQUES_STATUS_COLORS[c.status as keyof typeof CHEQUES_STATUS_COLORS] || "gray"}
+                                    color={CHEQUES_STATUS_COLORS[c.paymentStatus as keyof typeof CHEQUES_STATUS_COLORS] || "gray"}
                                     className="mt-2"
                                 >
                                     {c.paymentStatus}

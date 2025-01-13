@@ -102,6 +102,7 @@ const ViewChequePayment = React.lazy(
     () => import("./pages/chequePayments/ViewChequePayments.tsx")
 );
 const BulkInvoicePayment = React.lazy(() => import("./pages/invoices/BulkInvoicePayment.tsx"));
+const PreviousBulkInvoicePayments = React.lazy(() => import("./pages/invoices/PreviousBulkInvoicePayments.tsx"));
 
 const router = createBrowserRouter([
     {
@@ -216,6 +217,10 @@ const router = createBrowserRouter([
             {
                 path: "invoices/bulk-invoice-payment",
                 element: <BulkInvoicePayment />
+            },
+            {
+                path: "invoices/previous-bulk-invoice-payments",
+                element: <PreviousBulkInvoicePayments />
             },
             {
                 path: "*",
