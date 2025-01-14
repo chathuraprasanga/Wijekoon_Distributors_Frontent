@@ -290,34 +290,33 @@ const Cheques = () => {
                                                 {c.chequeStatus !==
                                                     "COMPLETED" &&
                                                     c.chequeStatus !==
-                                                        "RETURNED" && (
+                                                        "RETURNED" &&
+                                                    hasPrivilege(
+                                                        user.role,
+                                                        USER_ROLES.SUPER_ADMIN
+                                                    ) && (
                                                         <>
-                                                            {hasPrivilege(
-                                                                user.role,
-                                                                USER_ROLES.SUPER_ADMIN
-                                                            ) && (
-                                                                <Menu.Item
-                                                                    color="blue"
-                                                                    onClick={() =>
-                                                                        chequeStatusUpdate(
-                                                                            c._id,
-                                                                            "SEND TO SUPPLIER"
-                                                                        )
-                                                                    }
-                                                                    rightSection={
-                                                                        <IconTruck
-                                                                            size={
-                                                                                16
-                                                                            }
-                                                                        />
-                                                                    }
-                                                                >
-                                                                    <span>
-                                                                        Send to
-                                                                        Supplier
-                                                                    </span>
-                                                                </Menu.Item>
-                                                            )}
+                                                            <Menu.Item
+                                                                color="blue"
+                                                                onClick={() =>
+                                                                    chequeStatusUpdate(
+                                                                        c._id,
+                                                                        "SEND TO SUPPLIER"
+                                                                    )
+                                                                }
+                                                                rightSection={
+                                                                    <IconTruck
+                                                                        size={
+                                                                            16
+                                                                        }
+                                                                    />
+                                                                }
+                                                            >
+                                                                <span>
+                                                                    Send to
+                                                                    Supplier
+                                                                </span>
+                                                            </Menu.Item>
                                                             <Menu.Item
                                                                 color="green"
                                                                 onClick={() =>

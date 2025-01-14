@@ -132,6 +132,7 @@ const EditProduct = () => {
                         type="text"
                         allowNegative={false}
                         prefix="Rs. "
+                        thousandSeparator=","
                         key={productEditForm.key("unitPrice")}
                         {...productEditForm.getInputProps("unitPrice")}
                     />

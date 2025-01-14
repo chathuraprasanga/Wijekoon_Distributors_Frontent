@@ -180,6 +180,7 @@ const EditChequePayment = () => {
                         label="Cheque Amount"
                         decimalSeparator="."
                         decimalScale={2}
+                        thousandSeparator=","
                         fixedDecimalScale
                         placeholder="Enter Cheque Amount"
                         key={chequePaymentEditForm.key("amount")}

@@ -247,11 +247,7 @@ const Products = () => {
                                                     Edit
                                                 </Menu.Item>
                                                 <Menu.Item
-                                                    color={
-                                                        c.status
-                                                            ? "red"
-                                                            : "green"
-                                                    }
+                                                    color={BASIC_STATUS_COLORS[c.status ? "false" : "true" as keyof typeof BASIC_STATUS_COLORS] || "gray"}
                                                     onClick={() =>
                                                         handleChangeStatus(c)
                                                     }
@@ -362,7 +358,7 @@ const Products = () => {
                                             Edit
                                         </Menu.Item>
                                         <Menu.Item
-                                            color={c.status ? "red" : "green"}
+                                            color={BASIC_STATUS_COLORS[c.status ? "false" : "true" as keyof typeof BASIC_STATUS_COLORS] || "gray"}
                                             onClick={() =>
                                                 handleChangeStatus(c)
                                             }

@@ -157,6 +157,7 @@ const AddChequePayment = () => {
                         decimalSeparator="."
                         decimalScale={2}
                         fixedDecimalScale
+                        thousandSeparator=","
                         placeholder="Enter Cheque Amount"
                         key={chequePaymentAddForm.key("amount")}
                         {...chequePaymentAddForm.getInputProps("amount")}
