@@ -19,6 +19,7 @@ import {
     IconDotsVertical,
     IconEdit,
     IconEye,
+    IconTruck,
 } from "@tabler/icons-react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store/store.ts";
@@ -31,7 +32,8 @@ import toNotify from "../../helpers/toNotify.tsx";
 import { getCustomers } from "../../store/customerSlice/customerSlice.ts";
 import { DateInput } from "@mantine/dates";
 import { amountPreview, datePreview } from "../../helpers/preview.tsx";
-import { CHEQUES_STATUS_COLORS } from "../../helpers/types.ts";
+import { CHEQUES_STATUS_COLORS, USER_ROLES } from "../../helpers/types.ts";
+import { hasPrivilege } from "../../helpers/previlleges.ts";
 
 const Cheques = () => {
     const { setLoading } = useLoading();
@@ -50,6 +52,7 @@ const Cheques = () => {
     const customers = useSelector(
         (state: RootState) => state.customer.customers
     );
+    const user = useSelector((state: RootState) => state.auth.user);
 
     useEffect(() => {
         fetchCheques();
@@ -229,7 +232,11 @@ const Cheques = () => {
                                         <Badge
                                             size="sm"
                                             radius="xs"
-                                            color={CHEQUES_STATUS_COLORS[c.chequeStatus as keyof typeof CHEQUES_STATUS_COLORS] || "gray"}
+                                            color={
+                                                CHEQUES_STATUS_COLORS[
+                                                    c.chequeStatus as keyof typeof CHEQUES_STATUS_COLORS
+                                                ] || "gray"
+                                            }
                                         >
                                             {c.chequeStatus}
                                         </Badge>
@@ -368,7 +375,11 @@ const Cheques = () => {
                             <Badge
                                 size="sm"
                                 radius="xs"
-                                color={CHEQUES_STATUS_COLORS[c.chequeStatus as keyof typeof CHEQUES_STATUS_COLORS] || "gray"}
+                                color={
+                                    CHEQUES_STATUS_COLORS[
+                                        c.chequeStatus as keyof typeof CHEQUES_STATUS_COLORS
+                                    ] || "gray"
+                                }
                                 className="mt-2"
                             >
                                 {c.chequeStatus}
@@ -419,6 +430,29 @@ const Cheques = () => {
                                         {c.chequeStatus !== "COMPLETED" &&
                                             c.chequeStatus !== "RETURNED" && (
                                                 <>
+                                                    {hasPrivilege(
+                                                        user.role,
+                                                        USER_ROLES.SUPER_ADMIN
+                                                    ) && (
+                                                        <Menu.Item
+                                                            color="blue"
+                                                            onClick={() =>
+                                                                chequeStatusUpdate(
+                                                                    c._id,
+                                                                    "SEND TO SUPPLIER"
+                                                                )
+                                                            }
+                                                            rightSection={
+                                                                <IconTruck
+                                                                    size={16}
+                                                                />
+                                                            }
+                                                        >
+                                                            <span>
+                                                                Send to Supplier
+                                                            </span>
+                                                        </Menu.Item>
+                                                    )}
                                                     <Menu.Item
                                                         color="green"
                                                         onClick={() =>
