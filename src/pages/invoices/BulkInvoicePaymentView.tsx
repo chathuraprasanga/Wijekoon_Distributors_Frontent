@@ -44,22 +44,22 @@ const BulkInvoicePaymentView = () => {
         }
     };
     const invoices = data.invoices;
-    const invoiceAmount = invoices.reduce(
+    const invoiceAmount = invoices?.reduce(
         (total: number, i: any) => total + i.amount,
         0
     );
     const customerCheques = data.customerCheques;
-    const customerChequeAmount = customerCheques.reduce(
+    const customerChequeAmount = customerCheques?.reduce(
         (total: number, i: any) => total + i.amount,
         0
     );
     const createdCheques = data.createdCheques;
-    const createdChequeAmount = createdCheques.reduce(
+    const createdChequeAmount = createdCheques?.reduce(
         (total: number, i: any) => total + i.amount,
         0
     );
     const addedCash = data.addedCash;
-    const addedCashAmount = addedCash.reduce(
+    const addedCashAmount = addedCash?.reduce(
         (total: number, i: any) => total + i.note * i.count,
         0
     );
@@ -95,7 +95,7 @@ const BulkInvoicePaymentView = () => {
                                 Invoices
                             </Table.Td>
                         </Table.Tr>
-                        {invoices.map((i: any, idx: any) => (
+                        {invoices?.map((i: any, idx: any) => (
                             <Table.Tr key={idx}>
                                 <Table.Td className="p-3 border-t border-gray-300 text-sm">{i.invoiceNumber}</Table.Td>
                                 <Table.Td className="p-3 border-t border-gray-300 text-sm text-right">{amountPreview(i.amount)}</Table.Td>
@@ -115,7 +115,7 @@ const BulkInvoicePaymentView = () => {
                                 Customers Cheques
                             </Table.Td>
                         </Table.Tr>
-                        {customerCheques.map((c: any, idx: any) => (
+                        {customerCheques?.map((c: any, idx: any) => (
                             <Table.Tr key={idx}>
                                 <Table.Td className="p-3 border-t border-gray-300 text-sm">{c.number}</Table.Td>
                                 <Table.Td className="p-3 border-t border-gray-300 text-sm text-right">{amountPreview(c.amount)}</Table.Td>
@@ -135,7 +135,7 @@ const BulkInvoicePaymentView = () => {
                                 Company Cheques
                             </Table.Td>
                         </Table.Tr>
-                        {createdCheques.map((c: any, idx: any) => (
+                        {createdCheques?.map((c: any, idx: any) => (
                             <Table.Tr key={idx}>
                                 <Table.Td className="p-3 border-t border-gray-300 text-sm">{c.number}</Table.Td>
                                 <Table.Td className="p-3 border-t border-gray-300 text-sm text-right">{amountPreview(c.amount)}</Table.Td>
@@ -155,7 +155,7 @@ const BulkInvoicePaymentView = () => {
                                 Cash
                             </Table.Td>
                         </Table.Tr>
-                        {addedCash.map((n: any, idx: any) => (
+                        {addedCash?.map((n: any, idx: any) => (
                             <Table.Tr key={idx}>
                                 <Table.Td className="p-3 border-t border-gray-300 text-sm">{amountPreview(n.note)} * {n.count}</Table.Td>
                                 <Table.Td className="p-3 border-t border-gray-300 text-sm text-right">{amountPreview(n.note * n.count)}</Table.Td>

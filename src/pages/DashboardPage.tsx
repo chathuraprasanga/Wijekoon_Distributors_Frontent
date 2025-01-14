@@ -19,6 +19,7 @@ import {
     Grid,
     Group,
     Paper,
+    Table,
     Text,
     useMantineColorScheme,
     useMantineTheme,
@@ -75,7 +76,7 @@ const DashboardPage = () => {
                     USER_ROLES.SUPER_ADMIN,
                     USER_ROLES.OWNER,
                     USER_ROLES.SALES_MANAGER,
-                    USER_ROLES.SALES_REP
+                    USER_ROLES.SALES_REP,
                 ]) && (
                     <Grid.Col span={{ base: 12, md: 6, lg: 3 }}>
                         <Paper
@@ -272,15 +273,46 @@ const DashboardPage = () => {
                                     <Text size="lg" fw={600}>
                                         Cheques Have to Deposit
                                     </Text>
-                                    <Text size="sm" c="dimmed">
-                                        Cheque Count: # {chequesToDeposit.count}
-                                    </Text>
-                                    <Text size="sm" c="dimmed">
-                                        Total Value:{" "}
-                                        {amountPreview(
-                                            chequesToDeposit?.amount
-                                        )}
-                                    </Text>
+                                    <Table>
+                                        <Table.Tbody>
+                                            <Table.Tr>
+                                                <Table.Td>
+                                                    {" "}
+                                                    <Text size="sm" c="dimmed">
+                                                        Cheque Count: #{" "}
+                                                        {chequesToDeposit.count}
+                                                    </Text>
+                                                </Table.Td>
+                                                <Table.Td>
+                                                    <Text size="sm" c="dimmed">
+                                                        Total Value:{" "}
+                                                        {amountPreview(
+                                                            chequesToDeposit?.amount
+                                                        )}
+                                                    </Text>
+                                                </Table.Td>
+                                            </Table.Tr>
+                                            <Table.Tr>
+                                                <Table.Td>
+                                                    {" "}
+                                                    <Text size="sm" c="dimmed">
+                                                        Today Cheque Count: #{" "}
+                                                        {
+                                                            chequesToDeposit.todayCount
+                                                        }
+                                                    </Text>
+                                                </Table.Td>
+                                                <Table.Td>
+                                                    <Text size="sm" c="dimmed">
+                                                        Total Value:{" "}
+                                                        {amountPreview(
+                                                            chequesToDeposit?.todayAmount
+                                                        )}
+                                                    </Text>
+                                                </Table.Td>
+                                            </Table.Tr>
+                                        </Table.Tbody>
+                                    </Table>
                                 </Box>
                             </Group>
                         </Paper>
@@ -316,16 +348,46 @@ const DashboardPage = () => {
                                     <Text size="lg" fw={600}>
                                         Cheques Come to Transfer
                                     </Text>
-                                    <Text size="sm" c="dimmed">
-                                        Cheque Count: #{" "}
-                                        {chequesComesToTransfer?.count}
-                                    </Text>
-                                    <Text size="sm" c="dimmed">
-                                        Total Value:{" "}
-                                        {amountPreview(
-                                            chequesComesToTransfer?.amount
-                                        )}
-                                    </Text>
+                                    <Table>
+                                        <Table.Tbody>
+                                            <Table.Tr>
+                                                <Table.Td>
+                                                    <Text size="sm" c="dimmed">
+                                                        Cheque Count: #{" "}
+                                                        {
+                                                            chequesComesToTransfer?.count
+                                                        }
+                                                    </Text>
+                                                </Table.Td>
+                                                <Table.Td>
+                                                    <Text size="sm" c="dimmed">
+                                                        Total Value:{" "}
+                                                        {amountPreview(
+                                                            chequesComesToTransfer?.amount
+                                                        )}
+                                                    </Text>
+                                                </Table.Td>
+                                            </Table.Tr>
+                                            <Table.Tr>
+                                                <Table.Td>
+                                                    <Text size="sm" c="dimmed">
+                                                        Today Cheque Count: #{" "}
+                                                        {
+                                                            chequesComesToTransfer?.todayCount
+                                                        }
+                                                    </Text>
+                                                </Table.Td>
+                                                <Table.Td>
+                                                    <Text size="sm" c="dimmed">
+                                                        Total Value:{" "}
+                                                        {amountPreview(
+                                                            chequesComesToTransfer?.todayAmount
+                                                        )}
+                                                    </Text>
+                                                </Table.Td>
+                                            </Table.Tr>
+                                        </Table.Tbody>
+                                    </Table>
                                 </Box>
                             </Group>
                         </Paper>
