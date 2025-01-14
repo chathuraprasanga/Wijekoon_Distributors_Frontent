@@ -103,7 +103,11 @@ const ViewCheque = () => {
                     </div>
                     <div className="flex items-end mt-4">
                         <Badge
-                            color={CHEQUES_STATUS_COLORS[cheque?.chequeStatus as keyof typeof CHEQUES_STATUS_COLORS] || "gray"}
+                            color={
+                                CHEQUES_STATUS_COLORS[
+                                    cheque?.chequeStatus as keyof typeof CHEQUES_STATUS_COLORS
+                                ] || "gray"
+                            }
                             radius="xs"
                             size="sm"
                         >
@@ -141,15 +145,28 @@ const ViewCheque = () => {
                     )}
 
                     {cheque?.chequeStatus === "PENDING" && (
-                        <Button
-                            color="blue"
-                            radius="sm"
-                            size="xs"
-                            ml={10}
-                            onClick={() => chequeStatusUpdate("DEPOSITED")}
-                        >
-                            Deposited
-                        </Button>
+                        <>
+                            <Button
+                                color="violet"
+                                radius="sm"
+                                size="xs"
+                                ml={10}
+                                onClick={() =>
+                                    chequeStatusUpdate("SEND TO SUPPLIER")
+                                }
+                            >
+                                Send to Supplier
+                            </Button>
+                            <Button
+                                color="blue"
+                                radius="sm"
+                                size="xs"
+                                ml={10}
+                                onClick={() => chequeStatusUpdate("DEPOSITED")}
+                            >
+                                Deposited
+                            </Button>
+                        </>
                     )}
                     {cheque?.chequeStatus === "RETURNED" && (
                         <Button
