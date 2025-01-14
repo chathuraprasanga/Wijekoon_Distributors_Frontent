@@ -86,9 +86,15 @@ jobs:
 
             # Set node memory limit to reduce memory pressure
             export NODE_OPTIONS="--max_old_space_size=512"
+          
+            # Get Updated Code
+            git pull
 
             # Run linting
             npm run lint
+          
+            # Install Dependencies
+            npm install --froce
 
             # Build the project
             npm run build
