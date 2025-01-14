@@ -1,6 +1,6 @@
 import { useParams } from "react-router";
-import { Box, Group, Table } from "@mantine/core";
-import { IconArrowLeft } from "@tabler/icons-react";
+import { Box, Button, Group, Table } from "@mantine/core";
+import { IconArrowLeft, IconDownload } from "@tabler/icons-react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store/store.ts";
 import { useLoading } from "../../helpers/loadingContext.tsx";
@@ -76,6 +76,9 @@ const BulkInvoicePaymentView = () => {
                     <span className="text-lg font-semibold ml-4">
                         {data.paymentId || "W-Payment"}
                     </span>
+                </Group>
+                <Group>
+                    <Button size="xs" leftSection={<IconDownload size={16}/>}>Download</Button>
                 </Group>
             </Box>
 
