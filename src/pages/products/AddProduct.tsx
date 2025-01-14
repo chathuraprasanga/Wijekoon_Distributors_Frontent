@@ -103,6 +103,7 @@ const AddProduct = () => {
                         hideControls
                         allowNegative={false}
                         prefix="Rs."
+                        thousandSeparator=","
                         key={productAddForm.key("unitPrice")}
                         {...productAddForm.getInputProps("unitPrice")}
                     />

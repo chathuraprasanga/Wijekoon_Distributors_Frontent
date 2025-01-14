@@ -1,4 +1,4 @@
-import { Avatar, Box, Group, Menu, rem, Text } from "@mantine/core";
+import { Avatar, Box, Group, Menu, rem, Text, useMantineColorScheme } from "@mantine/core";
 import {
     IconChevronRight,
     IconLogout,
@@ -10,6 +10,7 @@ import { RootState } from "../store/store.ts";
 import { logOut } from "../store/authSlice/authSlice.ts";
 
 const UserInfo = () => {
+    const { setColorScheme } = useMantineColorScheme();
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const userDetails = useSelector((state: RootState) => state.auth.user);
@@ -84,6 +85,7 @@ const UserInfo = () => {
                         onClick={() => {
                             dispatch(logOut());
                             navigate("/login");
+                            setColorScheme("light")
                         }}
                     >
                         Logout

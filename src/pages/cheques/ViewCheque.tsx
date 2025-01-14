@@ -11,7 +11,8 @@ import {
 } from "../../store/chequeSlice/chequeSlice.ts";
 import toNotify from "../../helpers/toNotify.tsx";
 import { amountPreview, datePreview } from "../../helpers/preview.tsx";
-import { CHEQUES_STATUS_COLORS } from "../../helpers/types.ts";
+import { CHEQUES_STATUS_COLORS, USER_ROLES } from "../../helpers/types.ts";
+import { hasPrivilege } from "../../helpers/previlleges.ts";
 
 const ViewCheque = () => {
     const { setLoading } = useLoading();
@@ -20,6 +21,7 @@ const ViewCheque = () => {
     const cheque = useSelector(
         (state: RootState) => state.cheque.selectedCheque
     );
+    const user = useSelector((state: RootState) => state.auth.user);
 
     useEffect(() => {
         if (id) {
@@ -146,17 +148,22 @@ const ViewCheque = () => {
 
                     {cheque?.chequeStatus === "PENDING" && (
                         <>
-                            <Button
-                                color="violet"
-                                radius="sm"
-                                size="xs"
-                                ml={10}
-                                onClick={() =>
-                                    chequeStatusUpdate("SEND TO SUPPLIER")
-                                }
-                            >
-                                Send to Supplier
-                            </Button>
+                            {hasPrivilege(
+                                user.role,
+                                USER_ROLES.SUPER_ADMIN
+                            ) && (
+                                <Button
+                                    color="violet"
+                                    radius="sm"
+                                    size="xs"
+                                    ml={10}
+                                    onClick={() =>
+                                        chequeStatusUpdate("SEND TO SUPPLIER")
+                                    }
+                                >
+                                    Send to Supplier
+                                </Button>
+                            )}
                             <Button
                                 color="blue"
                                 radius="sm"

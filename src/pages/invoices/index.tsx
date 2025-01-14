@@ -31,7 +31,8 @@ import { amountPreview, datePreview } from "../../helpers/preview.tsx";
 import { DateInput } from "@mantine/dates";
 
 import { getSuppliers } from "../../store/supplierSlice/supplierSlice.ts";
-import { PAYMENT_STATUS_COLORS } from "../../helpers/types.ts";
+import { PAYMENT_STATUS_COLORS, USER_ROLES } from "../../helpers/types.ts";
+import { hasPrivilege } from "../../helpers/previlleges.ts";
 
 const Invoices = () => {
     const { setLoading } = useLoading();
@@ -50,6 +51,7 @@ const Invoices = () => {
     const suppliers = useSelector(
         (state: RootState) => state.supplier.suppliers
     );
+    const user = useSelector((state: RootState) => state.auth.user);
 
     useEffect(() => {
         fetchInvoices();
@@ -120,7 +122,9 @@ const Invoices = () => {
                     <Button
                         size="xs"
                         color="violet"
-                        onClick={() => navigate("/app/invoices/bulk-invoice-payment")}
+                        onClick={() =>
+                            navigate("/app/invoices/bulk-invoice-payment")
+                        }
                     >
                         Bulk Invoice Payment
                     </Button>{" "}
@@ -284,13 +288,35 @@ const Invoices = () => {
                                                     Edit
                                                 </Menu.Item>
                                                 {c.invoiceStatus ===
+                                                    "NOT PAID" &&
+                                                    hasPrivilege(
+                                                        user.role,
+                                                        USER_ROLES.SUPER_ADMIN
+                                                    ) && (
+                                                        <Menu.Item
+                                                            color="violet"
+                                                            onClick={() =>
+                                                                invoiceStatusUpdate(
+                                                                    c._id,
+                                                                    "PAID"
+                                                                )
+                                                            }
+                                                            rightSection={
+                                                                <IconCertificate
+                                                                    size={16}
+                                                                />
+                                                            }
+                                                        >
+                                                            Paid
+                                                        </Menu.Item>
+                                                    )}
+                                                {c.invoiceStatus ===
                                                     "NOT PAID" && (
                                                     <Menu.Item
                                                         color="green"
                                                         onClick={() =>
-                                                            invoiceStatusUpdate(
-                                                                c._id,
-                                                                "PAID"
+                                                            navigate(
+                                                                "/app/invoices/bulk-invoice-payment"
                                                             )
                                                         }
                                                         rightSection={
@@ -299,7 +325,7 @@ const Invoices = () => {
                                                             />
                                                         }
                                                     >
-                                                        Paid
+                                                        Make Payments
                                                     </Menu.Item>
                                                 )}
                                             </Menu.Dropdown>
@@ -393,13 +419,34 @@ const Invoices = () => {
                                         >
                                             Edit
                                         </Menu.Item>
+                                        {c.invoiceStatus === "NOT PAID" &&
+                                            hasPrivilege(
+                                                user.role,
+                                                USER_ROLES.SUPER_ADMIN
+                                            ) && (
+                                                <Menu.Item
+                                                    color="violet"
+                                                    onClick={() =>
+                                                        invoiceStatusUpdate(
+                                                            c._id,
+                                                            "PAID"
+                                                        )
+                                                    }
+                                                    rightSection={
+                                                        <IconCertificate
+                                                            size={16}
+                                                        />
+                                                    }
+                                                >
+                                                    Paid
+                                                </Menu.Item>
+                                            )}
                                         {c.invoiceStatus === "NOT PAID" && (
                                             <Menu.Item
                                                 color="green"
                                                 onClick={() =>
-                                                    invoiceStatusUpdate(
-                                                        c._id,
-                                                        "PAID"
+                                                    navigate(
+                                                        "/app/invoices/bulk-invoice-payment"
                                                     )
                                                 }
                                                 rightSection={
@@ -408,7 +455,7 @@ const Invoices = () => {
                                                     />
                                                 }
                                             >
-                                                Paid
+                                                Make Payments
                                             </Menu.Item>
                                         )}
                                     </Menu.Dropdown>

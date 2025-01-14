@@ -26,7 +26,11 @@ import {
     IconMobiledataOff,
     IconPlus,
 } from "@tabler/icons-react";
-import { addUser, getUsers } from "../store/userSlice/userSlice.ts";
+import {
+    addUser,
+    changeStatusUser,
+    getUsers,
+} from "../store/userSlice/userSlice.ts";
 import { useLoading } from "../helpers/loadingContext.tsx";
 import { isValidEmail, isValidPhone } from "../utils/inputValidators.ts";
 import { bankPreview, rolePreview } from "../helpers/preview.tsx";
@@ -184,6 +188,33 @@ const SettingsPage = () => {
         }
     };
 
+    const handleUserStatusChange = async (status: boolean, id: any) => {
+        setLoading(true);
+        const response = await dispatch(
+            changeStatusUser({ values: { status: status }, id: id })
+        );
+        if (response.type === "user/changeStatus/fulfilled") {
+            toNotify("Success", "User status changed successfully", "SUCCESS");
+            handleUsersView.close();
+            setLoading(false);
+        } else if (response.type === "user/changeStatus/rejected") {
+            toNotify(
+                "Error",
+                `${response.payload.error || "Something went wrong"}`,
+                "ERROR"
+            );
+            setLoading(false);
+        } else {
+            setLoading(false);
+            toNotify(
+                "Something went wrong",
+                `Please contact system admin`,
+                "WARNING"
+            );
+            handleUsersView.close();
+        }
+    };
+
     const passwordChangeModal = () => (
         <Modal
             opened={passwordChangeModalOpened}
@@ -198,18 +229,21 @@ const SettingsPage = () => {
                 <TextInput
                     label="Current Password"
                     type="password"
+                    withAsterisk
                     placeholder="Enter current password"
                     {...pwForm.getInputProps("currentPassword")}
                 />
                 <PasswordInput
                     label="New Password"
                     mt="sm"
+                    withAsterisk
                     placeholder="Enter new password"
                     {...pwForm.getInputProps("newPassword")}
                 />
                 <PasswordInput
                     label="Confirm New Password"
                     mt="sm"
+                    withAsterisk
                     placeholder="Re-enter new password"
                     {...pwForm.getInputProps("confirmPassword")}
                 />
@@ -351,8 +385,16 @@ const SettingsPage = () => {
                                                         />
                                                     )
                                                 }
+                                                onClick={() =>
+                                                    handleUserStatusChange(
+                                                        !user.status,
+                                                        user._id
+                                                    )
+                                                }
                                             >
-                                                Deactivate
+                                                {user.status
+                                                    ? "Deactivate"
+                                                    : "Activate"}
                                             </Menu.Item>
                                         </Menu.Dropdown>
                                     </Menu>
@@ -513,12 +555,14 @@ const SettingsPage = () => {
                 <TextInput
                     label="User Name"
                     placeholder="Enter username"
+                    withAsterisk
                     {...addUserForm.getInputProps("username")}
                 />
                 <TextInput
                     label="Email"
                     mt="sm"
                     placeholder="Enter email"
+                    withAsterisk
                     {...addUserForm.getInputProps("email")}
                 />
                 <TextInput
@@ -526,6 +570,7 @@ const SettingsPage = () => {
                     mt="sm"
                     type="number"
                     placeholder="Enter phone"
+                    withAsterisk
                     {...addUserForm.getInputProps("phone")}
                 />
                 <Select
@@ -533,6 +578,7 @@ const SettingsPage = () => {
                     mt="sm"
                     data={rolesData}
                     placeholder="Select role"
+                    withAsterisk
                     {...addUserForm.getInputProps("role")}
                 />
                 <Button

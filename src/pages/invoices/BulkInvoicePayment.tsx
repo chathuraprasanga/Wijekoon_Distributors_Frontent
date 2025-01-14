@@ -797,13 +797,13 @@ const BulkInvoicePayment = () => {
                                 </Text>
                                 <Text fw="bold">{datePreview(today)}</Text>
                             </Group>
-                            <Table className="table-auto w-full max-w-4xl mx-auto mt-6 bg-white border-collapse">
+                            <Table className="table-auto w-full max-w-4xl mx-auto mt-6 border-collapse">
                                 <Table.Tbody>
                                     {/* Supplier Row */}
                                     <Table.Tr>
                                         <Table.Td
                                             colSpan={2}
-                                            className="px-4 py-2 text-left font-semibold text-sm bg-gray-100"
+                                            className="px-4 py-2 text-left font-semibold text-sm"
                                         >
                                             Supplier
                                         </Table.Td>
@@ -823,7 +823,7 @@ const BulkInvoicePayment = () => {
                                     <Table.Tr>
                                         <Table.Td
                                             colSpan={4}
-                                            className="px-4 py-2 text-center font-semibold text-sm bg-gray-100"
+                                            className="px-4 py-2 text-center font-semibold text-sm"
                                         >
                                             Invoices
                                         </Table.Td>
@@ -887,7 +887,7 @@ const BulkInvoicePayment = () => {
                                     <Table.Tr>
                                         <Table.Td
                                             colSpan={4}
-                                            className="px-4 py-2 text-center font-semibold text-sm bg-gray-100"
+                                            className="px-4 py-2 text-center font-semibold text-sm"
                                         >
                                             Customers Cheques
                                         </Table.Td>
@@ -967,7 +967,7 @@ const BulkInvoicePayment = () => {
                                     <Table.Tr>
                                         <Table.Td
                                             colSpan={4}
-                                            className="px-4 py-2 text-center font-semibold text-sm bg-gray-100"
+                                            className="px-4 py-2 text-center font-semibold text-sm"
                                         >
                                             Created Cheques
                                         </Table.Td>
@@ -1039,7 +1039,7 @@ const BulkInvoicePayment = () => {
                                     <Table.Tr>
                                         <Table.Td
                                             colSpan={4}
-                                            className="px-4 py-2 text-center font-semibold text-sm bg-gray-100"
+                                            className="px-4 py-2 text-center font-semibold text-sm"
                                         >
                                             Cash
                                         </Table.Td>

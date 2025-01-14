@@ -167,6 +167,7 @@ const EditInvoice = () => {
                         decimalSeparator="."
                         decimalScale={2}
                         fixedDecimalScale
+                        thousandSeparator=","
                         placeholder="Enter Cheque Amount"
                         key={invoiceEditFrom.key("amount")}
                         {...invoiceEditFrom.getInputProps("amount")}
