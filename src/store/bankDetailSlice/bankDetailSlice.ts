@@ -131,10 +131,10 @@ const bankDetailSlice = createSlice({
         builder.addCase(
             changeStatusBankDetail.fulfilled,
             (state: Draft<BankDetailState>, action: PayloadAction<any>) => {
-                state.bankDetails = state.bankDetails.map((supplier: any) =>
-                    supplier._id === action.payload.result._id
+                state.bankDetails = state.bankDetails.map((bank: any) =>
+                    bank._id === action.payload.result._id
                         ? action.payload.result
-                        : supplier
+                        : bank
                 );
                 state.selectedBankDetail = null;
             }
