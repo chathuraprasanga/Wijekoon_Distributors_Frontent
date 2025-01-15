@@ -36,7 +36,7 @@ import { isValidEmail, isValidPhone } from "../utils/inputValidators.ts";
 import { bankPreview, rolePreview } from "../helpers/preview.tsx";
 import { rolesData } from "../utils/settings.ts";
 import {
-    addBankDetail,
+    addBankDetail, changeStatusBankDetail,
     getBankDetails,
 } from "../store/bankDetailSlice/bankDetailSlice.ts";
 import banks from "../helpers/banks.json";
@@ -407,6 +407,33 @@ const SettingsPage = () => {
         </Modal>
     );
 
+    const changeBankDetailStatus = async(status:boolean, id:any) => {
+        setLoading(true);
+        const response = await dispatch(
+            changeStatusBankDetail({ values: { status: !status }, id: id })
+        );
+        if (response.type === "bankDetail/changeStatusBankDetail/fulfilled") {
+            toNotify("Success", "Bank detail status changed successfully", "SUCCESS");
+            handleBankDetailsView.close();
+            setLoading(false);
+        } else if (response.type === "user/changeStatusBankDetail/rejected") {
+            toNotify(
+                "Error",
+                `${response.payload.error || "Something went wrong"}`,
+                "ERROR"
+            );
+            setLoading(false);
+        } else {
+            setLoading(false);
+            toNotify(
+                "Something went wrong",
+                `Please contact system admin`,
+                "WARNING"
+            );
+            handleBankDetailsView.close();
+        }
+    };
+
     const viewBankDetailsModal = () => (
         <Modal
             opened={bankDetailsOpened}
@@ -510,8 +537,9 @@ const SettingsPage = () => {
                                                         />
                                                     )
                                                 }
+                                                onClick={() => changeBankDetailStatus(bd?.status, bd?._id) }
                                             >
-                                                Deactivate
+                                                {bd?.status ? "Deactivate" : "Activate"}
                                             </Menu.Item>
                                         </Menu.Dropdown>
                                     </Menu>

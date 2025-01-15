@@ -53,6 +53,8 @@ const ChequePayments = () => {
     const [date, setDate] = useState<any>();
     const sort = -1;
     const [metadata, setMetadata] = useState<any>();
+    const [fromDate, setFromDate] = useState<any>();
+    const [toDate, setToDate] = useState<any>();
 
     const chequePayments = useSelector(
         (state: RootState) => state.chequePayments.chequePayments
@@ -77,6 +79,8 @@ const ChequePayments = () => {
             status,
             date,
             searchQuery,
+            toDate,
+            fromDate
         };
         const response = await dispatch(
             getPagedChequePayments({ filters: filters })
@@ -87,7 +91,7 @@ const ChequePayments = () => {
 
     useEffect(() => {
         fetchChequePayments();
-    }, [pageIndex, status, date, searchQuery]);
+    }, [pageIndex, status, date, searchQuery, fromDate, toDate]);
 
     const fetchChequePayments = async () => {
         setLoading(true);
@@ -98,6 +102,8 @@ const ChequePayments = () => {
             status,
             date,
             searchQuery,
+            toDate,
+            fromDate
         };
         const response = await dispatch(
             getPagedChequePayments({ filters: filters })
@@ -242,6 +248,29 @@ const ChequePayments = () => {
                                 setDate(e); // Update the date
                                 setPageIndex(1); // Reset the page index to 1
                             }}
+                        />
+                        <DateInput
+                            className="w-full lg:w-1/4"
+                            size="xs"
+                            placeholder="Date range from"
+                            clearable
+                            onChange={(e: any) => {
+                                setFromDate(e); // Update the deposit date
+                                setPageIndex(1); // Reset the page index to 1
+                            }}
+                            maxDate={toDate}
+                        />
+
+                        <DateInput
+                            className="w-full lg:w-1/4"
+                            size="xs"
+                            placeholder="Date range to"
+                            clearable
+                            onChange={(e: any) => {
+                                setToDate(e); // Update the deposit date
+                                setPageIndex(1); // Reset the page index to 1
+                            }}
+                            minDate={fromDate}
                         />
                     </Group>
                 </Box>

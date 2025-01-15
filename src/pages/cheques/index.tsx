@@ -45,6 +45,8 @@ const Cheques = () => {
     const [customer, setCustomer] = useState<string>("");
     const [status, setStatus] = useState<string>("");
     const [depositDate, setDepositDate] = useState<any>();
+    const [fromDate, setFromDate] = useState<any>();
+    const [toDate, setToDate] = useState<any>();
     const sort = -1;
     const [metadata, setMetadata] = useState<any>();
 
@@ -56,7 +58,7 @@ const Cheques = () => {
 
     useEffect(() => {
         fetchCheques();
-    }, [dispatch, pageIndex, customer, status, depositDate]);
+    }, [dispatch, pageIndex, customer, status, depositDate, fromDate, toDate]);
 
     const fetchCheques = async () => {
         setLoading(true);
@@ -68,6 +70,8 @@ const Cheques = () => {
             sort,
             status,
             depositDate,
+            fromDate,
+            toDate
         };
         const response = await dispatch(getPagedCheques({ filters: filters }));
         setMetadata(response.payload.result.metadata);
@@ -174,6 +178,30 @@ const Cheques = () => {
                             setDepositDate(e); // Update the deposit date
                             setPageIndex(1); // Reset the page index to 1
                         }}
+                    />
+
+                    <DateInput
+                        className="w-full lg:w-1/4"
+                        size="xs"
+                        placeholder="Date range from"
+                        clearable
+                        onChange={(e: any) => {
+                            setFromDate(e); // Update the deposit date
+                            setPageIndex(1); // Reset the page index to 1
+                        }}
+                        maxDate={toDate}
+                    />
+
+                    <DateInput
+                        className="w-full lg:w-1/4"
+                        size="xs"
+                        placeholder="Date range to"
+                        clearable
+                        onChange={(e: any) => {
+                            setToDate(e); // Update the deposit date
+                            setPageIndex(1); // Reset the page index to 1
+                        }}
+                        minDate={fromDate}
                     />
                 </Group>
             </Box>

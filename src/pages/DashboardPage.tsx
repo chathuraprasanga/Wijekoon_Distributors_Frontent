@@ -440,7 +440,7 @@ const DashboardPage = () => {
                                 </Box>
                             </Group>
                         </Paper>
-                        <Paper
+                        {invoicesToBePaid?.supplierWise?.length > 0 && (<Paper
                             shadow="md"
                             p="md"
                             radius="md"
@@ -448,7 +448,7 @@ const DashboardPage = () => {
                             mt="xs"
                             className="hover:shadow-lg transition-transform transform hover:scale-105"
                         >
-                            {invoicesToBePaid.supplierWise?.map(
+                            {invoicesToBePaid?.supplierWise?.map(
                                 (invoiceData: any, index: number) => (
                                     <div
                                         key={invoiceData._id}
@@ -490,7 +490,7 @@ const DashboardPage = () => {
                                     </div>
                                 )
                             )}
-                        </Paper>
+                        </Paper>)}
                     </Grid.Col>
                 )}
                 <Grid.Col span={{ lg: 6, md: 6, sm: 12 }}></Grid.Col>
