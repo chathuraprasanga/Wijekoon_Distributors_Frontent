@@ -265,7 +265,7 @@ const AddCheque = () => {
                         td="underline"
                         onClick={() => customerAddModalHandler.open()}
                     >
-                        Create New User
+                        Create New Customer
                     </Text>
                     <TextInput
                         label="Cheque Number"
