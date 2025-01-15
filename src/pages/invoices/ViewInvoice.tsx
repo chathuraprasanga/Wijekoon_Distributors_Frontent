@@ -100,7 +100,7 @@ const ViewInvoice = () => {
                         <Badge
                             color={
                                 PAYMENT_STATUS_COLORS[
-                                    invoice.invoiceStatus as keyof typeof PAYMENT_STATUS_COLORS
+                                    invoice?.invoiceStatus as keyof typeof PAYMENT_STATUS_COLORS
                                 ] || "gray"
                             }
                             radius="xs"
