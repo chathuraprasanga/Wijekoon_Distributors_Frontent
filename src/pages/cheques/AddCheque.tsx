@@ -6,6 +6,8 @@ import {
     Group,
     Text,
     Box,
+    Modal,
+    Textarea,
 } from "@mantine/core";
 import { IconArrowLeft } from "@tabler/icons-react";
 import { useLoading } from "../../helpers/loadingContext.tsx";
@@ -18,11 +20,16 @@ import { addCheque } from "../../store/chequeSlice/chequeSlice.ts";
 import {
     isValidBranchCode,
     isValidChequeNumber,
+    isValidPhone,
 } from "../../utils/inputValidators.ts";
 import { useEffect, useState } from "react";
-import { getCustomers } from "../../store/customerSlice/customerSlice.ts";
+import {
+    addCustomer,
+    getCustomers,
+} from "../../store/customerSlice/customerSlice.ts";
 import { DatePickerInput } from "@mantine/dates";
-import banks from "../../helpers/banks.json"
+import banks from "../../helpers/banks.json";
+import { useDisclosure } from "@mantine/hooks";
 
 const AddCheque = () => {
     const { setLoading } = useLoading();
@@ -33,13 +40,14 @@ const AddCheque = () => {
         return { label: data.name, value: data._id };
     });
     const [isBranchDisabled, setIsBranchDisabled] = useState(true);
+    const [isLoading, setIsLoading] = useState(false);
+    const [customerAddModalOpened, customerAddModalHandler] =
+        useDisclosure(false);
 
     const banksList = banks.map((b) => ({
         label: b.name,
         value: b.name,
     }));
-
-
 
     useEffect(() => {
         fetchCustomers();
@@ -131,6 +139,100 @@ const AddCheque = () => {
         }
     };
 
+    const customerAddForm = useForm({
+        initialValues: {
+            name: "",
+            phone: "",
+            email: "",
+            address: "",
+        },
+        validate: {
+            name: (value) =>
+                value.trim() ? null : "Customer name is required.",
+            phone: (value) => {
+                if (!value.trim()) {
+                    return "Phone number is required.";
+                }
+                if (!isValidPhone(value)) {
+                    return "Please add a valid phone number.";
+                }
+                return null;
+            },
+        },
+    });
+
+    const customerAddFormHandler = async (
+        values: typeof customerAddForm.values
+    ) => {
+        try {
+            setIsLoading(true);
+            const response = await dispatch(addCustomer(values));
+            if (response.type === "customer/addCustomer/fulfilled") {
+                setIsLoading(false);
+                toNotify("Success", "Customer created successfully", "SUCCESS");
+                customerAddModalHandler.close();
+                customerAddForm.reset();
+                fetchCustomers();
+            } else if (response.type === "customer/addCustomer/rejected") {
+                setIsLoading(false);
+                toNotify("Error", `${response.payload.error}`, "ERROR");
+            } else {
+                setIsLoading(false);
+                toNotify("Warning", `Please contact system admin`, "WARNING");
+                customerAddModalHandler.close();
+                customerAddForm.reset();
+            }
+        } catch (e: any) {
+            console.error(e.message);
+            setIsLoading(false);
+            setIsLoading(false);
+            toNotify("Warning", `Please contact system admin`, "WARNING");
+            customerAddModalHandler.close();
+            customerAddForm.reset();
+        }
+    };
+
+    const customerAddModal = () => {
+        return (
+            <Modal
+                opened={customerAddModalOpened}
+                onClose={() => {
+                    customerAddModalHandler.close();
+                    customerAddForm.reset();
+                }}
+                title={<Text>Add Customer</Text>}
+            >
+                <form onSubmit={customerAddForm.onSubmit(customerAddFormHandler)}>
+                    <TextInput
+                        label="Name"
+                        withAsterisk
+                        placeholder="Customer Name"
+                        {...customerAddForm.getInputProps("name")}
+                    />
+                    <TextInput
+                        label="Phone"
+                        withAsterisk
+                        placeholder="Customer Phone"
+                        {...customerAddForm.getInputProps("phone")}
+                    />
+                    <TextInput
+                        label="Email"
+                        placeholder="Customer Email"
+                        {...customerAddForm.getInputProps("email")}
+                    />
+                    <Textarea
+                        label="Address"
+                        placeholder="Customer Address"
+                        {...customerAddForm.getInputProps("address")}
+                    />
+                    <Button mt="md" fullWidth loading={isLoading} type="submit">
+                        Save
+                    </Button>
+                </form>
+            </Modal>
+        );
+    };
+
     return (
         <>
             <Group p="lg" display="flex" justify="space-between" align="center">
@@ -155,6 +257,16 @@ const AddCheque = () => {
                         key={chequeAddForm.key("customer")}
                         {...chequeAddForm.getInputProps("customer")}
                     />
+                    <Text
+                        mt="xs"
+                        size="xs"
+                        className="text-end underline cursor-pointer"
+                        c="blue"
+                        td="underline"
+                        onClick={() => customerAddModalHandler.open()}
+                    >
+                        Create New User
+                    </Text>
                     <TextInput
                         label="Cheque Number"
                         placeholder="Enter Cheque Number"
@@ -217,6 +329,7 @@ const AddCheque = () => {
                     </Group>
                 </form>
             </Box>
+            {customerAddModal()}
         </>
     );
 };
