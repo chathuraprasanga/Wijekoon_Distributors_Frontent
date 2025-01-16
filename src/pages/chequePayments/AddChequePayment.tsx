@@ -19,7 +19,10 @@ import { useEffect, useState } from "react";
 import { DatePickerInput } from "@mantine/dates";
 import { getBankDetails } from "../../store/bankDetailSlice/bankDetailSlice.ts";
 import { bankPreview } from "../../helpers/preview.tsx";
-import { addChequePayment } from "../../store/chequePaymentSlice/chequePaymentSlice.ts";
+import {
+    addChequePayment,
+    getAllSystemPayees,
+} from "../../store/chequePaymentSlice/chequePaymentSlice.ts";
 
 const AddChequePayment = () => {
     const { setLoading } = useLoading();
@@ -30,10 +33,17 @@ const AddChequePayment = () => {
         label: `${bankPreview(b.bank)} - ${b.accountNumber}`,
         value: b._id,
     }));
+    const [forAddedUsers, setForAddedUsers] = useState<boolean | null>(null);
+    const [selectablePayees, setSelectablePayees] = useState<any[]>([]);
 
+    const payeeData = [...new Set(selectablePayees)].map((payee) => ({
+        label: payee,
+        value: payee
+    }));
 
     useEffect(() => {
         fetchBankDetails();
+        fetchSystemAddedUsers();
     }, [dispatch]);
 
     const fetchBankDetails = async () => {
@@ -51,6 +61,32 @@ const AddChequePayment = () => {
                 `Please contact system admin`,
                 "WARNING"
             );
+        }
+    };
+
+    const fetchSystemAddedUsers = async () => {
+        try {
+            setLoading(true);
+            const response = await dispatch(getAllSystemPayees());
+            if (
+                response.type === "chequePayment/getAllSystemPayees/fulfilled"
+            ) {
+                setLoading(false);
+                setSelectablePayees(response.payload.result);
+            } else if (
+                response.type === "chequePayment/getAllSystemPayees/rejected"
+            ) {
+                setLoading(false);
+                toNotify("Error", `${response.payload.error}`, "ERROR");
+                setForAddedUsers(false);
+            } else {
+                setLoading(false);
+                toNotify("Warning", "Please contact system admin", "WARNING");
+            }
+        } catch (e: any) {
+            setLoading(false);
+            console.error(e.message);
+            toNotify("Warning", "Please contact system admin", "WARNING");
         }
     };
 
@@ -96,7 +132,9 @@ const AddChequePayment = () => {
             setLoading(false);
             toNotify("Success", "Cheque payment added successfully", "SUCCESS");
             navigate("/app/cheque-payments");
-        } else if (response.type === "chequePayment/addChequePayment/rejected") {
+        } else if (
+            response.type === "chequePayment/addChequePayment/rejected"
+        ) {
             const error: any = response.payload.error;
             setLoading(false);
             toNotify("Error", `${error}`, "ERROR");
@@ -124,14 +162,43 @@ const AddChequePayment = () => {
                 </Group>
             </Group>
             <Box w={{ sm: "100%", lg: "50%" }} px="lg">
-                <form onSubmit={chequePaymentAddForm.onSubmit(handleChequePaymentAdd)}>
-                    <TextInput
-                        label="Payment For"
-                        placeholder="Enter Receiver Name"
-                        withAsterisk
-                        key={chequePaymentAddForm.key("payFor")}
-                        {...chequePaymentAddForm.getInputProps("payFor")}
-                    />
+                <form
+                    onSubmit={chequePaymentAddForm.onSubmit(
+                        handleChequePaymentAdd
+                    )}
+                >
+                    {forAddedUsers ? (
+                        <Select
+                            label="Payment For"
+                            placeholder="Selectt Receiver"
+                            withAsterisk
+                            data={payeeData}
+                            searchable
+                            clearable
+                            key={chequePaymentAddForm.key("payFor")}
+                            {...chequePaymentAddForm.getInputProps("payFor")}
+                        />
+                        ) : (
+                        <TextInput
+                            label="Payment For"
+                            placeholder="Enter Receiver Name"
+                            withAsterisk
+                            key={chequePaymentAddForm.key("payFor")}
+                            {...chequePaymentAddForm.getInputProps("payFor")}
+                        />
+                    )}
+                    <Text
+                        className="text-end cursor-pointer"
+                        size="xs"
+                        mt="xs"
+                        c="blue"
+                        td="underline"
+                        onClick={() => setForAddedUsers(!forAddedUsers)}
+                    >
+                        {forAddedUsers
+                            ? "Payment for new users"
+                            : "Payment for system customers, suppliers, and previous payees "}
+                    </Text>
                     <Select
                         label="Bank"
                         withAsterisk

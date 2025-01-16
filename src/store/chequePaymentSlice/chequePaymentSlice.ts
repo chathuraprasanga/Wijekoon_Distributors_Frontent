@@ -9,6 +9,7 @@ import axiosInstance from "../../interceptors/axiosInterceptor.ts";
 interface ChequePaymentState {
     chequePayments: any;
     selectedChequePayment: any;
+    systemPayees: any;
     status: string;
     error: string;
 }
@@ -16,6 +17,7 @@ interface ChequePaymentState {
 const initialState: ChequePaymentState = {
     chequePayments: [],
     selectedChequePayment: {},
+    systemPayees: [],
     status: "idle",
     error: "",
 };
@@ -42,6 +44,20 @@ export const getChequePayments = createAsyncThunk(
             const response = await axiosInstance.post(
                 `/cheque-payment/cheque-payments`,
                 payload
+            );
+            return response.data;
+        } catch (err: any) {
+            throw rejectWithValue(err.response.data);
+        }
+    }
+);
+
+export const getAllSystemPayees = createAsyncThunk(
+    "chequePayment/getAllSystemPayees",
+    async (_, { rejectWithValue }) => {
+        try {
+            const response = await axiosInstance.get(
+                `/cheque-payment/system-payees`,
             );
             return response.data;
         } catch (err: any) {
@@ -124,6 +140,12 @@ const chequePaymentSlice = createSlice({
             getChequePayments.fulfilled,
             (state: Draft<ChequePaymentState>, action: PayloadAction<any>) => {
                 state.chequePayments = action.payload.result;
+            }
+        );
+        builder.addCase(
+            getAllSystemPayees.fulfilled,
+            (state: Draft<ChequePaymentState>, action: PayloadAction<any>) => {
+                state.systemPayees = action.payload.result;
             }
         );
         builder.addCase(
