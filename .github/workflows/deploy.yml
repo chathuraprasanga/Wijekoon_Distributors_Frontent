@@ -58,7 +58,7 @@ jobs:
             echo "Node version: $(node -v)"
             echo "npm version: $(npm -v)"
 
-            cd /var/www/wijekoon-distributors/frontend
+            cd /var/www/qa/wd-app-qa
 
             if [ -d "dist" ]; then
               sudo rm -rf dist
