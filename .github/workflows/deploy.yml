@@ -74,8 +74,6 @@ jobs:
 
             export NODE_OPTIONS="--max_old_space_size=512"
           
-            git switch qa
-
             git pull origin qa
 
             npm run lint
