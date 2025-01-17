@@ -40,7 +40,7 @@ import {
     getBankDetails,
 } from "../store/bankDetailSlice/bankDetailSlice.ts";
 import banks from "../helpers/banks.json";
-import xcorpion from "../../public/xcorpion.png";
+import xcorpion from "../assets/xcorpion.png";
 import { hasAnyPrivilege } from "../helpers/previlleges.ts";
 import { USER_ROLES } from "../helpers/types.ts";
 
