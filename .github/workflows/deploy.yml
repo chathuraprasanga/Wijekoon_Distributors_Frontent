@@ -108,7 +108,7 @@ jobs:
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
             [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
             nvm use node
-            cd /var/www/qa/wd-server-qa
+            cd /var/www/qa/qa-wd-server
 
             pm2 describe "wd-server-qa" >/dev/null 2>&1 || pm2 start npm --name "wd-server-qa" -- start
             pm2 restart "wd-server-qa" --update-env
