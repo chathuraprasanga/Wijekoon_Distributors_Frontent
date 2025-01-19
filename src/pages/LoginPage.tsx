@@ -14,7 +14,7 @@ import { AppDispatch } from "../store/store.ts";
 import { login } from "../store/authSlice/authSlice.ts";
 import toNotify from "../helpers/toNotify.tsx";
 import { useLoading } from "../helpers/loadingContext.tsx";
-import xcorpion from "../../public/xcorpion.png";
+import xcorpion from "../assets/xcorpion.png";
 
 const LoginPage = () => {
     const { setLoading } = useLoading();

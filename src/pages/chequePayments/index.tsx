@@ -480,14 +480,14 @@ const ChequePayments = () => {
                                 my="lg"
                             >
                                 <Text className="font-semibold">
-                                    Payment For: {c.customer?.name}
+                                    Payment For: {c.payFor}
                                 </Text>
                                 <Text>
                                     Bank: {bankPreview(c.bankAccount.bank)}
                                 </Text>
                                 <Text>Cheque Number: {c.number}</Text>
                                 <Text>Amount: {amountPreview(c.amount)}</Text>
-                                <Text>Date: {datePreview(c.depositDate)}</Text>
+                                <Text>Date: {datePreview(c.date)}</Text>
                                 <Badge
                                     size="sm"
                                     radius="xs"
