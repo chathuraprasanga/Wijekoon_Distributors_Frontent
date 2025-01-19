@@ -1,0 +1,149 @@
+name: Deploy Wijekoon Distributors Frontend to Droplet
+
+on:
+  push:
+    branches:
+      - qa
+
+jobs:
+  deploy:
+    name: Wijekoon Distributors Qa Frontend Deployment
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout code
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Set up SSH agent
+      - name: Set up SSH agent
+        uses: webfactory/ssh-agent@v0.5.3
+        with:
+          ssh-private-key: ${{ secrets.PRIVATE_KEY }}
+
+      # Test SSH connection
+      - name: Test SSH Connection
+        run: |
+          ssh -o ServerAliveInterval=60 -o StrictHostKeyChecking=no ${{ secrets.DROPLET_USER }}@${{ secrets.DROPLET_HOST }} "echo 'SSH connection successful!'"
+
+      # Kill unnecessary user sessions
+      - name: Kill unnecessary user sessions
+        run: |
+          ssh -o ServerAliveInterval=60 -o StrictHostKeyChecking=no ${{ secrets.DROPLET_USER }}@${{ secrets.DROPLET_HOST }} << 'EOF'
+            # Get the current user's name
+            current_user=$(whoami)
+
+            # Get the current SSH session's PID
+            current_pid=$$
+
+            # Get a list of PIDs associated with the current user
+            user_pids=$(ps -u $current_user -o pid=)
+
+            # Iterate over all the PIDs and kill the unnecessary ones
+            for pid in $user_pids; do
+              # Exclude the current SSH session from being killed
+              if [ "$pid" != "$current_pid" ]; then
+                # Exclude necessary sessions like sshd, screen, tmux (adjust based on your needs)
+                if ! ps -p $pid -o comm= | grep -E 'sshd|screen|tmux' > /dev/null; then
+                  echo "Killing PID: $pid"
+                  sudo kill -9 $pid || echo "Failed to kill PID: $pid"
+                else
+                  echo "Skipping PID: $pid (Necessary session)"
+                fi
+              fi
+            done
+          EOF
+
+      # Build Frontend
+      - name: Build Frontend
+        run: |
+          ssh -o ServerAliveInterval=60 -o StrictHostKeyChecking=no ${{ secrets.DROPLET_USER }}@${{ secrets.DROPLET_HOST }} << 'EOF'
+            set -e
+            export NVM_DIR="$HOME/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # Load nvm
+            [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion" # Load nvm bash_completion
+            nvm use node # Activate the correct Node.js version
+            echo "Node version: $(node -v)"
+            echo "npm version: $(npm -v)"
+
+            # Navigate to the frontend directory
+            cd /var/www/qa/qa-wd-app
+
+            # Clean previous build (only if the build exists)
+            if [ -d "dist" ]; then
+              sudo rm -rf dist
+              echo "Previous build deleted."
+            fi
+
+            # Clear npm cache to avoid issues with corrupted packages
+            npm cache clean --force
+            echo "NPM cache cleaned."
+
+            # Cache node_modules (using npm ci instead of npm install for faster installs)
+            if [ ! -d "node_modules" ]; then
+              npm install --production --legacy-peer-deps
+            fi
+
+            # Set node memory limit to reduce memory pressure
+            export NODE_OPTIONS="--max_old_space_size=512"
+          
+            # Get Updated Code
+            git pull
+
+            # Run linting
+            npm run lint
+          
+            # Install Dependencies
+            npm install --froce
+
+            # Build the project
+            npm run build
+          
+            # Clean up unused npm and node_modules cache to free up memory
+            npm cache clean --force
+          EOF
+
+      # Start the PM2 Backend (if it was stopped due to session killing)
+      - name: Start PM2 Backend
+        run: |
+          ssh -o ServerAliveInterval=60 -o StrictHostKeyChecking=no ${{ secrets.DROPLET_USER }}@${{ secrets.DROPLET_HOST }} << 'EOF'
+            set -e
+            export NVM_DIR="$HOME/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+            [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
+            nvm use node
+            cd /var/www/wijekoon-distributors/backend
+          
+            # Restart the PM2 process if it's already running or start a new one
+            pm2 describe "wd-server" >/dev/null 2>&1 || pm2 start npm --name "wd-server" -- start
+            pm2 restart "wd-server" --update-env
+
+            # Save the PM2 process list and environment
+            pm2 save
+          EOF
+
+      # Start the PM2 Backend (if it was stopped due to session killing)
+      - name: Start PM2 Qa Backend
+        run: |
+          ssh -o ServerAliveInterval=60 -o StrictHostKeyChecking=no ${{ secrets.DROPLET_USER }}@${{ secrets.DROPLET_HOST }} << 'EOF'
+            set -e
+            export NVM_DIR="$HOME/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+            [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
+            nvm use node
+            cd /var/www/qa/qa-wd-server
+          
+            # Restart the PM2 process if it's already running or start a new one
+            pm2 describe "wd-server-qa" >/dev/null 2>&1 || pm2 start npm --name "wd-server-qa" -- start
+            pm2 restart "wd-server-qa" --update-env
+
+            # Save the PM2 process list and environment
+            pm2 save
+          EOF
+
+      # Restart Nginx
+      - name: Restart Nginx
+        run: |
+          ssh -o ServerAliveInterval=60 -o StrictHostKeyChecking=no ${{ secrets.DROPLET_USER }}@${{ secrets.DROPLET_HOST }} << 'EOF'
+            sudo systemctl restart nginx.service
+          EOF
