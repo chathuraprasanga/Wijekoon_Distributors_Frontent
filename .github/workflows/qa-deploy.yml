@@ -54,8 +54,8 @@ jobs:
             done
           EOF
 
-      # Build Frontend
-      - name: Build Frontend
+      # Build Qa Frontend
+      - name: Build Qa Frontend
         run: |
           ssh -o ServerAliveInterval=60 -o StrictHostKeyChecking=no ${{ secrets.DROPLET_USER }}@${{ secrets.DROPLET_HOST }} << 'EOF'
             set -e
@@ -103,8 +103,8 @@ jobs:
             npm cache clean --force
           EOF
 
-      # Start the PM2 Backend (if it was stopped due to session killing)
-      - name: Start PM2 Backend
+      # Start the PM2 Prod Backend (if it was stopped due to session killing)
+      - name: Start PM2 Prod Backend
         run: |
           ssh -o ServerAliveInterval=60 -o StrictHostKeyChecking=no ${{ secrets.DROPLET_USER }}@${{ secrets.DROPLET_HOST }} << 'EOF'
             set -e
@@ -122,7 +122,7 @@ jobs:
             pm2 save
           EOF
 
-      # Start the PM2 Backend (if it was stopped due to session killing)
+      # Start the PM2 Qa Backend (if it was stopped due to session killing)
       - name: Start PM2 Qa Backend
         run: |
           ssh -o ServerAliveInterval=60 -o StrictHostKeyChecking=no ${{ secrets.DROPLET_USER }}@${{ secrets.DROPLET_HOST }} << 'EOF'
@@ -134,7 +134,7 @@ jobs:
             cd /var/www/qa/qa-wd-server
           
             # Restart the PM2 process if it's already running or start a new one
-            pm2 describe "wd-server-qa" >/dev/null 2>&1 || pm2 start npm --name "wd-server-qa" -- start
+            pm2 describe "wd-server-qa" >/dev/null 2>&1 || pm2 start npm --name "wd-server-qa" -- run qa
             pm2 restart "wd-server-qa" --update-env
 
             # Save the PM2 process list and environment
