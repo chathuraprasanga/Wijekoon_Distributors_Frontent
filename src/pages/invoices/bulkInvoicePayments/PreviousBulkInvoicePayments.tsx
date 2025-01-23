@@ -18,13 +18,13 @@ import {
     IconEye,
 } from "@tabler/icons-react";
 import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "../../store/store.ts";
-import { useLoading } from "../../helpers/loadingContext.tsx";
-import { getPagedBulkInvoicePayments } from "../../store/invoiceSlice/invoiceSlice.ts";
-import { amountPreview, datePreview } from "../../helpers/preview.tsx";
+import { AppDispatch, RootState } from "../../../store/store.ts";
+import { useLoading } from "../../../helpers/loadingContext.tsx";
+import { getPagedBulkInvoicePayments } from "../../../store/invoiceSlice/invoiceSlice.ts";
+import { amountPreview, datePreview } from "../../../helpers/preview.tsx";
 
-import { getSuppliers } from "../../store/supplierSlice/supplierSlice.ts";
-import { PAYMENT_STATUS_COLORS } from "../../helpers/types.ts";
+import { getSuppliers } from "../../../store/supplierSlice/supplierSlice.ts";
+import { PAYMENT_STATUS_COLORS } from "../../../helpers/types.ts";
 
 const PreviousBulkInvoicePayments = () => {
     const { setLoading } = useLoading();
