@@ -20,12 +20,12 @@ import {
 } from "../../store/chequeSlice/chequeSlice.ts";
 import { useEffect, useState } from "react";
 import {
-    isValidBankCode,
     isValidBranchCode,
     isValidChequeNumber,
 } from "../../utils/inputValidators.ts";
 import { getCustomers } from "../../store/customerSlice/customerSlice.ts";
 import { DatePickerInput } from "@mantine/dates";
+import banks from "../../helpers/banks.json";
 
 const EditCheque = () => {
     const { setLoading } = useLoading();
@@ -39,6 +39,10 @@ const EditCheque = () => {
     const customerData = selectableCustomers.map((data: any) => {
         return { label: data.name, value: data._id };
     });
+    const banksList = banks.map((b) => ({
+        label: b.name,
+        value: b.name,
+    }));
 
     useEffect(() => {
         fetchCustomers();
@@ -107,7 +111,6 @@ const EditCheque = () => {
                 if (!value) {
                     return "Bank code is required";
                 }
-                return isValidBankCode(value) ? null : "Enter valid bank code";
             },
             branch: (value) => {
                 if (!value) {
@@ -182,12 +185,17 @@ const EditCheque = () => {
                         key={chequeEditForm.key("number")}
                         {...chequeEditForm.getInputProps("number")}
                     />
-                    <TextInput
+                    <Select
                         label="Bank"
                         withAsterisk
-                        placeholder="Enter Customer Bank Name"
+                        placeholder="Select Customer Bank Name"
+                        searchable
                         key={chequeEditForm.key("bank")}
+                        data={banksList}
                         {...chequeEditForm.getInputProps("bank")}
+                        onChange={(value) => {
+                            chequeEditForm.getInputProps("bank").onChange(value);
+                        }}
                     />
                     <TextInput
                         label="Branch"
