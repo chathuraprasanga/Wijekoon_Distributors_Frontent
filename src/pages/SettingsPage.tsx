@@ -43,6 +43,7 @@ import {
 import banks from "../helpers/banks.json";
 import xcorpion from "../assets/xcorpion.png";
 import { hasAnyPrivilege, hasPrivilege } from "../helpers/previlleges.ts";
+import { hasAnyPrivilege } from "../helpers/previlleges.ts";
 import { USER_ROLES } from "../helpers/types.ts";
 
 const SettingsPage = () => {
