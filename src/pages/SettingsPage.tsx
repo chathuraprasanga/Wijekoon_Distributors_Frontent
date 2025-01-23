@@ -36,11 +36,13 @@ import { isValidEmail, isValidPhone } from "../utils/inputValidators.ts";
 import { bankPreview, rolePreview } from "../helpers/preview.tsx";
 import { rolesData } from "../utils/settings.ts";
 import {
-    addBankDetail, changeStatusBankDetail,
+    addBankDetail,
+    changeStatusBankDetail,
     getBankDetails,
 } from "../store/bankDetailSlice/bankDetailSlice.ts";
 import banks from "../helpers/banks.json";
 import xcorpion from "../assets/xcorpion.png";
+import { hasAnyPrivilege, hasPrivilege } from "../helpers/previlleges.ts";
 import { hasAnyPrivilege } from "../helpers/previlleges.ts";
 import { USER_ROLES } from "../helpers/types.ts";
 
@@ -293,7 +295,7 @@ const SettingsPage = () => {
                         </Table.Tr>
                     </Table.Thead>
                     <Table.Tbody>
-                        {users?.map((user: any, index: any) => (
+                        {users?.map((u: any, index: any) => (
                             <Table.Tr
                                 key={index}
                                 className="sm:table-row flex flex-col sm:flex-row mb-4 sm:mb-0 border-b sm:border-none"
@@ -302,19 +304,19 @@ const SettingsPage = () => {
                                     <span className="sm:hidden font-semibold w-1/4">
                                         Username:
                                     </span>{" "}
-                                    {user?.username}
+                                    {u?.username}
                                 </Table.Td>
                                 <Table.Td className="px-2 py-2 sm:w-1/4 text-sm truncate whitespace-nowrap">
                                     <span className="sm:hidden font-semibold">
                                         Email:
                                     </span>{" "}
-                                    {user?.email}
+                                    {u?.email}
                                 </Table.Td>
                                 <Table.Td className="px-2 py-2 sm:w-1/6 text-sm truncate whitespace-nowrap">
                                     <span className="sm:hidden font-semibold">
                                         Phone:
                                     </span>{" "}
-                                    {user?.phone}
+                                    {u?.phone}
                                 </Table.Td>
                                 <Table.Td className="px-2 py-2 sm:w-1/6 text-sm truncate whitespace-nowrap">
                                     <span className="sm:hidden font-semibold">
@@ -324,20 +326,19 @@ const SettingsPage = () => {
                                         variant="dot"
                                         color={
                                             rolesData.find(
-                                                (role) =>
-                                                    role.value === user?.role
+                                                (role) => role.value === u?.role
                                             )?.color || "gray"
                                         }
                                         className="truncate whitespace-nowrap"
                                     >
-                                        {rolePreview(user?.role) ?? "-"}
+                                        {rolePreview(u?.role) ?? "-"}
                                     </Badge>
                                 </Table.Td>
                                 <Table.Td className="px-2 py-2 sm:w-1/6 text-sm truncate whitespace-nowrap">
                                     <span className="sm:hidden font-semibold">
                                         Status:
                                     </span>
-                                    {user?.status ? (
+                                    {u?.status ? (
                                         <Badge
                                             color="green"
                                             radius="xs"
@@ -357,48 +358,56 @@ const SettingsPage = () => {
                                         </Badge>
                                     )}
                                 </Table.Td>
-                                <Table.Td className="px-2 py-2 sm:w-1/6 text-sm truncate whitespace-nowrap">
-                                    <Menu>
-                                        <Menu.Target>
-                                            <IconDotsVertical
-                                                size={16}
-                                                className="cursor-pointer"
-                                            />
-                                        </Menu.Target>
-                                        <Menu.Dropdown>
-                                            <Menu.Label>Actions</Menu.Label>
-                                            <Menu.Item
-                                                color={
-                                                    user?.status
-                                                        ? "red"
-                                                        : "green"
-                                                }
-                                                variant="light"
-                                                leftSection={
-                                                    user?.status ? (
-                                                        <IconMobiledataOff
-                                                            size={16}
-                                                        />
-                                                    ) : (
-                                                        <IconMobiledata
-                                                            size={16}
-                                                        />
-                                                    )
-                                                }
-                                                onClick={() =>
-                                                    handleUserStatusChange(
-                                                        !user.status,
-                                                        user._id
-                                                    )
-                                                }
-                                            >
-                                                {user.status
-                                                    ? "Deactivate"
-                                                    : "Activate"}
-                                            </Menu.Item>
-                                        </Menu.Dropdown>
-                                    </Menu>
-                                </Table.Td>
+                                {hasPrivilege(
+                                    user.role,
+                                    USER_ROLES.SUPER_ADMIN
+                                ) &&
+                                    u.role !== USER_ROLES.SUPER_ADMIN && (
+                                        <Table.Td className="px-2 py-2 sm:w-1/6 text-sm truncate whitespace-nowrap">
+                                            <Menu>
+                                                <Menu.Target>
+                                                    <IconDotsVertical
+                                                        size={16}
+                                                        className="cursor-pointer"
+                                                    />
+                                                </Menu.Target>
+                                                <Menu.Dropdown>
+                                                    <Menu.Label>
+                                                        Actions
+                                                    </Menu.Label>
+                                                    <Menu.Item
+                                                        color={
+                                                            u?.status
+                                                                ? "red"
+                                                                : "green"
+                                                        }
+                                                        variant="light"
+                                                        leftSection={
+                                                            u?.status ? (
+                                                                <IconMobiledataOff
+                                                                    size={16}
+                                                                />
+                                                            ) : (
+                                                                <IconMobiledata
+                                                                    size={16}
+                                                                />
+                                                            )
+                                                        }
+                                                        onClick={() =>
+                                                            handleUserStatusChange(
+                                                                !u.status,
+                                                                u._id
+                                                            )
+                                                        }
+                                                    >
+                                                        {u.status
+                                                            ? "Deactivate"
+                                                            : "Activate"}
+                                                    </Menu.Item>
+                                                </Menu.Dropdown>
+                                            </Menu>
+                                        </Table.Td>
+                                    )}
                             </Table.Tr>
                         ))}
                     </Table.Tbody>
@@ -407,13 +416,17 @@ const SettingsPage = () => {
         </Modal>
     );
 
-    const changeBankDetailStatus = async(status:boolean, id:any) => {
+    const changeBankDetailStatus = async (status: boolean, id: any) => {
         setLoading(true);
         const response = await dispatch(
             changeStatusBankDetail({ values: { status: !status }, id: id })
         );
         if (response.type === "bankDetail/changeStatusBankDetail/fulfilled") {
-            toNotify("Success", "Bank detail status changed successfully", "SUCCESS");
+            toNotify(
+                "Success",
+                "Bank detail status changed successfully",
+                "SUCCESS"
+            );
             handleBankDetailsView.close();
             setLoading(false);
         } else if (response.type === "user/changeStatusBankDetail/rejected") {
@@ -537,9 +550,16 @@ const SettingsPage = () => {
                                                         />
                                                     )
                                                 }
-                                                onClick={() => changeBankDetailStatus(bd?.status, bd?._id) }
+                                                onClick={() =>
+                                                    changeBankDetailStatus(
+                                                        bd?.status,
+                                                        bd?._id
+                                                    )
+                                                }
                                             >
-                                                {bd?.status ? "Deactivate" : "Activate"}
+                                                {bd?.status
+                                                    ? "Deactivate"
+                                                    : "Activate"}
                                             </Menu.Item>
                                         </Menu.Dropdown>
                                     </Menu>
@@ -820,6 +840,58 @@ const SettingsPage = () => {
                     </Box>
                 </>
             )}
+
+            {hasAnyPrivilege(role, [
+                USER_ROLES.OWNER,
+                USER_ROLES.ADMIN,
+                USER_ROLES.SUPER_ADMIN,
+                USER_ROLES.WAREHOUSE_MANAGER,
+            ]) && (
+                <>
+                    <Box
+                        display="flex"
+                        p="lg"
+                        className="items-center justify-between"
+                    >
+                        <Box>
+                            <Text size="lg" fw={500}>
+                                Warehouse Details
+                            </Text>
+                        </Box>
+                    </Box>
+                    <Box px="lg" mb="lg" className="gap-1">
+                        <div className="flex gap-2 flex-row sm:flex-row items-start sm:items-center mb-2">
+                            <Button
+                                size="xs"
+                                variant="light"
+                                color="violet"
+                                className="w-full sm:w-auto"
+                                // onClick={handleBankDetailsView.open}
+                                leftSection={<IconEye size={16} />}
+                            >
+                                View Warehouse Details
+                            </Button>
+                            {hasAnyPrivilege(user.role, [
+                                USER_ROLES.SUPER_ADMIN,
+                                USER_ROLES.OWNER,
+                                USER_ROLES.WAREHOUSE_MANAGER,
+                            ]) && (
+                                <Button
+                                    size="xs"
+                                    variant="light"
+                                    className="w-full sm:w-auto"
+                                    // onClick={handleAddBankDetail.open}
+                                    leftSection={<IconPlus size={16} />}
+                                >
+                                    Add Warehouse
+                                </Button>
+                            )}
+                        </div>
+                        <hr />
+                    </Box>
+                </>
+            )}
+
             <Group
                 className="mt-4 flex flex-row items-center gap-4 border w-fit px-2 py-2 cursor-pointer mx-4 my-4"
                 onClick={() => window.open("https://xcorpion.xyz", "_blank")}

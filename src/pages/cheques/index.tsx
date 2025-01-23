@@ -157,7 +157,7 @@ const Cheques = () => {
                         className="w-full lg:w-1/4"
                         size="xs"
                         placeholder="Select a status"
-                        data={["PENDING", "DEPOSITED", "RETURNED", "COMPLETED"]}
+                        data={["PENDING","SEND TO SUPPLIER", "DEPOSITED", "RETURNED", "COMPLETED"]}
                         clearable
                         onChange={(value: string | null) => {
                             if (value) {
