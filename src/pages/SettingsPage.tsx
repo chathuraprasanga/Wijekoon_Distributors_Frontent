@@ -44,6 +44,10 @@ import banks from "../helpers/banks.json";
 import xcorpion from "../assets/xcorpion.png";
 import { hasAnyPrivilege, hasPrivilege } from "../helpers/previlleges.ts";
 import { USER_ROLES } from "../helpers/types.ts";
+import {
+    addWarehouse, changeStatusWarehouse,
+    getWarehouses,
+} from "../store/warehouseSlice/warehouseSlice.ts";
 
 const SettingsPage = () => {
     const isSmallScreen = useMediaQuery("(max-width: 1024px)");
@@ -54,13 +58,20 @@ const SettingsPage = () => {
         useDisclosure(false);
     const [usersViewOpened, handleUsersView] = useDisclosure(false);
     const [bankDetailsOpened, handleBankDetailsView] = useDisclosure(false);
+    const [warehouseDetailsOpened, handleWarehouseDetailsView] =
+        useDisclosure(false);
     const [adduserOpened, handleAddUser] = useDisclosure(false);
     const [addBankDetailOpened, handleAddBankDetail] = useDisclosure(false);
+    const [addWarehouseDetailOpened, handleAddWarehouseDetail] =
+        useDisclosure(false);
     const [isLoading, setIsLoading] = useState(false);
     const dispatch = useDispatch<AppDispatch | any>();
     const users = useSelector((state: RootState) => state.user.users);
     const bankDetails = useSelector(
         (state: RootState) => state.bankDetails.bankDetails
+    );
+    const warehouseDetails = useSelector(
+        (state: RootState) => state.warehouses.warehouses
     );
 
     const bankList = banks.map((bank) => ({
@@ -71,6 +82,7 @@ const SettingsPage = () => {
     useEffect(() => {
         getAllUsers();
         getAllBankDetails();
+        getAllWarehouseDetails();
     }, [dispatch]);
 
     const getAllUsers = async () => {
@@ -93,6 +105,20 @@ const SettingsPage = () => {
         if (response.type === "bankDetail/getBankDetails/fulfilled") {
             setLoading(false);
         } else if (response.type === "bankDetail/getBankDetails/rejected") {
+            setLoading(false);
+            toNotify("Error", "Something went wrong", "ERROR");
+        } else {
+            setLoading(false);
+            toNotify("Warning", "Please contact system admin", "WARNING");
+        }
+    };
+
+    const getAllWarehouseDetails = async () => {
+        setLoading(true);
+        const response = await dispatch(getWarehouses({}));
+        if (response.type === "warehouse/getWarehouses/fulfilled") {
+            setLoading(false);
+        } else if (response.type === "warehouse/getWarehouses/rejected") {
             setLoading(false);
             toNotify("Error", "Something went wrong", "ERROR");
         } else {
@@ -648,7 +674,7 @@ const SettingsPage = () => {
                 handleAddBankDetail.close();
                 addBankDetailForm.reset();
             }}
-            title={<Text size="lg">Add bank Detail</Text>}
+            title={<Text size="lg">Add Bank Detail</Text>}
         >
             <form
                 onSubmit={addBankDetailForm.onSubmit(handleAddBankDetailForm)}
@@ -701,6 +727,208 @@ const SettingsPage = () => {
         } else {
             setIsLoading(false);
             toNotify("Warning", "Please contact system admin", "WARNING");
+        }
+    };
+
+    const warehouseAddForm = useForm({
+        initialValues: {
+            city: "",
+        },
+        validate: {
+            city: isNotEmpty("City is required."),
+        },
+    });
+
+    const addWarehouseModal = () => (
+        <Modal
+            opened={addWarehouseDetailOpened}
+            onClose={() => {
+                handleAddWarehouseDetail.close();
+                warehouseAddForm.reset();
+            }}
+            title={<Text size="lg">Add Warehouse Detail</Text>}
+        >
+            <form
+                onSubmit={warehouseAddForm.onSubmit(
+                    handleAddWarehouseDetailForm
+                )}
+            >
+                <TextInput
+                    label="City"
+                    placeholder="Enter warehouse city"
+                    withAsterisk
+                    {...warehouseAddForm.getInputProps("city")}
+                />
+                <Button mt="md" fullWidth loading={isLoading} type="submit">
+                    Submit
+                </Button>
+            </form>
+        </Modal>
+    );
+
+    const handleAddWarehouseDetailForm = async (
+        values: typeof warehouseAddForm.values
+    ) => {
+        setIsLoading(true);
+        const response = await dispatch(addWarehouse(values));
+        if (response.type === "warehouse/addWarehouse/fulfilled") {
+            setIsLoading(false);
+            await dispatch(getWarehouses({}));
+            toNotify("Success", "Warehouse created successfully", "SUCCESS");
+            warehouseAddForm.reset();
+            handleAddWarehouseDetail.close();
+        } else if (response.type === "warehouse/addWarehouse/rejected") {
+            setIsLoading(false);
+            toNotify("Error", "Warehouse created failed", "ERROR");
+        } else {
+            setIsLoading(false);
+            toNotify("Warning", "Please contact system admin", "WARNING");
+        }
+    };
+
+    const viewWarehouseModal = () => (
+        <Modal
+            opened={warehouseDetailsOpened}
+            onClose={handleWarehouseDetailsView.close}
+            title={<Text size="lg">Warehouse Details</Text>}
+            size={isSmallScreen ? "100%" : "lg"}
+        >
+            <ScrollArea className="overflow-x-auto">
+                <Table className="min-w-full" highlightOnHover>
+                    <Table.Thead>
+                        <Table.Tr className="bg-gray-100 hidden sm:table-row">
+                            <Table.Th className="px-2 py-2 text-sm sm:text-base">
+                                Warehouse Id
+                            </Table.Th>
+                            <Table.Th className="px-2 py-2 text-sm sm:text-base">
+                                City
+                            </Table.Th>{" "}
+                            <Table.Th className="px-2 py-2 text-sm sm:text-base">
+                                Status
+                            </Table.Th>
+                            <Table.Th className="px-2 py-2 text-sm sm:text-base">
+                                Actions
+                            </Table.Th>
+                        </Table.Tr>
+                    </Table.Thead>
+                    <Table.Tbody>
+                        {warehouseDetails?.map((wd: any, index: any) => (
+                            <Table.Tr
+                                key={index}
+                                className="sm:table-row flex flex-col sm:flex-row mb-4 sm:mb-0 border-b sm:border-none"
+                            >
+                                <Table.Td className="px-2 py-2 sm:w-1/6 text-sm truncate whitespace-nowrap">
+                                    <span className="sm:hidden font-semibold w-1/4">
+                                        Warehouse Id:
+                                    </span>{" "}
+                                    {wd.id}
+                                </Table.Td>
+                                <Table.Td className="px-2 py-2 sm:w-1/4 text-sm truncate whitespace-nowrap">
+                                    <span className="sm:hidden font-semibold">
+                                        City:
+                                    </span>{" "}
+                                    {wd?.city}
+                                </Table.Td>
+                                <Table.Td className="px-2 py-2 sm:w-1/6 text-sm truncate whitespace-nowrap">
+                                    <span className="sm:hidden font-semibold">
+                                        Status:
+                                    </span>
+                                    {wd?.status ? (
+                                        <Badge
+                                            color="green"
+                                            radius="xs"
+                                            size="sm"
+                                            className="truncate whitespace-nowrap"
+                                        >
+                                            ACTIVE
+                                        </Badge>
+                                    ) : (
+                                        <Badge
+                                            color="red"
+                                            radius="xs"
+                                            size="sm"
+                                            className="truncate whitespace-nowrap"
+                                        >
+                                            INACTIVE
+                                        </Badge>
+                                    )}
+                                </Table.Td>
+                                <Table.Td className="px-2 py-2 sm:w-1/6 text-sm truncate whitespace-nowrap">
+                                    <Menu>
+                                        <Menu.Target>
+                                            <IconDotsVertical
+                                                size={16}
+                                                className="cursor-pointer"
+                                            />
+                                        </Menu.Target>
+                                        <Menu.Dropdown>
+                                            <Menu.Label>Actions</Menu.Label>
+                                            <Menu.Item
+                                                color={
+                                                    wd?.status ? "red" : "green"
+                                                }
+                                                variant="light"
+                                                leftSection={
+                                                    wd?.status ? (
+                                                        <IconMobiledataOff
+                                                            size={16}
+                                                        />
+                                                    ) : (
+                                                        <IconMobiledata
+                                                            size={16}
+                                                        />
+                                                    )
+                                                }
+                                                onClick={() =>
+                                                    changeWarehouseDetailStatus(
+                                                        wd?.status,
+                                                        wd?._id
+                                                    )
+                                                }
+                                            >
+                                                {wd?.status
+                                                    ? "Deactivate"
+                                                    : "Activate"}
+                                            </Menu.Item>
+                                        </Menu.Dropdown>
+                                    </Menu>
+                                </Table.Td>
+                            </Table.Tr>
+                        ))}
+                    </Table.Tbody>
+                </Table>
+            </ScrollArea>
+        </Modal>
+    );
+
+    const changeWarehouseDetailStatus = async (status: boolean, id: any) => {
+        setLoading(true);
+        const response = await dispatch(
+            changeStatusWarehouse({ values: { status: !status }, id: id })
+        );
+        if (response.type === "warehouse/changeStatus/fulfilled") {
+            toNotify(
+                "Success",
+                "Warehouse status changed successfully",
+                "SUCCESS"
+            );
+            handleWarehouseDetailsView.close();
+            setLoading(false);
+        } else if (response.type === "warehouse/changeStatus/rejected") {
+            toNotify(
+                "Error",
+                `${response.payload.error || "Something went wrong"}`,
+                "ERROR"
+            );
+            setLoading(false);
+        } else {
+            setLoading(false);
+            toNotify(
+                "Something went wrong",
+                `Please contact system admin`,
+                "WARNING"
+            );
+            handleWarehouseDetailsView.close();
         }
     };
 
@@ -865,7 +1093,7 @@ const SettingsPage = () => {
                                 variant="light"
                                 color="violet"
                                 className="w-full sm:w-auto"
-                                // onClick={handleBankDetailsView.open}
+                                onClick={handleWarehouseDetailsView.open}
                                 leftSection={<IconEye size={16} />}
                             >
                                 View Warehouse Details
@@ -879,7 +1107,7 @@ const SettingsPage = () => {
                                     size="xs"
                                     variant="light"
                                     className="w-full sm:w-auto"
-                                    // onClick={handleAddBankDetail.open}
+                                    onClick={handleAddWarehouseDetail.open}
                                     leftSection={<IconPlus size={16} />}
                                 >
                                     Add Warehouse
@@ -904,6 +1132,8 @@ const SettingsPage = () => {
             {adduserOpenedModal()}
             {viewBankDetailsModal()}
             {addBankDetailModal()}
+            {addWarehouseModal()}
+            {viewWarehouseModal()}
         </>
     );
 };

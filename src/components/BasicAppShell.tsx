@@ -15,6 +15,7 @@ import { useDisclosure } from "@mantine/hooks";
 import logo from "../assets/logo1.png";
 import UserInfo from "./UserInfo.tsx";
 import {
+    IconBuildingWarehouse,
     IconCalendarDollar,
     IconCashBanknote,
     IconInvoice,
@@ -215,6 +216,22 @@ const BasicAppShell = () => {
                         leftSection={<IconInvoice size="1rem" stroke={1.5} />}
                         variant="filled"
                         active={activePath === "invoices"}
+                    />
+                )}
+                {hasAnyPrivilege(userDetails.role, [
+                    USER_ROLES.SUPER_ADMIN,
+                    USER_ROLES.ADMIN,
+                    USER_ROLES.OWNER,
+                    USER_ROLES.WAREHOUSE_MANAGER,
+                    USER_ROLES.STOCK_KEEPER,
+                    USER_ROLES.SALES_MANAGER,
+                ]) && (
+                    <NavLink
+                        onClick={() => handleNavLinkClick("warehouses")}
+                        label="Warehouses"
+                        leftSection={<IconBuildingWarehouse size="1rem" stroke={1.5} />}
+                        variant="filled"
+                        active={activePath === "warehouses"}
                     />
                 )}
             </AppShell.Navbar>
