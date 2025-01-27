@@ -85,6 +85,9 @@ const ViewProduct = React.lazy(
 const ViewSupplier = React.lazy(
     () => import("./pages/suppliers/ViewSupplier.tsx")
 );
+const ViewWarehouse = React.lazy(
+    () => import("./pages/warehouses/ViewWarehouse.tsx")
+);
 const ViewCheque = React.lazy(() => import("./pages/cheques/ViewCheque.tsx"));
 const ViewInvoice = React.lazy(
     () => import("./pages/invoices/ViewInvoice.tsx")
@@ -239,6 +242,10 @@ const router = createBrowserRouter([
             {
                 path: "invoices/bulk-invoice-payments/:id",
                 element: <ViewBulkInvoicePayments />,
+            },
+            {
+                path: "warehouses/view-warehouse/:id",
+                element: <ViewWarehouse />,
             },
             {
                 path: "warehouses",
