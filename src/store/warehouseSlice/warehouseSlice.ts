@@ -94,6 +94,21 @@ export const changeStatusWarehouse = createAsyncThunk(
     }
 );
 
+export const getPagedWarehouses = createAsyncThunk(
+    "warehouse/getPagedWarehouses",
+    async (payload: any, { rejectWithValue }) => {
+        try {
+            const response = await axiosInstance.post(
+                `/warehouses/paged-warehouses`,
+                payload
+            );
+            return response.data;
+        } catch (err: any) {
+            throw rejectWithValue(err.response.data);
+        }
+    }
+);
+
 const warehousesSlice = createSlice({
     name: "warehouse",
     initialState,
@@ -137,6 +152,12 @@ const warehousesSlice = createSlice({
                         : w
                 );
                 state.selectedWarehouse = null;
+            }
+        );
+        builder.addCase(
+            getPagedWarehouses.fulfilled,
+            (state: Draft<WarehouseState>, action: PayloadAction<any>) => {
+                state.warehouses = action.payload.result.response;
             }
         );
     },
