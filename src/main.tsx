@@ -52,6 +52,7 @@ const Customers = React.lazy(() => import("./pages/customers"));
 const Products = React.lazy(() => import("./pages/products"));
 const Suppliers = React.lazy(() => import("./pages/suppliers"));
 const Cheques = React.lazy(() => import("./pages/cheques"));
+const Warehouses = React.lazy(() => import("./pages/warehouses"));
 const Invoices = React.lazy(() => import("./pages/invoices"));
 const AddCustomer = React.lazy(
     () => import("./pages/customers/AddCustomer.tsx")
@@ -84,6 +85,9 @@ const ViewProduct = React.lazy(
 const ViewSupplier = React.lazy(
     () => import("./pages/suppliers/ViewSupplier.tsx")
 );
+const ViewWarehouse = React.lazy(
+    () => import("./pages/warehouses/ViewWarehouse.tsx")
+);
 const ViewCheque = React.lazy(() => import("./pages/cheques/ViewCheque.tsx"));
 const ViewInvoice = React.lazy(
     () => import("./pages/invoices/ViewInvoice.tsx")
@@ -101,9 +105,21 @@ const EditChequePayment = React.lazy(
 const ViewChequePayment = React.lazy(
     () => import("./pages/chequePayments/ViewChequePayments.tsx")
 );
-const BulkInvoicePayment = React.lazy(() => import("./pages/invoices/bulkInvoicePayments/BulkInvoicePayment.tsx"));
-const PreviousBulkInvoicePayments = React.lazy(() => import("./pages/invoices/bulkInvoicePayments/PreviousBulkInvoicePayments.tsx"));
-const ViewBulkInvoicePayments = React.lazy(() => import("./pages/invoices/bulkInvoicePayments/BulkInvoicePaymentView.tsx"));
+const BulkInvoicePayment = React.lazy(
+    () => import("./pages/invoices/bulkInvoicePayments/BulkInvoicePayment.tsx")
+);
+const PreviousBulkInvoicePayments = React.lazy(
+    () =>
+        import(
+            "./pages/invoices/bulkInvoicePayments/PreviousBulkInvoicePayments.tsx"
+        )
+);
+const ViewBulkInvoicePayments = React.lazy(
+    () =>
+        import(
+            "./pages/invoices/bulkInvoicePayments/BulkInvoicePaymentView.tsx"
+        )
+);
 
 const router = createBrowserRouter([
     {
@@ -217,15 +233,23 @@ const router = createBrowserRouter([
             },
             {
                 path: "invoices/bulk-invoice-payment",
-                element: <BulkInvoicePayment />
+                element: <BulkInvoicePayment />,
             },
             {
                 path: "invoices/previous-bulk-invoice-payments",
-                element: <PreviousBulkInvoicePayments />
+                element: <PreviousBulkInvoicePayments />,
             },
             {
                 path: "invoices/bulk-invoice-payments/:id",
-                element: <ViewBulkInvoicePayments />
+                element: <ViewBulkInvoicePayments />,
+            },
+            {
+                path: "warehouses/view-warehouse/:id",
+                element: <ViewWarehouse />,
+            },
+            {
+                path: "warehouses",
+                element: <Warehouses />,
             },
             {
                 path: "*",
