@@ -200,7 +200,7 @@ const ChequePayments = () => {
                         <TextInput
                             className="w-full lg:w-1/4"
                             size="xs"
-                            placeholder="Receiver"
+                            placeholder="Receiver, Cheque Number"
                             onChange={(event) => {
                                 setSearchQuery(event.target.value); // Update the search query
                                 setPageIndex(1); // Reset the page index to 1
@@ -249,6 +249,7 @@ const ChequePayments = () => {
                                 setPageIndex(1); // Reset the page index to 1
                             }}
                         />
+
                         <DateInput
                             className="w-full lg:w-1/4"
                             size="xs"

@@ -79,6 +79,21 @@ export const updateWarehouse = createAsyncThunk(
     }
 );
 
+export const updateStockDetailsForWarehouse = createAsyncThunk(
+    "warehouse/updateStockDetailsForWarehouse",
+    async (payload: any, { rejectWithValue }) => {
+        try {
+            const response = await axiosInstance.put(
+                `/warehouses/stock-update/${payload.id}`,
+                payload.values
+            );
+            return response.data;
+        } catch (err: any) {
+            throw rejectWithValue(err.response.data);
+        }
+    }
+);
+
 export const changeStatusWarehouse = createAsyncThunk(
     "warehouse/changeStatus",
     async (payload: any, { rejectWithValue }) => {
