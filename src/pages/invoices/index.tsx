@@ -10,14 +10,14 @@ import {
     Pagination,
     Select,
     Table,
-    Text,
+    Text, TextInput,
 } from "@mantine/core";
 import {
     IconCertificate,
     IconDatabaseOff,
     IconDotsVertical,
     IconEdit,
-    IconEye,
+    IconEye, IconSearch, IconX,
 } from "@tabler/icons-react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store/store.ts";
@@ -44,6 +44,8 @@ const Invoices = () => {
     const [supplier, setSupplier] = useState<string>("");
     const [status, setStatus] = useState<string>("");
     const [invoicedDate, setInvoicedDate] = useState<any>();
+    const [searchQuery, setSearchQuery] = useState<string>("");
+
     const sort = -1;
     const [metadata, setMetadata] = useState<any>();
     const [fromDate, setFromDate] = useState<any>();
@@ -57,7 +59,7 @@ const Invoices = () => {
 
     useEffect(() => {
         fetchInvoices();
-    }, [dispatch, pageIndex, status, supplier, invoicedDate, fromDate, toDate]);
+    }, [dispatch, pageIndex, status, supplier, invoicedDate, fromDate, toDate, searchQuery]);
 
     const fetchInvoices = async () => {
         setLoading(true);
@@ -71,6 +73,7 @@ const Invoices = () => {
             invoicedDate,
             fromDate,
             toDate,
+            searchQuery
         };
         const response = await dispatch(getPagedInvoices({ filters: filters }));
         setMetadata(response.payload.result.metadata);
@@ -186,6 +189,32 @@ const Invoices = () => {
                             setInvoicedDate(e); // Update the invoice date
                             setPageIndex(1); // Reset the page index to 1
                         }}
+                    />
+
+                    <TextInput
+                        className="w-full lg:w-1/4"
+                        size="xs"
+                        placeholder="Invoice Number"
+                        onChange={(event) => {
+                            setSearchQuery(event.target.value); // Update the search query
+                            setPageIndex(1); // Reset the page index to 1
+                        }}
+                        value={searchQuery}
+                        rightSection={
+                            searchQuery ? (
+                                <IconX
+                                    className="cursor-pointer"
+                                    onClick={() => {
+                                        setSearchQuery(""); // Clear the search query
+                                        setPageIndex(1); // Reset the page index to 1
+                                    }}
+                                    size={14}
+                                />
+                            ) : (
+                                ""
+                            )
+                        }
+                        leftSection={<IconSearch size={14} />}
                     />
 
                     <DateInput

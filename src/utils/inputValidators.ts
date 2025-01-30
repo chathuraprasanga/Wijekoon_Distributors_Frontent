@@ -5,7 +5,7 @@ export const isValidEmail = (email: string): boolean => {
 
 export const isValidPhone = (phone: string): boolean => {
     const phoneRegex = /^(0(?:11|21|23|25|26|27|31|32|33|34|35|36|37|38|41|45|47|51|52|54|55|57|58|63|65|66|67|70|71|72|75|76|77|78|81|91|94|95)\d{6}|0(?:37|70|71|72|75|76|77|78)\d{7})$/;
-    return phoneRegex.test(phone);
+    return phone.length === 10 && phoneRegex.test(phone);
 };
 
 export const isValidChequeNumber = (chequeNumber: string): boolean => {
