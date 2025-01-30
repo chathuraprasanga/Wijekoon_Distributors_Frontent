@@ -10,7 +10,7 @@ import {
     Pagination,
     Select,
     Table,
-    Text,
+    Text, TextInput,
 } from "@mantine/core";
 import {
     IconCertificate,
@@ -18,8 +18,8 @@ import {
     IconDatabaseOff,
     IconDotsVertical,
     IconEdit,
-    IconEye,
-    IconTruck,
+    IconEye, IconSearch,
+    IconTruck, IconX,
 } from "@tabler/icons-react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store/store.ts";
@@ -47,6 +47,8 @@ const Cheques = () => {
     const [depositDate, setDepositDate] = useState<any>();
     const [fromDate, setFromDate] = useState<any>();
     const [toDate, setToDate] = useState<any>();
+    const [searchQuery, setSearchQuery] = useState<string>("");
+
     const sort = -1;
     const [metadata, setMetadata] = useState<any>();
 
@@ -58,7 +60,7 @@ const Cheques = () => {
 
     useEffect(() => {
         fetchCheques();
-    }, [dispatch, pageIndex, customer, status, depositDate, fromDate, toDate]);
+    }, [dispatch, pageIndex, customer, status, depositDate, fromDate, toDate, searchQuery]);
 
     const fetchCheques = async () => {
         setLoading(true);
@@ -71,7 +73,8 @@ const Cheques = () => {
             status,
             depositDate,
             fromDate,
-            toDate
+            toDate,
+            searchQuery
         };
         const response = await dispatch(getPagedCheques({ filters: filters }));
         setMetadata(response.payload.result.metadata);
@@ -178,6 +181,33 @@ const Cheques = () => {
                             setDepositDate(e); // Update the deposit date
                             setPageIndex(1); // Reset the page index to 1
                         }}
+                    />
+
+                    <TextInput
+                        className="w-full lg:w-1/4"
+                        size="xs"
+                        placeholder="Cheque Number"
+                        type="number"
+                        onChange={(event) => {
+                            setSearchQuery(event.target.value); // Update the search query
+                            setPageIndex(1); // Reset the page index to 1
+                        }}
+                        value={searchQuery}
+                        rightSection={
+                            searchQuery ? (
+                                <IconX
+                                    className="cursor-pointer"
+                                    onClick={() => {
+                                        setSearchQuery(""); // Clear the search query
+                                        setPageIndex(1); // Reset the page index to 1
+                                    }}
+                                    size={14}
+                                />
+                            ) : (
+                                ""
+                            )
+                        }
+                        leftSection={<IconSearch size={14} />}
                     />
 
                     <DateInput
