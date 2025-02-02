@@ -779,7 +779,7 @@ const SettingsPage = () => {
             handleAddWarehouseDetail.close();
         } else if (response.type === "warehouse/addWarehouse/rejected") {
             setIsLoading(false);
-            toNotify("Error", "Warehouse created failed", "ERROR");
+            toNotify("Error", `${response.payload.error}`, "ERROR");
         } else {
             setIsLoading(false);
             toNotify("Warning", "Please contact system admin", "WARNING");
