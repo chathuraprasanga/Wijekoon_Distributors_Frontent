@@ -426,7 +426,7 @@ const Cheques = () => {
                             ))
                         ) : (
                             <Table.Tr>
-                                <Table.Td colSpan={7} className="text-center">
+                                <Table.Td colSpan={8} className="text-center">
                                     <div className="flex justify-center items-center">
                                         <IconDatabaseOff
                                             color="red"

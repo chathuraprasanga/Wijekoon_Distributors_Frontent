@@ -120,6 +120,18 @@ const ViewBulkInvoicePayments = React.lazy(
             "./pages/invoices/bulkInvoicePayments/BulkInvoicePaymentView.tsx"
         )
 );
+const SalesRecords = React.lazy(
+    () =>
+        import(
+            "./pages/salesRecords/index.tsx"
+            )
+);
+const AddSalesRecord = React.lazy(
+    () =>
+        import(
+            "./pages/salesRecords/AddSalesRecord.tsx"
+            )
+);
 
 const router = createBrowserRouter([
     {
@@ -250,6 +262,14 @@ const router = createBrowserRouter([
             {
                 path: "warehouses",
                 element: <Warehouses />,
+            },
+            {
+                path: "sales-records",
+                element: <SalesRecords />,
+            },
+            {
+                path: "sales-records/add-sales-record",
+                element: <AddSalesRecord />,
             },
             {
                 path: "*",
