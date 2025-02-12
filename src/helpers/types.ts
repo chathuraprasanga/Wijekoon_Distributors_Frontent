@@ -27,3 +27,16 @@ export const PAYMENT_STATUS_COLORS = Object.freeze({
     PAID: "green",
     "NOT PAID": "red",
 });
+
+export const SALES_RECORD_STATUS_COLORS = Object.freeze({
+    PAID: "green",
+    "NOT PAID": "red",
+    "PARTIALLY PAID": "violet",
+    INCOMPLETE: "yellow",
+    COMPLETE: "blue",
+});
+
+export const DOWNLOAD_TYPES = {
+    BULK_INVOICE_PAYMENT: "BULK_INVOICE_PAYMENT",
+    SALES_RECORD: "SALES_RECORD",
+};
