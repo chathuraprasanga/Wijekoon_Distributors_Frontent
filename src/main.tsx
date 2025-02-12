@@ -120,18 +120,16 @@ const ViewBulkInvoicePayments = React.lazy(
             "./pages/invoices/bulkInvoicePayments/BulkInvoicePaymentView.tsx"
         )
 );
-const SalesRecords = React.lazy(
-    () =>
-        import(
-            "./pages/salesRecords/index.tsx"
-            )
-);
+const SalesRecords = React.lazy(() => import("./pages/salesRecords/index.tsx"));
 const AddSalesRecord = React.lazy(
-    () =>
-        import(
-            "./pages/salesRecords/AddSalesRecord.tsx"
-            )
+    () => import("./pages/salesRecords/AddSalesRecord.tsx")
 );
+
+const ViewSalesRecord = React.lazy(
+    () => import("./pages/salesRecords/ViewSalesRecord.tsx")
+);
+
+const PdfView = React.lazy(() => import("./pages/PdfViewPage.tsx"));
 
 const router = createBrowserRouter([
     {
@@ -270,6 +268,14 @@ const router = createBrowserRouter([
             {
                 path: "sales-records/add-sales-record",
                 element: <AddSalesRecord />,
+            },
+            {
+                path: "sales-records/view-sales-record/:id",
+                element: <ViewSalesRecord />,
+            },
+            {
+                path: "pdf/view",
+                element: <PdfView />,
             },
             {
                 path: "*",

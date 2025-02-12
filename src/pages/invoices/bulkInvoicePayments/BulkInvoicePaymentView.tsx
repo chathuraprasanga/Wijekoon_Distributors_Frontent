@@ -1,6 +1,6 @@
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import { Box, Button, Group, Table } from "@mantine/core";
-import { IconArrowLeft, IconDownload } from "@tabler/icons-react";
+import { IconArrowLeft, IconFile } from "@tabler/icons-react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../../store/store.ts";
 import { useLoading } from "../../../helpers/loadingContext.tsx";
@@ -8,14 +8,15 @@ import { useEffect } from "react";
 import toNotify from "../../../helpers/toNotify.tsx";
 import { getBulkInvoicePayment } from "../../../store/invoiceSlice/invoiceSlice.ts";
 import { amountPreview } from "../../../helpers/preview.tsx";
+import { DOWNLOAD_TYPES } from "../../../helpers/types.ts";
 
 const BulkInvoicePaymentView = () => {
+    const navigate = useNavigate();
     const { setLoading } = useLoading();
     const dispatch = useDispatch<AppDispatch | any>();
     const data = useSelector(
         (state: RootState) => state.invoice.selectedBulkInvoicePayment
     );
-    console.log("data", data);
     const { id } = useParams();
 
     useEffect(() => {
@@ -64,6 +65,11 @@ const BulkInvoicePaymentView = () => {
         0
     );
 
+    const gotoPdfView = (data:any) => {
+        navigate("/app/pdf/view", { state: { data: data, type: DOWNLOAD_TYPES.BULK_INVOICE_PAYMENT } });
+    };
+
+
     return (
         <>
             {/* Header */}
@@ -80,10 +86,10 @@ const BulkInvoicePaymentView = () => {
                 <Group>
                     <Button
                         size="xs"
-                        leftSection={<IconDownload size={16} />}
-                        // onClick={() => generateBulkInvoicePayment()}
+                        leftSection={<IconFile size={16} />}
+                        onClick={() => gotoPdfView(data)}
                     >
-                        Download
+                        PDF View
                     </Button>
                 </Group>
             </Box>

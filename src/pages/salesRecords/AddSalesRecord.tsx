@@ -273,12 +273,13 @@ const AddSalesRecord = () => {
                                                         val
                                                     )
                                                 }
+                                                placeholder="Select Bank"
                                             />
                                         </Table.Td>
                                         <Table.Td>
                                             <TextInput
                                                 size="xs"
-                                                placeholder="Branch"
+                                                placeholder="Enter Branch Code"
                                                 value={cheque.branch}
                                                 maxLength={3}
                                                 onChange={(e) =>
@@ -293,7 +294,7 @@ const AddSalesRecord = () => {
                                         <Table.Td>
                                             <TextInput
                                                 size="xs"
-                                                placeholder="Cheque No"
+                                                placeholder="Enter Cheque No"
                                                 value={cheque.number}
                                                 maxLength={6}
                                                 onChange={(e) =>
@@ -328,7 +329,7 @@ const AddSalesRecord = () => {
                                         <Table.Td>
                                             <DatePickerInput
                                                 size="xs"
-                                                placeholder="Date"
+                                                placeholder="Deposite Date"
                                                 value={cheque.depositDate}
                                                 onChange={(date) =>
                                                     updateCheque(
@@ -378,11 +379,12 @@ const AddSalesRecord = () => {
                                         onChange={(val) =>
                                             updateCheque(index, "bank", val)
                                         }
+                                        placeholder="Select Bank"
                                     />
                                     <TextInput
                                         size="xs"
                                         label="Branch"
-                                        placeholder="Enter Branch"
+                                        placeholder="Enter Branch Code"
                                         value={cheque.branch}
                                         onChange={(e) =>
                                             updateCheque(
@@ -409,6 +411,11 @@ const AddSalesRecord = () => {
                                         size="xs"
                                         label="Amount"
                                         placeholder="Enter Amount"
+                                        hideControls
+                                        prefix="Rs. "
+                                        decimalScale={2}
+                                        fixedDecimalScale
+                                        thousandSeparator=","
                                         value={cheque.amount}
                                         onChange={(val) =>
                                             updateCheque(index, "amount", val)
