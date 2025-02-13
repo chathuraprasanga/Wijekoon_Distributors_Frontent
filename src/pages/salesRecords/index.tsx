@@ -87,7 +87,6 @@ const SalesRecords = () => {
                     >
                         Add Sales Record
                     </Button>{" "}
-                    <Button size="xs" onClick={() => navigate("/app/sales-records/add-sales-record")}>Add Sales Record</Button>{" "}
                 </Box>
             </Box>
 
@@ -173,12 +172,14 @@ const SalesRecords = () => {
                                             color={
                                                 SALES_RECORD_STATUS_COLORS[
                                                     c.paymentStatus as keyof typeof SALES_RECORD_STATUS_COLORS
-                                                ] || "gray"
+                                                    ] || "gray"
                                             }
                                             size="sm"
                                             radius="xs"
                                         >
-                                            {c.paymentStatus}                             
+                                            {c.paymentStatus}
+                                        </Badge>
+                                    </Table.Td>
                                     <Table.Td>
                                         <Menu width={150}>
                                             <Menu.Target>
@@ -248,6 +249,8 @@ const SalesRecords = () => {
                                 color={
                                     SALES_RECORD_STATUS_COLORS[
                                         c.paymentStatus as keyof typeof SALES_RECORD_STATUS_COLORS
+                                        ] || "gray"
+                                }
                                 size="sm"
                                 radius="xs"
                                 className="mt-2"
