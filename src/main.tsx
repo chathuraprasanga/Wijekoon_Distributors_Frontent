@@ -112,15 +112,14 @@ const PreviousBulkInvoicePayments = React.lazy(
     () =>
         import(
             "./pages/invoices/bulkInvoicePayments/PreviousBulkInvoicePayments.tsx"
-        )
+            )
 );
 const ViewBulkInvoicePayments = React.lazy(
     () =>
         import(
             "./pages/invoices/bulkInvoicePayments/BulkInvoicePaymentView.tsx"
-        )
+            )
 );
-
 const SalesRecords = React.lazy(() => import("./pages/salesRecords/index.tsx"));
 const AddSalesRecord = React.lazy(
     () => import("./pages/salesRecords/AddSalesRecord.tsx")
@@ -131,7 +130,6 @@ const ViewSalesRecord = React.lazy(
 );
 
 const PdfView = React.lazy(() => import("./pages/PdfViewPage.tsx"));
-
 
 const router = createBrowserRouter([
     {
