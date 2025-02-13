@@ -73,7 +73,7 @@ const BulkInvoicePDF = ({data}:any) => {
                 <Divider my="md" />
 
                 {/* Supplier and Payment Details */}
-                <Grid>
+                <Grid mx="md">
                     <Grid.Col span="auto">
                         <Text fw={500} size="lg">
                             Supplier:
@@ -111,13 +111,14 @@ const BulkInvoicePDF = ({data}:any) => {
                         <Table.Tr>
                             <Table.Th>Item</Table.Th>
                             <Table.Th>Amount</Table.Th>
+                            <Table.Th>Amount</Table.Th>
                         </Table.Tr>
                     </Table.Thead>
                     <Table.Tbody>
                         {/* Invoices Section */}
                         <Table.Tr>
                             <Table.Td
-                                colSpan={2}
+                                colSpan={3}
                                 className="text-center font-bold"
                             >
                                 Invoices
@@ -129,12 +130,14 @@ const BulkInvoicePDF = ({data}:any) => {
                                 <Table.Td className="text-right">
                                     {amountPreview(i.amount)}
                                 </Table.Td>
+                                <Table.Td></Table.Td>
                             </Table.Tr>
                         ))}
                         <Table.Tr>
                             <Table.Td className="font-bold">
                                 Total Invoices Amount
                             </Table.Td>
+                            <Table.Td></Table.Td>
                             <Table.Td className="font-bold text-right">
                                 {amountPreview(invoiceAmount)}
                             </Table.Td>
@@ -161,7 +164,7 @@ const BulkInvoicePDF = ({data}:any) => {
                             <React.Fragment key={idx}>
                                 <Table.Tr>
                                     <Table.Td
-                                        colSpan={2}
+                                        colSpan={3}
                                         className="text-center font-bold"
                                     >
                                         {section.title}
@@ -179,12 +182,14 @@ const BulkInvoicePDF = ({data}:any) => {
                                                     item.note * item.count
                                             )}
                                         </Table.Td>
+                                        <Table.Td></Table.Td>
                                     </Table.Tr>
                                 ))}
                                 <Table.Tr>
                                     <Table.Td className="font-bold">
                                         Total {section.title}
                                     </Table.Td>
+                                    <Table.Td></Table.Td>
                                     <Table.Td className="font-bold text-right">
                                         {amountPreview(section.total)}
                                     </Table.Td>
@@ -197,6 +202,7 @@ const BulkInvoicePDF = ({data}:any) => {
                             <Table.Td className="font-bold text-lg">
                                 Balance
                             </Table.Td>
+                            <Table.Td></Table.Td>
                             <Table.Td className="font-bold text-lg text-right text-red-600">
                                 {amountPreview(
                                     invoiceAmount -

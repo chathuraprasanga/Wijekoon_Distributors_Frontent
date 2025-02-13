@@ -9,8 +9,10 @@ import toNotify from "../../../helpers/toNotify.tsx";
 import { getBulkInvoicePayment } from "../../../store/invoiceSlice/invoiceSlice.ts";
 import { amountPreview } from "../../../helpers/preview.tsx";
 import { DOWNLOAD_TYPES } from "../../../helpers/types.ts";
+import { useMediaQuery } from "@mantine/hooks";
 
 const BulkInvoicePaymentView = () => {
+    const isSmallOrMedium = useMediaQuery("(max-width: 1024px)"); // Disables on sm & md screens
     const navigate = useNavigate();
     const { setLoading } = useLoading();
     const dispatch = useDispatch<AppDispatch | any>();
@@ -65,10 +67,11 @@ const BulkInvoicePaymentView = () => {
         0
     );
 
-    const gotoPdfView = (data:any) => {
-        navigate("/app/pdf/view", { state: { data: data, type: DOWNLOAD_TYPES.BULK_INVOICE_PAYMENT } });
+    const gotoPdfView = (data: any) => {
+        navigate("/app/pdf/view", {
+            state: { data: data, type: DOWNLOAD_TYPES.BULK_INVOICE_PAYMENT },
+        });
     };
-
 
     return (
         <>
@@ -88,6 +91,7 @@ const BulkInvoicePaymentView = () => {
                         size="xs"
                         leftSection={<IconFile size={16} />}
                         onClick={() => gotoPdfView(data)}
+                        disabled={isSmallOrMedium} // ✅ Disable when on small & medium screens
                     >
                         PDF View
                     </Button>
