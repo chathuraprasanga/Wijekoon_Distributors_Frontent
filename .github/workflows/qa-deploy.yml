@@ -53,6 +53,7 @@ jobs:
             nvm use node || echo "NVM not found, skipping..."
 
             cd /var/www/qa/qa-wd-app
+            git pull origin qa
 
             # Remove old dist folder and extract new one
             rm -rf dist
