@@ -171,10 +171,10 @@ const AddSalesRecord = () => {
             prev.map((p, i) =>
                 i === index
                     ? {
-                          ...p,
-                          amount: amount || 0,
-                          lineTotal: (p.product.unitPrice || 0) * (amount || 0),
-                      }
+                        ...p,
+                        amount: amount || 0,
+                        lineTotal: (p.product.unitPrice || 0) * (amount || 0),
+                    }
                     : p
             )
         );
@@ -280,7 +280,6 @@ const AddSalesRecord = () => {
                                             <TextInput
                                                 size="xs"
                                                 placeholder="Enter Branch Code"
-                                                placeholder="Branch"
                                                 value={cheque.branch}
                                                 maxLength={3}
                                                 onChange={(e) =>
@@ -296,7 +295,6 @@ const AddSalesRecord = () => {
                                             <TextInput
                                                 size="xs"
                                                 placeholder="Enter Cheque No"
-                                                placeholder="Cheque No"
                                                 value={cheque.number}
                                                 maxLength={6}
                                                 onChange={(e) =>
@@ -332,7 +330,6 @@ const AddSalesRecord = () => {
                                             <DatePickerInput
                                                 size="xs"
                                                 placeholder="Deposite Date"
-                                                placeholder="Date"
                                                 value={cheque.depositDate}
                                                 onChange={(date) =>
                                                     updateCheque(
@@ -388,7 +385,6 @@ const AddSalesRecord = () => {
                                         size="xs"
                                         label="Branch"
                                         placeholder="Enter Branch Code"
-                                        placeholder="Enter Branch"
                                         value={cheque.branch}
                                         onChange={(e) =>
                                             updateCheque(
