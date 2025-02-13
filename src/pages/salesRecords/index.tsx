@@ -20,12 +20,13 @@ import {
     IconX,
 } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
-import { BASIC_STATUS_COLORS } from "../../helpers/types.ts";
+import { SALES_RECORD_STATUS_COLORS } from "../../helpers/types.ts";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store/store.ts";
 import { useLoading } from "../../helpers/loadingContext.tsx";
 import { getPagedSalesRecords } from "../../store/salesRecordSlice/salesRecordSlice.ts";
 import { useNavigate } from "react-router";
+import { amountPreview, datePreview } from "../../helpers/preview.tsx";
 
 const SalesRecords = () => {
     const { setLoading } = useLoading();
@@ -40,7 +41,7 @@ const SalesRecords = () => {
     const [metadata, setMetadata] = useState<any>();
     const salesRecords = useSelector(
         (state: RootState) => state.salesRecords.salesRecords
-     );
+    );
 
     useEffect(() => {
         fetchSalesRecords();
@@ -78,6 +79,14 @@ const SalesRecords = () => {
                     </Text>
                 </Box>
                 <Box>
+                    <Button
+                        size="xs"
+                        onClick={() =>
+                            navigate("/app/sales-records/add-sales-record")
+                        }
+                    >
+                        Add Sales Record
+                    </Button>{" "}
                     <Button size="xs" onClick={() => navigate("/app/sales-records/add-sales-record")}>Add Sales Record</Button>{" "}
                 </Box>
             </Box>
@@ -151,19 +160,25 @@ const SalesRecords = () => {
                         {salesRecords?.length ? (
                             salesRecords.map((c: any, i: number) => (
                                 <Table.Tr key={i}>
-                                    <Table.Td>{c?.id}</Table.Td>
-                                    <Table.Td>{c.city}</Table.Td>
-                                    <Table.Td>{c.city}</Table.Td>
-                                    <Table.Td>{c.city}</Table.Td>
+                                    <Table.Td>{c?.orderId}</Table.Td>
+                                    <Table.Td>{datePreview(c?.date)}</Table.Td>
+                                    <Table.Td>{c?.customer?.name}</Table.Td>
+                                    <Table.Td>
+                                        {amountPreview(
+                                            c?.amountDetails?.netTotal
+                                        )}
+                                    </Table.Td>
                                     <Table.Td>
                                         <Badge
-                                            color={c.status ? "green" : "red"}
+                                            color={
+                                                SALES_RECORD_STATUS_COLORS[
+                                                    c.paymentStatus as keyof typeof SALES_RECORD_STATUS_COLORS
+                                                ] || "gray"
+                                            }
                                             size="sm"
                                             radius="xs"
                                         >
-                                            {c.status ? "ACTIVE" : "INACTIVE"}
-                                        </Badge>
-                                    </Table.Td>
+                                            {c.paymentStatus}                             
                                     <Table.Td>
                                         <Menu width={150}>
                                             <Menu.Target>
@@ -177,6 +192,11 @@ const SalesRecords = () => {
                                                 <Menu.Item
                                                     rightSection={
                                                         <IconEye size={16} />
+                                                    }
+                                                    onClick={() =>
+                                                        navigate(
+                                                            `/app/sales-records/view-sales-record/${c?._id}`
+                                                        )
                                                     }
                                                 >
                                                     View
@@ -217,16 +237,17 @@ const SalesRecords = () => {
                     salesRecords.map((c: any, i: number) => (
                         <Card key={i} shadow="sm" withBorder mx="xs" my="lg">
                             <Text className="font-semibold">
-                                Order Id: {c.id}
+                                Order Id: {c?.orderId}
                             </Text>
-                            <Text>Customer: {c.city}</Text>
-                            <Text>Amount: {c.city}</Text>
+                            <Text>Customer: {c?.customer?.name}</Text>
+                            <Text>
+                                Amount:{" "}
+                                {amountPreview(c?.amountDetails?.netTotal)}
+                            </Text>
                             <Badge
                                 color={
-                                    BASIC_STATUS_COLORS[
-                                        c.status as keyof typeof BASIC_STATUS_COLORS
-                                    ] || "gray"
-                                }
+                                    SALES_RECORD_STATUS_COLORS[
+                                        c.paymentStatus as keyof typeof SALES_RECORD_STATUS_COLORS
                                 size="sm"
                                 radius="xs"
                                 className="mt-2"

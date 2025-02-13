@@ -4,8 +4,10 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite --host",
-    "build": "tsc -b && vite build",
+    "dev": "vite --mode dev --host",
+    "qa": "vite --mode qa --host",
+    "build:qa": "tsc -b && vite build --mode qa",
+    "build:prod": "tsc -b && vite build --mode prod",
     "lint": "eslint .",
     "preview": "vite preview"
   },
@@ -43,6 +45,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.15.0",
+    "@types/node": "^22.13.2",
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",
     "@vitejs/plugin-react": "^4.3.4",
