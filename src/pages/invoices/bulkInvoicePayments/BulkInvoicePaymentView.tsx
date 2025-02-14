@@ -91,7 +91,7 @@ const BulkInvoicePaymentView = () => {
                         size="xs"
                         leftSection={<IconFile size={16} />}
                         onClick={() => gotoPdfView(data)}
-                        disabled={isSmallOrMedium} // ✅ Disable when on small & medium screens
+                        disabled={isSmallOrMedium}
                     >
                         PDF View
                     </Button>

@@ -269,6 +269,11 @@ const SalesRecords = () => {
                                         <Menu.Label>Actions</Menu.Label>
                                         <Menu.Item
                                             rightSection={<IconEye size={16} />}
+                                            onClick={() =>
+                                                navigate(
+                                                    `/app/sales-records/view-sales-record/${c?._id}`
+                                                )
+                                            }
                                         >
                                             View
                                         </Menu.Item>
