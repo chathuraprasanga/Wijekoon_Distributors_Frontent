@@ -28,20 +28,23 @@ import { DatePickerInput } from "@mantine/dates";
 import { useDisclosure, useMediaQuery } from "@mantine/hooks";
 import { amountPreview } from "../../helpers/preview.tsx";
 import { useForm } from "@mantine/form";
-import { useNavigate } from "react-router";
+import { useNavigate, useSearchParams } from "react-router";
 import banks from "../../helpers/banks.json";
 import { useLoading } from "../../helpers/loadingContext.tsx";
 import toNotify from "../../helpers/toNotify.tsx";
 import { addSalesRecord } from "../../store/salesRecordSlice/salesRecordSlice.ts";
+import { getWarehouse } from "../../store/warehouseSlice/warehouseSlice.ts";
 
 const AddSalesRecord = () => {
     const { setLoading } = useLoading();
     const navigate = useNavigate();
+    const [searchParams] = useSearchParams();
     const dispatch = useDispatch<AppDispatch>();
     const isMobile = useMediaQuery("(max-width: 768px)");
-    const products = useSelector((state: RootState) => state.product.products);
+    // const products = useSelector((state: RootState) => state.product.products);
+    const [products, setProducts] = useState<any[]>([]);
     const customers = useSelector(
-        (state: RootState) => state.customer.customers
+        (state: RootState) => state.customer.customers,
     );
     const [productSelectModalOpened, productSelectModalHandler] =
         useDisclosure(false);
@@ -59,6 +62,12 @@ const AddSalesRecord = () => {
         cheques: [],
         credit: 0,
     });
+    const warehouseId = searchParams.get("warehouseId");
+    const warehouse = useSelector(
+        (state: RootState) => state.warehouses.selectedWarehouse,
+    );
+    const [warehouseStockModalOpened, warehouseStockModalHandler] =
+        useDisclosure(false);
 
     useEffect(() => {
         fetchRelatedDetails();
@@ -66,7 +75,21 @@ const AddSalesRecord = () => {
 
     const fetchRelatedDetails = async () => {
         await dispatch(getCustomers({ status: true }));
-        await dispatch(getProducts({ status: true }));
+
+        if (warehouseId) {
+            const response = await dispatch(getWarehouse(warehouseId));
+            const productArray = response.payload.result.products.map(
+                (item: any) => ({
+                    ...item.product,
+                    count: item.count,
+                    mappingId: item._id,
+                }),
+            );
+            setProducts(productArray);
+        } else {
+            const response = await dispatch(getProducts({ status: true }));
+            setProducts(response.payload.result);
+        }
     };
 
     const salesRecordForm = useForm({
@@ -97,7 +120,7 @@ const AddSalesRecord = () => {
 
     const removeSelectedProduct = (productId: string) => {
         setSelectedProducts((prev) =>
-            prev.filter((p) => p.product._id !== productId)
+            prev.filter((p) => p.product._id !== productId),
         );
     };
 
@@ -129,14 +152,14 @@ const AddSalesRecord = () => {
                                 <Group
                                     onClick={() =>
                                         selectedProducts.some(
-                                            (prod) => prod.product._id === p._id
+                                            (prod) => prod.product._id === p._id,
                                         )
                                             ? removeSelectedProduct(p._id)
                                             : updateSelectedProducts(p)
                                     }
                                 >
                                     {selectedProducts.some(
-                                        (prod) => prod.product._id === p._id
+                                        (prod) => prod.product._id === p._id,
                                     ) ? (
                                         <ActionIcon color="red">
                                             <IconTableMinus size={16} />
@@ -171,18 +194,18 @@ const AddSalesRecord = () => {
             prev.map((p, i) =>
                 i === index
                     ? {
-                          ...p,
-                          amount: amount || 0,
-                          lineTotal: (p.product.unitPrice || 0) * (amount || 0),
-                      }
-                    : p
-            )
+                        ...p,
+                        amount: amount || 0,
+                        lineTotal: (p.product.unitPrice || 0) * (amount || 0),
+                    }
+                    : p,
+            ),
         );
     };
 
     const subTotal = useMemo(
         () => selectedProducts.reduce((sum, p) => sum + (p.lineTotal || 0), 0),
-        [selectedProducts]
+        [selectedProducts],
     );
 
     const netTotal = useMemo(
@@ -196,16 +219,16 @@ const AddSalesRecord = () => {
             salesRecordForm.values.discount,
             salesRecordForm.values.tax,
             salesRecordForm.values.otherCost,
-        ]
+        ],
     );
 
     const chequeTotal = useMemo(
         () =>
             paymentDetails.cheques.reduce(
                 (sum, cheque) => sum + (cheque.amount || 0),
-                0
+                0,
             ),
-        [paymentDetails.cheques]
+        [paymentDetails.cheques],
     );
 
     const credit = useMemo(() => {
@@ -270,7 +293,7 @@ const AddSalesRecord = () => {
                                                     updateCheque(
                                                         index,
                                                         "bank",
-                                                        val
+                                                        val,
                                                     )
                                                 }
                                                 placeholder="Select Bank"
@@ -286,7 +309,7 @@ const AddSalesRecord = () => {
                                                     updateCheque(
                                                         index,
                                                         "branch",
-                                                        e.target.value
+                                                        e.target.value,
                                                     )
                                                 }
                                             />
@@ -301,7 +324,7 @@ const AddSalesRecord = () => {
                                                     updateCheque(
                                                         index,
                                                         "number",
-                                                        e.target.value
+                                                        e.target.value,
                                                     )
                                                 }
                                             />
@@ -321,7 +344,7 @@ const AddSalesRecord = () => {
                                                     updateCheque(
                                                         index,
                                                         "amount",
-                                                        val
+                                                        val,
                                                     )
                                                 }
                                             />
@@ -335,7 +358,7 @@ const AddSalesRecord = () => {
                                                     updateCheque(
                                                         index,
                                                         "depositDate",
-                                                        date
+                                                        date,
                                                     )
                                                 }
                                             />
@@ -390,7 +413,7 @@ const AddSalesRecord = () => {
                                             updateCheque(
                                                 index,
                                                 "branch",
-                                                e.target.value
+                                                e.target.value,
                                             )
                                         }
                                     />
@@ -403,7 +426,7 @@ const AddSalesRecord = () => {
                                             updateCheque(
                                                 index,
                                                 "number",
-                                                e.target.value
+                                                e.target.value,
                                             )
                                         }
                                     />
@@ -430,7 +453,7 @@ const AddSalesRecord = () => {
                                             updateCheque(
                                                 index,
                                                 "depositDate",
-                                                date
+                                                date,
                                             )
                                         }
                                     />
@@ -494,7 +517,7 @@ const AddSalesRecord = () => {
         setPaymentDetails((prev) => ({
             ...prev,
             cheques: prev.cheques.map((cheque, i) =>
-                i === index ? { ...cheque, [field]: value } : cheque
+                i === index ? { ...cheque, [field]: value } : cheque,
             ),
         }));
     };
@@ -584,6 +607,8 @@ const AddSalesRecord = () => {
         setLoading(true);
         try {
             const payload = {
+                isWarehouseSale: !!warehouse,
+                warehouseId: warehouse._id,
                 customer: salesRecordForm.values.customer,
                 date: salesRecordForm.values.date
                     ? new Date(salesRecordForm.values.date).toISOString()
@@ -614,7 +639,7 @@ const AddSalesRecord = () => {
                 toNotify(
                     "Success",
                     "Sales record created successfully",
-                    "SUCCESS"
+                    "SUCCESS",
                 );
                 navigate("/app/sales-records");
             } else if (
@@ -630,6 +655,47 @@ const AddSalesRecord = () => {
         } finally {
             setLoading(false);
         }
+    };
+    console.log("products", products);
+
+    const warehouseStockModal = () => {
+        return (
+            <Modal
+                opened={warehouseStockModalOpened}
+                onClose={warehouseStockModalHandler.close}
+                title={<Text size="lg" fw={600}>Warehouse Stock Details</Text>}
+                size={isMobile ? "100%" : "50%"}
+            >
+                <Stack gap="xs">
+                    <Text>Warehouse ID: {warehouse.id}</Text>
+                    <Text>City: {warehouse.city}</Text>
+                </Stack>
+                <Group>
+                    <Table withTableBorder withColumnBorders withRowBorders>
+                        <Table.Thead>
+                            <Table.Tr>
+                                <Table.Td>Product</Table.Td>
+                                <Table.Td>Product Code</Table.Td>
+                                <Table.Td>Size</Table.Td>
+                                <Table.Td>Unit Price</Table.Td>
+                                <Table.Td>Stock</Table.Td>
+                            </Table.Tr>
+                        </Table.Thead>
+                        <Table.Tbody>
+                            {products.map((p, i) => (
+                                <Table.Tr key={i}>
+                                    <Table.Td>{p?.name}</Table.Td>
+                                    <Table.Td>{p?.productCode}</Table.Td>
+                                    <Table.Td>{p?.size} KG</Table.Td>
+                                    <Table.Td>{amountPreview(p?.unitPrice)}</Table.Td>
+                                    <Table.Td>{p?.count}</Table.Td>
+                                </Table.Tr>
+                            ))}
+                        </Table.Tbody>
+                    </Table>
+                </Group>
+            </Modal>
+        );
     };
 
     return (
@@ -707,11 +773,19 @@ const AddSalesRecord = () => {
                                                     onChange={(v: any) =>
                                                         calculateLineTotal(i, v)
                                                     }
+                                                    max={p.product.count}
                                                     disabled={
                                                         paymentDetailsOpen
                                                     }
+                                                    error={
+                                                        p.amount >
+                                                        p.product.count
+                                                            ? `Warehouse only have ${p.product.count} bags`
+                                                            : ""
+                                                    }
                                                 />
                                             </Table.Td>
+
                                             <Table.Td>
                                                 {amountPreview(p.lineTotal)}
                                             </Table.Td>
@@ -727,7 +801,17 @@ const AddSalesRecord = () => {
                             disabled={paymentDetailsOpen}
                         >
                             Manage Products
-                        </Button>
+                        </Button>{" "}
+                        {warehouseId && (
+                            <Button
+                                size="xs"
+                                mt="md"
+                                onClick={warehouseStockModalHandler.open}
+                                color="violet"
+                            >
+                                Warehouse Stocks
+                            </Button>
+                        )}
                     </Box>
 
                     <Group>
@@ -766,7 +850,7 @@ const AddSalesRecord = () => {
                                             prefix="Rs. "
                                             disabled={paymentDetailsOpen}
                                             {...salesRecordForm.getInputProps(
-                                                "discount"
+                                                "discount",
                                             )}
                                         />
                                     </Table.Td>
@@ -789,7 +873,7 @@ const AddSalesRecord = () => {
                                             prefix="Rs. "
                                             disabled={paymentDetailsOpen}
                                             {...salesRecordForm.getInputProps(
-                                                "tax"
+                                                "tax",
                                             )}
                                         />
                                     </Table.Td>
@@ -812,7 +896,7 @@ const AddSalesRecord = () => {
                                             prefix="Rs. "
                                             disabled={paymentDetailsOpen}
                                             {...salesRecordForm.getInputProps(
-                                                "otherCost"
+                                                "otherCost",
                                             )}
                                         />
                                     </Table.Td>
@@ -849,7 +933,7 @@ const AddSalesRecord = () => {
                             disabled={
                                 selectedProducts.length === 0 ||
                                 selectedProducts.some(
-                                    (p) => !p.amount || p.amount <= 0
+                                    (p) => !p.amount || p.amount <= 0,
                                 ) ||
                                 paymentDetailsOpen
                             }
@@ -862,6 +946,7 @@ const AddSalesRecord = () => {
             {paymentDetailsOpen && paymentDetailsElement()}
             {productSelectModal()}
             {chequeAddModal()}
+            {warehouseStockModal()}
         </>
     );
 };

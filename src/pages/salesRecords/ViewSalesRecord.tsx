@@ -573,7 +573,7 @@ const ViewSalesRecord = () => {
                                     size="sm"
                                     color={
                                         SALES_RECORD_STATUS_COLORS[
-                                            salesRecord.paymentStatus as keyof typeof SALES_RECORD_STATUS_COLORS
+                                            salesRecord?.paymentStatus as keyof typeof SALES_RECORD_STATUS_COLORS
                                         ] || "gray"
                                     }
                                 >
