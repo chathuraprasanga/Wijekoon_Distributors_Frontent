@@ -174,7 +174,7 @@ const SalesRecords = () => {
                                             color={
                                                 SALES_RECORD_STATUS_COLORS[
                                                     c.paymentStatus as keyof typeof SALES_RECORD_STATUS_COLORS
-                                                ] || "gray"
+                                                    ] || "gray"
                                             }
                                             size="sm"
                                             radius="xs"
@@ -270,7 +270,7 @@ const SalesRecords = () => {
                                 color={
                                     SALES_RECORD_STATUS_COLORS[
                                         c.paymentStatus as keyof typeof SALES_RECORD_STATUS_COLORS
-                                    ] || "gray"
+                                        ] || "gray"
                                 }
                                 size="sm"
                                 radius="xs"
