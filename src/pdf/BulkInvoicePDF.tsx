@@ -33,7 +33,7 @@ const BulkInvoicePDF = ({data}:any) => {
 
     return (
         <>
-            <div className="w-full h-full py-10 px-16" id="pdf">
+            <div className="w-full h-full py-10 px-16 bg-white" id="pdf">
                 {/* Header Section */}
                 <Grid>
                     <Grid.Col span="auto">
@@ -46,16 +46,16 @@ const BulkInvoicePDF = ({data}:any) => {
                                 />
                             </Box>
                             <Box>
-                                <Text fw={700} size="xl">
+                                <Text fw={700} size="xl" c="black">
                                     WIJEKOON DISTRIBUTORS
                                 </Text>
-                                <Text size="sm" color="dimmed">
+                                <Text size="sm" c="dimmed">
                                     BOI Junction, Mawathagama.
                                 </Text>
-                                <Text size="sm" color="dimmed">
+                                <Text size="sm" c="dimmed">
                                     wijekoondistributor@gmail.com
                                 </Text>
-                                <Text size="sm" color="dimmed">
+                                <Text size="sm" c="dimmed">
                                     +94 77 41 39 758
                                 </Text>
                             </Box>
@@ -63,7 +63,7 @@ const BulkInvoicePDF = ({data}:any) => {
                     </Grid.Col>
                     <Grid.Col span="auto">
                         <Box style={{ textAlign: "right" }}>
-                            <Text fw={700} size="xl" color="blue">
+                            <Text fw={700} size="xl" c="blue">
                                 BULK INVOICE PAYMENT
                             </Text>
                         </Box>
@@ -74,7 +74,7 @@ const BulkInvoicePDF = ({data}:any) => {
 
                 {/* Supplier and Payment Details */}
                 <Grid mx="md">
-                    <Grid.Col span="auto">
+                    <Grid.Col span="auto" c="black">
                         <Text fw={500} size="lg">
                             Supplier:
                         </Text>
@@ -84,7 +84,7 @@ const BulkInvoicePDF = ({data}:any) => {
                         <Text>{data?.supplier?.phone}</Text>
                     </Grid.Col>
                     <Grid.Col span="auto">
-                        <Flex direction="column" align="flex-end" gap="xs">
+                        <Flex direction="column" align="flex-end" gap="xs" c="black">
                             <Flex justify="flex-end">
                                 <Text fw={600}>Payment ID:</Text>
                                 <Text ml="md">{data?.paymentId}</Text>
@@ -106,7 +106,7 @@ const BulkInvoicePDF = ({data}:any) => {
                 <Divider my="md" />
 
                 {/* Invoice Table */}
-                <Table striped highlightOnHover withTableBorder>
+                <Table withTableBorder withColumnBorders withRowBorders c="black">
                     <Table.Thead>
                         <Table.Tr>
                             <Table.Th>Item</Table.Th>
@@ -219,16 +219,16 @@ const BulkInvoicePDF = ({data}:any) => {
 
                 {/* Notes */}
                 <Box>
-                    <Text fw={600} size="md">
+                    <Text fw={600} size="md" c="black">
                         Notes:
                     </Text>
-                    <Text>{data?.notes}</Text>
+                    <Text c="black">{data?.notes}</Text>
                 </Box>
 
                 <br />
 
                 {/* Signature Section */}
-                <Flex justify="flex-end" mt="lg">
+                <Flex justify="flex-end" mt="lg" c="black">
                     <Box>
                         <Divider my="sm" w={150} />
                         <Text fw={600} size="sm" ta="right">
@@ -240,21 +240,21 @@ const BulkInvoicePDF = ({data}:any) => {
                 <br />
 
                 {/* Terms & Conditions */}
-                <Box>
+                <Box c="black">
                     <Text fw={600} size="md">
                         Terms & Conditions:
                     </Text>
-                    <Text size="sm" color="dimmed">
+                    <Text size="sm" c="dimmed">
                         1. Payment should be made within the agreed credit
                         period.
                     </Text>
-                    <Text size="sm" color="dimmed">
+                    <Text size="sm" c="dimmed">
                         2. Any discrepancies should be reported within 7 days.
                     </Text>
-                    <Text size="sm" color="dimmed">
+                    <Text size="sm" c="dimmed">
                         3. Late payments may be subject to additional charges.
                     </Text>
-                    <Text size="sm" color="dimmed">
+                    <Text size="sm" c="dimmed">
                         4. This invoice serves as a legal document for all
                         financial transactions.
                     </Text>

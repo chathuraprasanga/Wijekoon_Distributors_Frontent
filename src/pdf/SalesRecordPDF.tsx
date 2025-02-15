@@ -14,7 +14,7 @@ const SalesRecordPDF = ({ data }: any) => {
 
     return (
         <>
-            <div className="w-full h-full py-10 px-16" id="pdf">
+            <div className="w-full h-full py-10 px-16 bg-white" id="pdf">
                 {/* Header Section */}
                 <Grid>
                     <Grid.Col span="auto">
@@ -27,16 +27,16 @@ const SalesRecordPDF = ({ data }: any) => {
                                 />
                             </Box>
                             <Box>
-                                <Text fw={700} size="xl">
+                                <Text fw={700} size="xl" c="black">
                                     WIJEKOON DISTRIBUTORS
                                 </Text>
-                                <Text size="sm" color="dimmed">
+                                <Text size="sm" c="dimmed">
                                     BOI Junction, Mawathagama.
                                 </Text>
-                                <Text size="sm" color="dimmed">
+                                <Text size="sm" c="dimmed">
                                     wijekoondistributor@gmail.com
                                 </Text>
-                                <Text size="sm" color="dimmed">
+                                <Text size="sm" c="dimmed">
                                     +94 77 41 39 758
                                 </Text>
                             </Box>
@@ -44,7 +44,7 @@ const SalesRecordPDF = ({ data }: any) => {
                     </Grid.Col>
                     <Grid.Col span="auto">
                         <Box style={{ textAlign: "right" }}>
-                            <Text fw={700} size="xl" color="blue">
+                            <Text fw={700} size="xl" c="blue">
                                 SALES RECORD
                             </Text>
                         </Box>
@@ -56,29 +56,29 @@ const SalesRecordPDF = ({ data }: any) => {
                 {/* Supplier and Payment Details */}
                 <Grid mx="md">
                     <Grid.Col span="auto">
-                        <Text fw={500} size="lg">
+                        <Text fw={500} size="lg" c="black">
                             Customer:
                         </Text>
-                        <Text>{customer?.name}</Text>
-                        <Text>{customer?.address}</Text>
-                        <Text>{customer?.email}</Text>
-                        <Text>{customer?.phone}</Text>
+                        <Text c="black">{customer?.name}</Text>
+                        <Text c="black">{customer?.address}</Text>
+                        <Text c="black">{customer?.email}</Text>
+                        <Text c="black">{customer?.phone}</Text>
                     </Grid.Col>
                     <Grid.Col span="auto">
                         <Flex direction="column" align="flex-end" gap="xs">
                             <Flex justify="flex-end">
-                                <Text fw={600}>Sales Record ID:</Text>
-                                <Text ml="md">{data?.orderId}</Text>
+                                <Text fw={600} c="black">Sales Record ID:</Text>
+                                <Text ml="md" c="black">{data?.orderId}</Text>
                             </Flex>
                             <Flex justify="flex-end">
-                                <Text fw={600}>Date:</Text>
-                                <Text ml="md">
+                                <Text fw={600} c="black">Date:</Text>
+                                <Text ml="md" c="black">
                                     {datePreview(data?.createdAt)}
                                 </Text>
                             </Flex>
                             <Flex justify="flex-end">
-                                <Text fw={600}>Amount:</Text>
-                                <Text ml="md">{amountPreview(amount)}</Text>
+                                <Text fw={600} c="black">Amount:</Text>
+                                <Text ml="md" c="black">{amountPreview(amount)}</Text>
                             </Flex>
                         </Flex>
                     </Grid.Col>
@@ -88,11 +88,10 @@ const SalesRecordPDF = ({ data }: any) => {
 
                 {/* Invoice Table */}
                 <Table
-                    striped
-                    highlightOnHover
                     withTableBorder
                     withColumnBorders
                     withRowBorders
+                    c="black"
                 >
                     <Table.Thead>
                         <Table.Tr>
@@ -161,16 +160,16 @@ const SalesRecordPDF = ({ data }: any) => {
 
                 {/* Notes */}
                 <Box>
-                    <Text fw={600} size="md">
+                    <Text fw={600} size="md" c="black">
                         Notes:
                     </Text>
-                    <Text>{data?.notes}</Text>
+                    <Text c="black">{data?.notes}</Text>
                 </Box>
 
                 <br />
 
                 {/* Signature Section */}
-                <Flex justify="flex-end" mt="lg">
+                <Flex justify="flex-end" mt="lg" c="black">
                     <Box>
                         <Divider my="sm" w={150} />
                         <Text fw={600} size="sm" ta="right">
@@ -182,21 +181,21 @@ const SalesRecordPDF = ({ data }: any) => {
                 <br />
 
                 {/* Terms & Conditions */}
-                <Box>
+                <Box c="black">
                     <Text fw={600} size="md">
                         Terms & Conditions:
                     </Text>
-                    <Text size="sm" color="dimmed">
+                    <Text size="sm" c="dimmed">
                         1. Payment should be made within the agreed credit
                         period.
                     </Text>
-                    <Text size="sm" color="dimmed">
+                    <Text size="sm" c="dimmed">
                         2. Any discrepancies should be reported within 7 days.
                     </Text>
-                    <Text size="sm" color="dimmed">
+                    <Text size="sm" c="dimmed">
                         3. Late payments may be subject to additional charges.
                     </Text>
-                    <Text size="sm" color="dimmed">
+                    <Text size="sm" c="dimmed">
                         4. This invoice serves as a legal document for all
                         financial transactions.
                     </Text>
