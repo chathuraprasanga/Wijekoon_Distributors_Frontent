@@ -13,7 +13,7 @@ import { IconArrowLeft } from "@tabler/icons-react";
 import { useLoading } from "../../helpers/loadingContext.tsx";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store/store.ts";
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import { useEffect, useState } from "react";
 import {
     getWarehouse,
@@ -30,7 +30,7 @@ const ViewWarehouse = () => {
     const warehouse = useSelector(
         (state: RootState) => state.warehouses.selectedWarehouse
     );
-
+    const navigate = useNavigate();
     const [selectedProducts, setSelectedProducts] = useState<any[]>([]);
     const [stockUpdatedProducts, setStockUpdatedProducts] = useState<any[]>([]);
     const [stockUpdateModalOpened, handleStockUpdateModal] =
@@ -230,7 +230,15 @@ const ViewWarehouse = () => {
                     </Text>
                 </Group>
                 <Group>
-                    <Button size="xs" color="violet" disabled>
+                    <Button
+                        size="xs"
+                        color="violet"
+                        onClick={() =>
+                            navigate(
+                                `/app/sales-records/add-sales-record?warehouseId=${warehouse._id}`
+                            )
+                        }
+                    >
                         Sales
                     </Button>
                     <Button size="xs" onClick={handleStockUpdateModal.open}>

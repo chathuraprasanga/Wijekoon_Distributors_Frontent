@@ -20,13 +20,14 @@ import {
     IconX,
 } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
-import { SALES_RECORD_STATUS_COLORS } from "../../helpers/types.ts";
+import { SALES_RECORD_STATUS_COLORS, USER_ROLES } from "../../helpers/types.ts";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store/store.ts";
 import { useLoading } from "../../helpers/loadingContext.tsx";
 import { getPagedSalesRecords } from "../../store/salesRecordSlice/salesRecordSlice.ts";
 import { useNavigate } from "react-router";
 import { amountPreview, datePreview } from "../../helpers/preview.tsx";
+import { hasAnyPrivilege } from "../../helpers/previlleges.ts";
 
 const SalesRecords = () => {
     const { setLoading } = useLoading();
@@ -42,6 +43,7 @@ const SalesRecords = () => {
     const salesRecords = useSelector(
         (state: RootState) => state.salesRecords.salesRecords
     );
+    const user = useSelector((state: RootState) => state.auth.user);
 
     useEffect(() => {
         fetchSalesRecords();
@@ -122,7 +124,7 @@ const SalesRecords = () => {
                         className="w-full lg:w-1/4"
                         size="xs"
                         placeholder="Select a status"
-                        data={["PAID", "NOT PAID"]}
+                        data={["PAID", "NOT PAID", "PARTIALLY PAID", "COMPLETE", "INCOMPLETE"]}
                         clearable
                         value={status}
                         onChange={(value) => {
@@ -202,13 +204,32 @@ const SalesRecords = () => {
                                                 >
                                                     View
                                                 </Menu.Item>
-                                                <Menu.Item
-                                                    rightSection={
-                                                        <IconEdit size={16} />
-                                                    }
-                                                >
-                                                    Edit
-                                                </Menu.Item>
+                                                {hasAnyPrivilege(user.role, [
+                                                    USER_ROLES.SUPER_ADMIN,
+                                                    USER_ROLES.SALES_MANAGER,
+                                                    USER_ROLES.SALES_REP,
+                                                ]) &&
+                                                    c.paymentStatus ===
+                                                        "NOT PAID" && (
+                                                        <Menu.Item
+                                                            disabled={
+                                                                c.invoiceStatus ===
+                                                                "PAID"
+                                                            }
+                                                            rightSection={
+                                                                <IconEdit
+                                                                    size={16}
+                                                                />
+                                                            }
+                                                            onClick={() =>
+                                                                navigate(
+                                                                    `/app/sales-records/edit-sales-record/${c._id}`
+                                                                )
+                                                            }
+                                                        >
+                                                            Edit
+                                                        </Menu.Item>
+                                                    )}
                                             </Menu.Dropdown>
                                         </Menu>
                                     </Table.Td>
@@ -255,7 +276,7 @@ const SalesRecords = () => {
                                 radius="xs"
                                 className="mt-2"
                             >
-                                {c.status ? "ACTIVE" : "INACTIVE"}
+                                {c.paymentStatus}
                             </Badge>
                             <Group mt="md">
                                 <Menu width={150}>
@@ -269,19 +290,37 @@ const SalesRecords = () => {
                                         <Menu.Label>Actions</Menu.Label>
                                         <Menu.Item
                                             rightSection={<IconEye size={16} />}
+                                            onClick={() =>
+                                                navigate(
+                                                    `/app/sales-records/view-sales-record/${c?._id}`
+                                                )
+                                            }
                                         >
                                             View
                                         </Menu.Item>
-                                        <Menu.Item
-                                            disabled={
-                                                c.invoiceStatus === "PAID"
-                                            }
-                                            rightSection={
-                                                <IconEdit size={16} />
-                                            }
-                                        >
-                                            Edit
-                                        </Menu.Item>
+                                        {hasAnyPrivilege(user.role, [
+                                                USER_ROLES.SUPER_ADMIN,
+                                                USER_ROLES.SALES_MANAGER,
+                                                USER_ROLES.SALES_REP,]
+                                        ) &&
+                                            c.paymentStatus === "NOT PAID" && (
+                                                <Menu.Item
+                                                    disabled={
+                                                        c.invoiceStatus ===
+                                                        "PAID"
+                                                    }
+                                                    rightSection={
+                                                        <IconEdit size={16} />
+                                                    }
+                                                    onClick={() =>
+                                                        navigate(
+                                                            `/app/sales-records/edit-sales-record/${c._id}`
+                                                        )
+                                                    }
+                                                >
+                                                    Edit
+                                                </Menu.Item>
+                                            )}
                                     </Menu.Dropdown>
                                 </Menu>
                             </Group>

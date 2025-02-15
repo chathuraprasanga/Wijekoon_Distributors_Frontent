@@ -5,6 +5,7 @@ import { DOWNLOAD_TYPES } from "../helpers/types.ts";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 import BulkInvoicePDF from "../pdf/BulkInvoicePDF.tsx";
+import SalesRecordPDF from "../pdf/SalesRecordPDF.tsx";
 
 const PdfViewPage = () => {
     const location = useLocation();
@@ -40,7 +41,7 @@ const PdfViewPage = () => {
                 }
             }
 
-            pdf.save(`${data?.paymentId}.pdf`);
+            pdf.save(`${data?.paymentId || data?.orderId}.pdf`);
         });
     };
 
@@ -72,6 +73,9 @@ const PdfViewPage = () => {
             <Box w={{ sm: "100%", lg: "75%" }}>
                 {type === DOWNLOAD_TYPES.BULK_INVOICE_PAYMENT && (
                     <BulkInvoicePDF data={data} />
+                )}
+                {type === DOWNLOAD_TYPES.SALES_RECORD && (
+                    <SalesRecordPDF data={data} />
                 )}
             </Box>
         </>
