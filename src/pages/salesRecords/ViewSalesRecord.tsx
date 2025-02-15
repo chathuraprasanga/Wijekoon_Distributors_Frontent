@@ -586,7 +586,7 @@ const ViewSalesRecord = () => {
             </Box>
 
             <Box px={"lg"} pb="lg" w={{ sm: "100%", lg: "75%" }}>
-                <Table withTableBorder withColumnBorders>
+                <Table withTableBorder withColumnBorders highlightOnHover striped>
                     <Table.Thead>
                         <Table.Tr>
                             <Table.Th w="20">Product</Table.Th>
