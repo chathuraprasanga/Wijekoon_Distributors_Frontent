@@ -23,7 +23,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store/store.ts";
 import { getProducts } from "../../store/productSlice/productSlice.ts";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { getCustomers } from "../../store/customerSlice/customerSlice.ts";
+import { addCustomer, getCustomers } from "../../store/customerSlice/customerSlice.ts";
 import { DatePickerInput } from "@mantine/dates";
 import { useDisclosure, useMediaQuery } from "@mantine/hooks";
 import { amountPreview } from "../../helpers/preview.tsx";
@@ -34,6 +34,7 @@ import { useLoading } from "../../helpers/loadingContext.tsx";
 import toNotify from "../../helpers/toNotify.tsx";
 import { addSalesRecord } from "../../store/salesRecordSlice/salesRecordSlice.ts";
 import { getWarehouse } from "../../store/warehouseSlice/warehouseSlice.ts";
+import { isValidPhone } from "../../utils/inputValidators.ts";
 
 const AddSalesRecord = () => {
     const { setLoading } = useLoading();
@@ -44,7 +45,7 @@ const AddSalesRecord = () => {
     // const products = useSelector((state: RootState) => state.product.products);
     const [products, setProducts] = useState<any[]>([]);
     const customers = useSelector(
-        (state: RootState) => state.customer.customers,
+        (state: RootState) => state.customer.customers
     );
     const [productSelectModalOpened, productSelectModalHandler] =
         useDisclosure(false);
@@ -64,10 +65,13 @@ const AddSalesRecord = () => {
     });
     const warehouseId = searchParams.get("warehouseId");
     const warehouse = useSelector(
-        (state: RootState) => state.warehouses.selectedWarehouse,
+        (state: RootState) => state.warehouses.selectedWarehouse
     );
     const [warehouseStockModalOpened, warehouseStockModalHandler] =
         useDisclosure(false);
+    const [customerAddModalOpened, customerAddModalHandler] =
+        useDisclosure(false);
+    const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
         fetchRelatedDetails();
@@ -83,7 +87,7 @@ const AddSalesRecord = () => {
                     ...item.product,
                     count: item.count,
                     mappingId: item._id,
-                }),
+                })
             );
             setProducts(productArray);
         } else {
@@ -120,7 +124,7 @@ const AddSalesRecord = () => {
 
     const removeSelectedProduct = (productId: string) => {
         setSelectedProducts((prev) =>
-            prev.filter((p) => p.product._id !== productId),
+            prev.filter((p) => p.product._id !== productId)
         );
     };
 
@@ -152,14 +156,14 @@ const AddSalesRecord = () => {
                                 <Group
                                     onClick={() =>
                                         selectedProducts.some(
-                                            (prod) => prod.product._id === p._id,
+                                            (prod) => prod.product._id === p._id
                                         )
                                             ? removeSelectedProduct(p._id)
                                             : updateSelectedProducts(p)
                                     }
                                 >
                                     {selectedProducts.some(
-                                        (prod) => prod.product._id === p._id,
+                                        (prod) => prod.product._id === p._id
                                     ) ? (
                                         <ActionIcon color="red">
                                             <IconTableMinus size={16} />
@@ -194,18 +198,18 @@ const AddSalesRecord = () => {
             prev.map((p, i) =>
                 i === index
                     ? {
-                        ...p,
-                        amount: amount || 0,
-                        lineTotal: (p.product.unitPrice || 0) * (amount || 0),
-                    }
-                    : p,
-            ),
+                          ...p,
+                          amount: amount || 0,
+                          lineTotal: (p.product.unitPrice || 0) * (amount || 0),
+                      }
+                    : p
+            )
         );
     };
 
     const subTotal = useMemo(
         () => selectedProducts.reduce((sum, p) => sum + (p.lineTotal || 0), 0),
-        [selectedProducts],
+        [selectedProducts]
     );
 
     const netTotal = useMemo(
@@ -219,16 +223,16 @@ const AddSalesRecord = () => {
             salesRecordForm.values.discount,
             salesRecordForm.values.tax,
             salesRecordForm.values.otherCost,
-        ],
+        ]
     );
 
     const chequeTotal = useMemo(
         () =>
             paymentDetails.cheques.reduce(
                 (sum, cheque) => sum + (cheque.amount || 0),
-                0,
+                0
             ),
-        [paymentDetails.cheques],
+        [paymentDetails.cheques]
     );
 
     const credit = useMemo(() => {
@@ -293,7 +297,7 @@ const AddSalesRecord = () => {
                                                     updateCheque(
                                                         index,
                                                         "bank",
-                                                        val,
+                                                        val
                                                     )
                                                 }
                                                 placeholder="Select Bank"
@@ -309,7 +313,7 @@ const AddSalesRecord = () => {
                                                     updateCheque(
                                                         index,
                                                         "branch",
-                                                        e.target.value,
+                                                        e.target.value
                                                     )
                                                 }
                                             />
@@ -324,7 +328,7 @@ const AddSalesRecord = () => {
                                                     updateCheque(
                                                         index,
                                                         "number",
-                                                        e.target.value,
+                                                        e.target.value
                                                     )
                                                 }
                                             />
@@ -344,7 +348,7 @@ const AddSalesRecord = () => {
                                                     updateCheque(
                                                         index,
                                                         "amount",
-                                                        val,
+                                                        val
                                                     )
                                                 }
                                             />
@@ -358,7 +362,7 @@ const AddSalesRecord = () => {
                                                     updateCheque(
                                                         index,
                                                         "depositDate",
-                                                        date,
+                                                        date
                                                     )
                                                 }
                                             />
@@ -413,7 +417,7 @@ const AddSalesRecord = () => {
                                             updateCheque(
                                                 index,
                                                 "branch",
-                                                e.target.value,
+                                                e.target.value
                                             )
                                         }
                                     />
@@ -426,7 +430,7 @@ const AddSalesRecord = () => {
                                             updateCheque(
                                                 index,
                                                 "number",
-                                                e.target.value,
+                                                e.target.value
                                             )
                                         }
                                     />
@@ -453,7 +457,7 @@ const AddSalesRecord = () => {
                                             updateCheque(
                                                 index,
                                                 "depositDate",
-                                                date,
+                                                date
                                             )
                                         }
                                     />
@@ -517,7 +521,7 @@ const AddSalesRecord = () => {
         setPaymentDetails((prev) => ({
             ...prev,
             cheques: prev.cheques.map((cheque, i) =>
-                i === index ? { ...cheque, [field]: value } : cheque,
+                i === index ? { ...cheque, [field]: value } : cheque
             ),
         }));
     };
@@ -639,7 +643,7 @@ const AddSalesRecord = () => {
                 toNotify(
                     "Success",
                     "Sales record created successfully",
-                    "SUCCESS",
+                    "SUCCESS"
                 );
                 navigate("/app/sales-records");
             } else if (
@@ -663,7 +667,11 @@ const AddSalesRecord = () => {
             <Modal
                 opened={warehouseStockModalOpened}
                 onClose={warehouseStockModalHandler.close}
-                title={<Text size="lg" fw={600}>Warehouse Stock Details</Text>}
+                title={
+                    <Text size="lg" fw={600}>
+                        Warehouse Stock Details
+                    </Text>
+                }
                 size={isMobile ? "100%" : "50%"}
             >
                 <Stack gap="xs">
@@ -687,13 +695,110 @@ const AddSalesRecord = () => {
                                     <Table.Td>{p?.name}</Table.Td>
                                     <Table.Td>{p?.productCode}</Table.Td>
                                     <Table.Td>{p?.size} KG</Table.Td>
-                                    <Table.Td>{amountPreview(p?.unitPrice)}</Table.Td>
+                                    <Table.Td>
+                                        {amountPreview(p?.unitPrice)}
+                                    </Table.Td>
                                     <Table.Td>{p?.count}</Table.Td>
                                 </Table.Tr>
                             ))}
                         </Table.Tbody>
                     </Table>
                 </Group>
+            </Modal>
+        );
+    };
+
+    const customerAddForm = useForm({
+        initialValues: {
+            name: "",
+            phone: "",
+            email: "",
+            address: "",
+        },
+        validate: {
+            name: (value) =>
+                value.trim() ? null : "Customer name is required.",
+            phone: (value) => {
+                if (!value.trim()) {
+                    // return "Phone number is required.";
+                    return null;
+                }
+                if (!isValidPhone(value)) {
+                    return "Please add a valid phone number.";
+                }
+                return null;
+            },
+        },
+    });
+
+    const customerAddFormHandler = async (
+        values: typeof customerAddForm.values
+    ) => {
+        try {
+            setIsLoading(true);
+            const response = await dispatch(addCustomer(values));
+            if (response.type === "customer/addCustomer/fulfilled") {
+                setIsLoading(false);
+                toNotify("Success", "Customer created successfully", "SUCCESS");
+                customerAddModalHandler.close();
+                customerAddForm.reset();
+                fetchRelatedDetails();
+            } else if (response.type === "customer/addCustomer/rejected") {
+                setIsLoading(false);
+                toNotify("Error", `${response.payload.error}`, "ERROR");
+            } else {
+                setIsLoading(false);
+                toNotify("Warning", `Please contact system admin`, "WARNING");
+                customerAddModalHandler.close();
+                customerAddForm.reset();
+            }
+        } catch (e: any) {
+            console.error(e.message);
+            setIsLoading(false);
+            setIsLoading(false);
+            toNotify("Warning", `Please contact system admin`, "WARNING");
+            customerAddModalHandler.close();
+            customerAddForm.reset();
+        }
+    };
+
+    const customerAddModal = () => {
+        return (
+            <Modal
+                opened={customerAddModalOpened}
+                onClose={() => {
+                    customerAddModalHandler.close();
+                    customerAddForm.reset();
+                }}
+                title={<Text>Add Customer</Text>}
+            >
+                <form onSubmit={customerAddForm.onSubmit(customerAddFormHandler)}>
+                    <TextInput
+                        label="Name"
+                        withAsterisk
+                        placeholder="Customer Name"
+                        {...customerAddForm.getInputProps("name")}
+                    />
+                    <TextInput
+                        label="Phone"
+                        withAsterisk
+                        placeholder="Customer Phone"
+                        {...customerAddForm.getInputProps("phone")}
+                    />
+                    <TextInput
+                        label="Email"
+                        placeholder="Customer Email"
+                        {...customerAddForm.getInputProps("email")}
+                    />
+                    <Textarea
+                        label="Address"
+                        placeholder="Customer Address"
+                        {...customerAddForm.getInputProps("address")}
+                    />
+                    <Button mt="md" fullWidth loading={isLoading} type="submit">
+                        Save
+                    </Button>
+                </form>
             </Modal>
         );
     };
@@ -724,20 +829,20 @@ const AddSalesRecord = () => {
                     onSubmit={salesRecordForm.onSubmit(handleSalesRecordSubmit)}
                 >
                     <Group w="100%">
-                        <Select
-                            label="Customer"
-                            placeholder="Select Customer"
-                            data={customers.map((c: any) => ({
-                                label: c.name,
-                                value: c._id,
-                            }))}
-                            withAsterisk
-                            style={{ width: "45%" }}
-                            size="xs"
-                            disabled={paymentDetailsOpen}
-                            {...salesRecordForm.getInputProps("customer")}
-                        />
-                        <DatePickerInput
+                            <Select
+                                label="Customer"
+                                placeholder="Select Customer"
+                                data={customers.map((c: any) => ({
+                                    label: c.name,
+                                    value: c._id,
+                                }))}
+                                withAsterisk
+                                w="45%"
+                                size="xs"
+                                disabled={paymentDetailsOpen}
+                                {...salesRecordForm.getInputProps("customer")}
+                            />
+                            <DatePickerInput
                             style={{ width: "45%" }}
                             label="Date"
                             placeholder="Select Date"
@@ -747,6 +852,15 @@ const AddSalesRecord = () => {
                             disabled={paymentDetailsOpen}
                             {...salesRecordForm.getInputProps("date")}
                         />
+                        <Text
+                            size="xs"
+                            className="cursor-pointer"
+                            c="blue"
+                            td="underline"
+                            onClick={() => customerAddModalHandler.open()}
+                        >
+                            Create New Customer
+                        </Text>
                     </Group>
 
                     <Box mt="md">
@@ -850,7 +964,7 @@ const AddSalesRecord = () => {
                                             prefix="Rs. "
                                             disabled={paymentDetailsOpen}
                                             {...salesRecordForm.getInputProps(
-                                                "discount",
+                                                "discount"
                                             )}
                                         />
                                     </Table.Td>
@@ -873,7 +987,7 @@ const AddSalesRecord = () => {
                                             prefix="Rs. "
                                             disabled={paymentDetailsOpen}
                                             {...salesRecordForm.getInputProps(
-                                                "tax",
+                                                "tax"
                                             )}
                                         />
                                     </Table.Td>
@@ -896,7 +1010,7 @@ const AddSalesRecord = () => {
                                             prefix="Rs. "
                                             disabled={paymentDetailsOpen}
                                             {...salesRecordForm.getInputProps(
-                                                "otherCost",
+                                                "otherCost"
                                             )}
                                         />
                                     </Table.Td>
@@ -933,7 +1047,7 @@ const AddSalesRecord = () => {
                             disabled={
                                 selectedProducts.length === 0 ||
                                 selectedProducts.some(
-                                    (p) => !p.amount || p.amount <= 0,
+                                    (p) => !p.amount || p.amount <= 0
                                 ) ||
                                 paymentDetailsOpen
                             }
@@ -947,6 +1061,7 @@ const AddSalesRecord = () => {
             {productSelectModal()}
             {chequeAddModal()}
             {warehouseStockModal()}
+            {customerAddModal()}
         </>
     );
 };

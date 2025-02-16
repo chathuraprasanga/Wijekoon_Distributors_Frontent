@@ -51,7 +51,8 @@ const EditCustomer = () => {
             name: (value) => (value.trim() ? null : "Name is required"),
             phone: (value: string) => {
                 if (!value) {
-                    return "Phone number is required";
+                    // return "Phone number is required";
+                    return null;
                 }
                 return isValidPhone(value)
                     ? null
