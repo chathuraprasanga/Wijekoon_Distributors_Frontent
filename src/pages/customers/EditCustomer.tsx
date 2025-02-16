@@ -110,7 +110,7 @@ const EditCustomer = () => {
                     />
                     <TextInput
                         label="Phone"
-                        withAsterisk
+                        // withAsterisk
                         placeholder="Enter Customer Phone Number"
                         {...customerEditForm.getInputProps("phone")}
                     />

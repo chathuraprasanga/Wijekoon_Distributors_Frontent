@@ -781,7 +781,7 @@ const AddSalesRecord = () => {
                     />
                     <TextInput
                         label="Phone"
-                        withAsterisk
+                        // withAsterisk
                         placeholder="Customer Phone"
                         {...customerAddForm.getInputProps("phone")}
                     />
