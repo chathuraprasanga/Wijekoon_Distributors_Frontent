@@ -85,7 +85,7 @@ const AddCustomer = () => {
                     />
                     <TextInput
                         label="Phone"
-                        withAsterisk
+                        // withAsterisk
                         placeholder="Enter Customer Phone Number"
                         {...customerAddForm.getInputProps("phone")}
                     />
