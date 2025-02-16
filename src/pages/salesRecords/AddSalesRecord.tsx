@@ -720,7 +720,8 @@ const AddSalesRecord = () => {
                 value.trim() ? null : "Customer name is required.",
             phone: (value) => {
                 if (!value.trim()) {
-                    return "Phone number is required.";
+                    // return "Phone number is required.";
+                    return null;
                 }
                 if (!isValidPhone(value)) {
                     return "Please add a valid phone number.";
