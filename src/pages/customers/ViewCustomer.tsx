@@ -50,7 +50,7 @@ const ViewCustomer = () => {
                 </Group>
             </Group>
             <Box mx="md" my="md">
-                <Card shadow="md" withBorder w={{sm: "100%", lg: "50%"}} >
+                <Card shadow="md" withBorder w={{ sm: "100%", lg: "50%" }}>
                     <div className="flex flex-row">
                         <div className="hidden lg:block lg:w-1/4">Name:</div>
                         <div>{customer?.name}</div>
@@ -69,7 +69,11 @@ const ViewCustomer = () => {
                     </div>
                     <div className="flex items-end mt-4">
                         <Badge
-                            color={BASIC_STATUS_COLORS[customer.status as keyof typeof BASIC_STATUS_COLORS] || "gray"}
+                            color={
+                                BASIC_STATUS_COLORS[
+                                    customer.status as keyof typeof BASIC_STATUS_COLORS
+                                ] || "gray"
+                            }
                             radius="xs"
                             size="sm"
                         >
@@ -77,29 +81,37 @@ const ViewCustomer = () => {
                         </Badge>
                     </div>
                 </Card>
-                <Group display="flex" justify="flex-end" w={{sm: "100%", lg: "50%"}} mt="md" >
+                <Group
+                    display="flex"
+                    justify="flex-end"
+                    w={{ sm: "100%", lg: "50%" }}
+                    mt="md"
+                >
                     {/* Call Now Button: Visible only on mobile */}
-                    <Button
-                        radius="sm"
-                        size="xs"
-                        onClick={handleCall}
-                        hiddenFrom="lg"
-                        leftSection={<IconPhone/>}
-                    >
-                        Call Now
-                    </Button>
+                    {customer?.phone && (
+                        <Button
+                            radius="sm"
+                            size="xs"
+                            onClick={handleCall}
+                            hiddenFrom="lg"
+                            leftSection={<IconPhone />}
+                        >
+                            Call Now
+                        </Button>
+                    )}
 
                     {/* Email Now Button: Visible on all devices */}
-                    {customer?.email && (<Button
-                        radius="sm"
-                        onClick={handleEmail}
-                        className="block"
-                        size="xs"
-                        leftSection={<IconMail/>}
-
-                    >
-                        Email Now
-                    </Button>)}
+                    {customer?.email && (
+                        <Button
+                            radius="sm"
+                            onClick={handleEmail}
+                            className="block"
+                            size="xs"
+                            leftSection={<IconMail />}
+                        >
+                            Email Now
+                        </Button>
+                    )}
                 </Group>
             </Box>
         </>

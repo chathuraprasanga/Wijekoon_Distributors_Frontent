@@ -23,6 +23,7 @@ import { AppDispatch, RootState } from "../../store/store.ts";
 import { useLoading } from "../../helpers/loadingContext.tsx";
 import { useNavigate } from "react-router";
 import { getPagedWarehouses } from "../../store/warehouseSlice/warehouseSlice.ts";
+import { pageRange } from "../../helpers/preview.tsx";
 
 const Warehouses = () => {
     const { setLoading } = useLoading();
@@ -234,7 +235,10 @@ const Warehouses = () => {
             </Box>
 
             {/* Pagination */}
-            <Group my="md" ms="md" px="lg" justify="flex-end">
+            <Group my="md" ms="md" px="lg" justify="space-between">
+                <Group>
+                    {pageRange(metadata?.pageIndex, pageSize, metadata?.total)}
+                </Group>
                 <Pagination.Root
                     total={metadata ? Math.ceil(metadata?.total / pageSize) : 1}
                     value={pageIndex}

@@ -31,7 +31,7 @@ import {
 import toNotify from "../../helpers/toNotify.tsx";
 import { getCustomers } from "../../store/customerSlice/customerSlice.ts";
 import { DateInput } from "@mantine/dates";
-import { amountPreview, datePreview } from "../../helpers/preview.tsx";
+import { amountPreview, datePreview, pageRange } from "../../helpers/preview.tsx";
 import { CHEQUES_STATUS_COLORS, USER_ROLES } from "../../helpers/types.ts";
 import { hasPrivilege } from "../../helpers/previlleges.ts";
 
@@ -541,7 +541,10 @@ const Cheques = () => {
             </Box>
 
             {/* Pagination */}
-            <Group my="md" ms="md" px="lg" justify="flex-end">
+            <Group my="md" ms="md" px="lg" justify="space-between">
+                <Group>
+                    {pageRange(metadata?.pageIndex, pageSize, metadata?.total)}
+                </Group>
                 <Pagination.Root
                     total={Math.ceil(metadata?.total / pageSize)}
                     value={pageIndex}

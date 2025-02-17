@@ -32,6 +32,7 @@ import {
 } from "../../store/supplierSlice/supplierSlice.ts";
 import toNotify from "../../helpers/toNotify.tsx";
 import { BASIC_STATUS_COLORS } from "../../helpers/types.ts";
+import { pageRange } from "../../helpers/preview.tsx";
 
 const Suppliers = () => {
     const { setLoading } = useLoading();
@@ -402,7 +403,10 @@ const Suppliers = () => {
             </Box>
 
             {/* Pagination */}
-            <Group my="md" ms="md" px="lg" justify="flex-end">
+            <Group my="md" ms="md" px="lg" justify="space-between">
+                <Group>
+                    {pageRange(metadata?.pageIndex, pageSize, metadata?.total)}
+                </Group>
                 <Pagination.Root
                     total={Math.ceil(metadata?.total / pageSize)}
                     value={pageIndex}

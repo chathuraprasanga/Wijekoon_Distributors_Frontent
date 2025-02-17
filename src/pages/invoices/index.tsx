@@ -27,7 +27,7 @@ import {
     getPagedInvoices,
 } from "../../store/invoiceSlice/invoiceSlice.ts";
 import toNotify from "../../helpers/toNotify.tsx";
-import { amountPreview, datePreview } from "../../helpers/preview.tsx";
+import { amountPreview, datePreview, pageRange } from "../../helpers/preview.tsx";
 import { DateInput } from "@mantine/dates";
 
 import { getSuppliers } from "../../store/supplierSlice/supplierSlice.ts";
@@ -529,7 +529,10 @@ const Invoices = () => {
             </Box>
 
             {/* Pagination */}
-            <Group my="md" ms="md" px="lg" justify="flex-end">
+            <Group my="md" ms="md" px="lg" justify="space-between">
+                <Group>
+                    {pageRange(metadata?.pageIndex, pageSize, metadata?.total)}
+                </Group>
                 <Pagination.Root
                     total={Math.ceil(metadata?.total / pageSize)}
                     value={pageIndex}
