@@ -20,3 +20,13 @@ export const amountPreview = (amount: number): string => {
     }
     return `Rs. ${amount?.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`;
 };
+
+export const pageRange = (
+    pageIndex: number,
+    pageSize: number,
+    total: number
+) => {
+    const start: number = (pageIndex - 1) * pageSize + 1;
+    const end: number = Math.min(pageIndex * pageSize, total);
+    return `${start ?? 0} - ${end ?? 0} / ${total ?? 0}`;
+};
