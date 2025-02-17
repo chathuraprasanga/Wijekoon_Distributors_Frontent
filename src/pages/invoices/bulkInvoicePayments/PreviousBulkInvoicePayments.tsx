@@ -21,7 +21,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../../store/store.ts";
 import { useLoading } from "../../../helpers/loadingContext.tsx";
 import { getPagedBulkInvoicePayments } from "../../../store/invoiceSlice/invoiceSlice.ts";
-import { amountPreview, datePreview } from "../../../helpers/preview.tsx";
+import { amountPreview, datePreview, pageRange } from "../../../helpers/preview.tsx";
 
 import { getSuppliers } from "../../../store/supplierSlice/supplierSlice.ts";
 import { PAYMENT_STATUS_COLORS } from "../../../helpers/types.ts";
@@ -299,7 +299,10 @@ const PreviousBulkInvoicePayments = () => {
             </Box>
 
             {/* Pagination */}
-            <Group my="md" ms="md" px="lg" justify="flex-end">
+            <Group my="md" ms="md" px="lg" justify="space-between">
+                <Group>
+                    {pageRange(metadata?.pageIndex, pageSize, metadata?.total)}
+                </Group>
                 <Pagination.Root
                     total={Math.ceil(metadata?.total / pageSize)}
                     value={pageIndex}
