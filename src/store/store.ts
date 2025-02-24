@@ -11,6 +11,7 @@ import bankDetailReducer from "./bankDetailSlice/bankDetailSlice";
 import chequePaymentReducer from "./chequePaymentSlice/chequePaymentSlice";
 import warehouseReducer from "./warehouseSlice/warehouseSlice";
 import salesRecordReducer from "./salesRecordSlice/salesRecordSlice";
+import ordersReducer from "./orderSlice/orderSlice";
 
 export const store = configureStore({
     reducer: {
@@ -26,6 +27,7 @@ export const store = configureStore({
         chequePayments: chequePaymentReducer,
         warehouses: warehouseReducer,
         salesRecords: salesRecordReducer,
+        orders: ordersReducer,
     },
 });
 
