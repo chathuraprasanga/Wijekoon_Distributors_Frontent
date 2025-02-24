@@ -1,35 +1,15 @@
-import {
-    Badge,
-    Box,
-    Button,
-    Card,
-    Group,
-    Menu,
-    Pagination,
-    Select,
-    Table,
-    Text,
-    TextInput,
-} from "@mantine/core";
-import {
-    IconDatabaseOff,
-    IconDotsVertical,
-    IconEdit,
-    IconEye,
-    IconSearch,
-    IconX,
-} from "@tabler/icons-react";
-import { useEffect, useState } from "react";
-import { SALES_RECORD_STATUS_COLORS, USER_ROLES } from "../../helpers/types.ts";
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "../../store/store.ts";
-import { useLoading } from "../../helpers/loadingContext.tsx";
-import { getPagedSalesRecords } from "../../store/salesRecordSlice/salesRecordSlice.ts";
+import { Badge, Box, Button, Card, Group, Menu, Pagination, Select, Table, Text, TextInput } from "@mantine/core";
 import { useNavigate } from "react-router";
-import { amountPreview, datePreview } from "../../helpers/preview.tsx";
-import { hasAnyPrivilege } from "../../helpers/previlleges.ts";
+import { IconDatabaseOff, IconDotsVertical, IconEdit, IconEye, IconSearch, IconX } from "@tabler/icons-react";
+import { useState } from "react";
+import { useLoading } from "../../../helpers/loadingContext.tsx";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../../../store/store.ts";
+import { amountPreview, datePreview } from "../../../helpers/preview.tsx";
+import { SALES_RECORD_STATUS_COLORS, USER_ROLES } from "../../../helpers/types.ts";
+import { hasAnyPrivilege } from "../../../helpers/previlleges.ts";
 
-const SalesRecords = () => {
+const Orders = () => {
     const { setLoading } = useLoading();
     const dispatch = useDispatch<AppDispatch | any>();
     const navigate = useNavigate();
@@ -40,36 +20,10 @@ const SalesRecords = () => {
     const [status, setStatus] = useState<string | null>(null);
 
     const [metadata, setMetadata] = useState<any>();
-    const salesRecords = useSelector(
-        (state: RootState) => state.salesRecords.salesRecords
+    const orders = useSelector(
+        (state: RootState) => state.orders.orders
     );
     const user = useSelector((state: RootState) => state.auth.user);
-
-    useEffect(() => {
-        fetchSalesRecords();
-    }, [pageIndex, searchQuery, status]);
-
-    const fetchSalesRecords = async () => {
-        setLoading(true);
-        try {
-            const response = await dispatch(
-                getPagedSalesRecords({
-                    filters: {
-                        pageSize,
-                        pageIndex,
-                        searchQuery,
-                        sort: -1,
-                        status,
-                    },
-                })
-            );
-            setMetadata(response.payload?.result?.metadata);
-        } catch (error) {
-            console.error("Error fetching warehouses:", error);
-        } finally {
-            setLoading(false);
-        }
-    };
 
     return (
         <>
@@ -77,26 +31,17 @@ const SalesRecords = () => {
             <Box display="flex" p="lg" className="items-center justify-between">
                 <Box>
                     <Text size="lg" fw={500}>
-                        Sales Records
+                        Orders
                     </Text>
                 </Box>
                 <Box>
                     <Button
                         size="xs"
                         onClick={() =>
-                            navigate("/app/sales-records/orders")
-                        }
-                        color="violet"
-                    >
-                        Orders
-                    </Button>{" "}
-                    <Button
-                        size="xs"
-                        onClick={() =>
-                            navigate("/app/sales-records/add-sales-record")
+                            navigate("/app/sales-records/orders/add-order")
                         }
                     >
-                        Add Sales Record
+                        Add Order
                     </Button>
                 </Box>
             </Box>
@@ -167,8 +112,8 @@ const SalesRecords = () => {
                         </Table.Tr>
                     </Table.Thead>
                     <Table.Tbody>
-                        {salesRecords?.length ? (
-                            salesRecords.map((c: any, i: number) => (
+                        {orders?.length ? (
+                            orders.map((c: any, i: number) => (
                                 <Table.Tr key={i}>
                                     <Table.Td>{c?.orderId}</Table.Td>
                                     <Table.Td>{datePreview(c?.date)}</Table.Td>
@@ -214,12 +159,12 @@ const SalesRecords = () => {
                                                     View
                                                 </Menu.Item>
                                                 {hasAnyPrivilege(user.role, [
-                                                    USER_ROLES.SUPER_ADMIN,
-                                                    USER_ROLES.SALES_MANAGER,
-                                                    USER_ROLES.SALES_REP,
-                                                ]) &&
+                                                        USER_ROLES.SUPER_ADMIN,
+                                                        USER_ROLES.SALES_MANAGER,
+                                                        USER_ROLES.SALES_REP,
+                                                    ]) &&
                                                     c.paymentStatus ===
-                                                        "NOT PAID" && (
+                                                    "NOT PAID" && (
                                                         <Menu.Item
                                                             disabled={
                                                                 c.invoiceStatus ===
@@ -264,8 +209,8 @@ const SalesRecords = () => {
 
             {/* Mobile Table */}
             <Box my="lg" mx="sm" hiddenFrom="lg">
-                {salesRecords?.length ? (
-                    salesRecords.map((c: any, i: number) => (
+                {orders?.length ? (
+                    orders.map((c: any, i: number) => (
                         <Card key={i} shadow="sm" withBorder mx="xs" my="lg">
                             <Text className="font-semibold">
                                 Order Id: {c?.orderId}
@@ -311,7 +256,7 @@ const SalesRecords = () => {
                                                 USER_ROLES.SUPER_ADMIN,
                                                 USER_ROLES.SALES_MANAGER,
                                                 USER_ROLES.SALES_REP,]
-                                        ) &&
+                                            ) &&
                                             c.paymentStatus === "NOT PAID" && (
                                                 <Menu.Item
                                                     disabled={
@@ -366,4 +311,4 @@ const SalesRecords = () => {
     );
 };
 
-export default SalesRecords;
+export default Orders;
