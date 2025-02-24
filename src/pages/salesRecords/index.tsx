@@ -26,7 +26,7 @@ import { AppDispatch, RootState } from "../../store/store.ts";
 import { useLoading } from "../../helpers/loadingContext.tsx";
 import { getPagedSalesRecords } from "../../store/salesRecordSlice/salesRecordSlice.ts";
 import { useNavigate } from "react-router";
-import { amountPreview, datePreview } from "../../helpers/preview.tsx";
+import { amountPreview, datePreview, pageRange } from "../../helpers/preview.tsx";
 import { hasAnyPrivilege } from "../../helpers/previlleges.ts";
 
 const SalesRecords = () => {
@@ -344,7 +344,10 @@ const SalesRecords = () => {
             </Box>
 
             {/* Pagination */}
-            <Group my="md" ms="md" px="lg" justify="flex-end">
+            <Group my="md" ms="md" px="lg" justify="space-between">
+                <Group>
+                    {pageRange(metadata?.pageIndex, pageSize, metadata?.total)}
+                </Group>
                 <Pagination.Root
                     total={metadata ? Math.ceil(metadata?.total / pageSize) : 1}
                     value={pageIndex}
