@@ -23,7 +23,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store/store.ts";
 import { getProducts } from "../../store/productSlice/productSlice.ts";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { addCustomer, getCustomers } from "../../store/customerSlice/customerSlice.ts";
+import {
+    addCustomer,
+    getCustomers,
+} from "../../store/customerSlice/customerSlice.ts";
 import { DatePickerInput } from "@mantine/dates";
 import { useDisclosure, useMediaQuery } from "@mantine/hooks";
 import { amountPreview } from "../../helpers/preview.tsx";
@@ -146,7 +149,7 @@ const AddSalesRecord = () => {
                     </Table.Tr>
                 </Table.Thead>
                 <Table.Tbody>
-                    {products.map((p: any, i: any) => (
+                    {products?.map((p: any, i: any) => (
                         <Table.Tr key={i}>
                             <Table.Td>{p.name}</Table.Td>
                             <Table.Td>{p.productCode}</Table.Td>
@@ -690,7 +693,7 @@ const AddSalesRecord = () => {
                             </Table.Tr>
                         </Table.Thead>
                         <Table.Tbody>
-                            {products.map((p, i) => (
+                            {products?.map((p, i) => (
                                 <Table.Tr key={i}>
                                     <Table.Td>{p?.name}</Table.Td>
                                     <Table.Td>{p?.productCode}</Table.Td>
@@ -772,7 +775,9 @@ const AddSalesRecord = () => {
                 }}
                 title={<Text>Add Customer</Text>}
             >
-                <form onSubmit={customerAddForm.onSubmit(customerAddFormHandler)}>
+                <form
+                    onSubmit={customerAddForm.onSubmit(customerAddFormHandler)}
+                >
                     <TextInput
                         label="Name"
                         withAsterisk
@@ -829,20 +834,21 @@ const AddSalesRecord = () => {
                     onSubmit={salesRecordForm.onSubmit(handleSalesRecordSubmit)}
                 >
                     <Group w="100%">
-                            <Select
-                                label="Customer"
-                                placeholder="Select Customer"
-                                data={customers.map((c: any) => ({
-                                    label: c.name,
-                                    value: c._id,
-                                }))}
-                                withAsterisk
-                                w="45%"
-                                size="xs"
-                                disabled={paymentDetailsOpen}
-                                {...salesRecordForm.getInputProps("customer")}
-                            />
-                            <DatePickerInput
+                        <Select
+                            label="Customer"
+                            placeholder="Select Customer"
+                            data={customers?.map((c: any) => ({
+                                label: c.name,
+                                value: c._id,
+                            }))}
+                            withAsterisk
+                            w="45%"
+                            size="xs"
+                            disabled={paymentDetailsOpen}
+                            {...salesRecordForm.getInputProps("customer")}
+                            searchable
+                        />
+                        <DatePickerInput
                             style={{ width: "45%" }}
                             label="Date"
                             placeholder="Select Date"
@@ -851,6 +857,7 @@ const AddSalesRecord = () => {
                             maxDate={new Date()}
                             disabled={paymentDetailsOpen}
                             {...salesRecordForm.getInputProps("date")}
+                            withAsterisk
                         />
                         <Text
                             size="xs"
@@ -874,7 +881,7 @@ const AddSalesRecord = () => {
                                     </Table.Tr>
                                 </Table.Thead>
                                 <Table.Tbody>
-                                    {selectedProducts.map((p, i) => (
+                                    {selectedProducts?.map((p, i) => (
                                         <Table.Tr key={i}>
                                             <Table.Td>
                                                 {p.product.name}

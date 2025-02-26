@@ -1,13 +1,41 @@
-import { Badge, Box, Button, Card, Group, Menu, Pagination, Select, Table, Text, TextInput } from "@mantine/core";
+import {
+    Badge,
+    Box,
+    Button,
+    Card,
+    Group,
+    Menu,
+    Pagination,
+    Select,
+    Table,
+    Text,
+    TextInput,
+} from "@mantine/core";
 import { useNavigate } from "react-router";
-import { IconDatabaseOff, IconDotsVertical, IconEdit, IconEye, IconSearch, IconX } from "@tabler/icons-react";
-import { useState } from "react";
+import {
+    IconArrowLeft,
+    IconDatabaseOff,
+    IconDotsVertical,
+    IconEdit,
+    IconEye,
+    IconSearch,
+    IconX,
+} from "@tabler/icons-react";
+import { useEffect, useState } from "react";
 import { useLoading } from "../../../helpers/loadingContext.tsx";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../../store/store.ts";
-import { amountPreview, datePreview } from "../../../helpers/preview.tsx";
-import { SALES_RECORD_STATUS_COLORS, USER_ROLES } from "../../../helpers/types.ts";
+import {
+    amountPreview,
+    datePreview,
+    pageRange,
+} from "../../../helpers/preview.tsx";
+import {
+    ORDER_STATUS_COLORS,
+    USER_ROLES,
+} from "../../../helpers/types.ts";
 import { hasAnyPrivilege } from "../../../helpers/previlleges.ts";
+import { getPagedOrders } from "../../../store/orderSlice/orderSlice.ts";
 
 const Orders = () => {
     const { setLoading } = useLoading();
@@ -20,19 +48,49 @@ const Orders = () => {
     const [status, setStatus] = useState<string | null>(null);
 
     const [metadata, setMetadata] = useState<any>();
-    const orders = useSelector(
-        (state: RootState) => state.orders.orders
-    );
+    const orders = useSelector((state: RootState) => state.orders.orders);
     const user = useSelector((state: RootState) => state.auth.user);
+
+    useEffect(() => {
+        fetchOrders();
+    }, [pageIndex, searchQuery, status]);
+
+    const fetchOrders = async () => {
+        setLoading(true);
+        try {
+            const response = await dispatch(
+                getPagedOrders({
+                    filters: {
+                        pageSize,
+                        pageIndex,
+                        searchQuery,
+                        sort: -1,
+                        status,
+                    },
+                })
+            );
+            setMetadata(response.payload?.result?.metadata);
+        } catch (error) {
+            console.error("Error fetching warehouses:", error);
+        } finally {
+            setLoading(false);
+        }
+    };
 
     return (
         <>
             {/* Page Header */}
             <Box display="flex" p="lg" className="items-center justify-between">
                 <Box>
-                    <Text size="lg" fw={500}>
-                        Orders
-                    </Text>
+                    <Group className="flex items-center">
+                        <IconArrowLeft
+                            className="cursor-pointer"
+                            onClick={() => history.back()}
+                        />
+                        <Text fw={500} ml="md" size="lg">
+                            Orders
+                        </Text>
+                    </Group>
                 </Box>
                 <Box>
                     <Button
@@ -78,7 +136,7 @@ const Orders = () => {
                         className="w-full lg:w-1/4"
                         size="xs"
                         placeholder="Select a status"
-                        data={["PAID", "NOT PAID", "PARTIALLY PAID", "COMPLETE", "INCOMPLETE"]}
+                        data={["PENDING", "COMPLETE", "INCOMPLETE"]}
                         clearable
                         value={status}
                         onChange={(value) => {
@@ -102,9 +160,14 @@ const Orders = () => {
                             <Table.Th style={{ width: "15%" }}>
                                 Order Id
                             </Table.Th>
-                            <Table.Th style={{ width: "15%" }}>Date</Table.Th>
-                            <Table.Th style={{ width: "40%" }}>
+                            <Table.Th style={{ width: "15%" }}>
+                                Expected Date
+                            </Table.Th>
+                            <Table.Th style={{ width: "25%" }}>
                                 Customer
+                            </Table.Th>
+                            <Table.Th style={{ width: "15%" }}>
+                                Quantity
                             </Table.Th>
                             <Table.Th style={{ width: "15%" }}>Amount</Table.Th>
                             <Table.Th style={{ width: "10%" }}>Status</Table.Th>
@@ -116,24 +179,39 @@ const Orders = () => {
                             orders.map((c: any, i: number) => (
                                 <Table.Tr key={i}>
                                     <Table.Td>{c?.orderId}</Table.Td>
-                                    <Table.Td>{datePreview(c?.date)}</Table.Td>
+                                    <Table.Td>
+                                        {datePreview(c?.expectedDate)}
+                                    </Table.Td>
                                     <Table.Td>{c?.customer?.name}</Table.Td>
                                     <Table.Td>
+                                        {c?.orderDetails?.reduce(
+                                            (acc: any, o: any) =>
+                                                acc + o.amount,
+                                            0
+                                        )}{" "}
+                                        Bags
+                                    </Table.Td>
+                                    <Table.Td>
                                         {amountPreview(
-                                            c?.amountDetails?.netTotal
+                                            c?.orderDetails?.reduce(
+                                                (acc: any, o: any) =>
+                                                    acc + o.lineTotal,
+                                                0
+                                            )
                                         )}
                                     </Table.Td>
+
                                     <Table.Td>
                                         <Badge
                                             color={
-                                                SALES_RECORD_STATUS_COLORS[
-                                                    c.paymentStatus as keyof typeof SALES_RECORD_STATUS_COLORS
-                                                    ] || "gray"
+                                                ORDER_STATUS_COLORS[
+                                                    c.orderStatus as keyof typeof ORDER_STATUS_COLORS
+                                                ] || "gray"
                                             }
                                             size="sm"
                                             radius="xs"
                                         >
-                                            {c.paymentStatus}
+                                            {c.orderStatus}
                                         </Badge>
                                     </Table.Td>
                                     <Table.Td>
@@ -152,23 +230,23 @@ const Orders = () => {
                                                     }
                                                     onClick={() =>
                                                         navigate(
-                                                            `/app/sales-records/view-sales-record/${c?._id}`
+                                                            `/app/sales-records/orders/view-order/${c?._id}`
                                                         )
                                                     }
                                                 >
                                                     View
                                                 </Menu.Item>
                                                 {hasAnyPrivilege(user.role, [
-                                                        USER_ROLES.SUPER_ADMIN,
-                                                        USER_ROLES.SALES_MANAGER,
-                                                        USER_ROLES.SALES_REP,
-                                                    ]) &&
-                                                    c.paymentStatus ===
-                                                    "NOT PAID" && (
+                                                    USER_ROLES.SUPER_ADMIN,
+                                                    USER_ROLES.SALES_MANAGER,
+                                                    USER_ROLES.SALES_REP,
+                                                ]) &&
+                                                    c.orderStatus ===
+                                                        "PENDING" && (
                                                         <Menu.Item
                                                             disabled={
-                                                                c.invoiceStatus ===
-                                                                "PAID"
+                                                                c.orderStatus ===
+                                                                "COMPLETE"
                                                             }
                                                             rightSection={
                                                                 <IconEdit
@@ -177,7 +255,7 @@ const Orders = () => {
                                                             }
                                                             onClick={() =>
                                                                 navigate(
-                                                                    `/app/sales-records/edit-sales-record/${c._id}`
+                                                                    `/app/sales-records/orders/edit-order/${c._id}`
                                                                 )
                                                             }
                                                         >
@@ -217,20 +295,33 @@ const Orders = () => {
                             </Text>
                             <Text>Customer: {c?.customer?.name}</Text>
                             <Text>
+                                Quantity:{" "}
+                                {c?.orderDetails?.reduce(
+                                    (acc: any, o: any) => acc + o.amount,
+                                    0
+                                )}{" "}
+                                Bags
+                            </Text>
+                            <Text>
                                 Amount:{" "}
-                                {amountPreview(c?.amountDetails?.netTotal)}
+                                {amountPreview(
+                                    c?.orderDetails?.reduce(
+                                        (acc: any, o: any) => acc + o.lineTotal,
+                                        0
+                                    )
+                                )}
                             </Text>
                             <Badge
                                 color={
-                                    SALES_RECORD_STATUS_COLORS[
-                                        c.paymentStatus as keyof typeof SALES_RECORD_STATUS_COLORS
-                                        ] || "gray"
+                                    ORDER_STATUS_COLORS[
+                                        c.orderStatus as keyof typeof ORDER_STATUS_COLORS
+                                    ] || "gray"
                                 }
                                 size="sm"
                                 radius="xs"
                                 className="mt-2"
                             >
-                                {c.paymentStatus}
+                                {c.orderStatus}
                             </Badge>
                             <Group mt="md">
                                 <Menu width={150}>
@@ -253,10 +344,10 @@ const Orders = () => {
                                             View
                                         </Menu.Item>
                                         {hasAnyPrivilege(user.role, [
-                                                USER_ROLES.SUPER_ADMIN,
-                                                USER_ROLES.SALES_MANAGER,
-                                                USER_ROLES.SALES_REP,]
-                                            ) &&
+                                            USER_ROLES.SUPER_ADMIN,
+                                            USER_ROLES.SALES_MANAGER,
+                                            USER_ROLES.SALES_REP,
+                                        ]) &&
                                             c.paymentStatus === "NOT PAID" && (
                                                 <Menu.Item
                                                     disabled={
@@ -289,7 +380,10 @@ const Orders = () => {
             </Box>
 
             {/* Pagination */}
-            <Group my="md" ms="md" px="lg" justify="flex-end">
+            <Group my="md" ms="md" px="lg" justify="space-between">
+                <Group>
+                    {pageRange(metadata?.pageIndex, pageSize, metadata?.total)}
+                </Group>
                 <Pagination.Root
                     total={metadata ? Math.ceil(metadata?.total / pageSize) : 1}
                     value={pageIndex}

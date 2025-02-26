@@ -654,7 +654,9 @@ const ViewSalesRecord = () => {
                             </Table.Td>
                         </Table.Tr>
                         <Table.Tr fw={600}>
-                            Notes: {salesRecord?.notes}
+                            <Table.Td colSpan={5}>
+                                Notes: {salesRecord?.notes}
+                            </Table.Td>
                         </Table.Tr>
                     </Table.Tbody>
                 </Table>

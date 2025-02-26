@@ -136,6 +136,8 @@ const EditSalesRecord = React.lazy(
 const PdfView = React.lazy(() => import("./pages/PdfViewPage.tsx"));
 const Orders = React.lazy(() => import("./pages/salesRecords/orders"));
 const AddOrder = React.lazy(() => import("./pages/salesRecords/orders/AddOrder.tsx"));
+const EditOrder = React.lazy(() => import("./pages/salesRecords/orders/EditOrder.tsx"));
+const ViewOrder = React.lazy(() => import("./pages/salesRecords/orders/ViewOrder.tsx"));
 
 const router = createBrowserRouter([
     {
@@ -294,6 +296,14 @@ const router = createBrowserRouter([
             {
                 path: "sales-records/orders/add-order",
                 element: <AddOrder />,
+            },
+            {
+                path: "sales-records/orders/edit-order/:id",
+                element: <EditOrder />,
+            },
+            {
+                path: "sales-records/orders/view-order/:id",
+                element: <ViewOrder />,
             },
             {
                 path: "*",

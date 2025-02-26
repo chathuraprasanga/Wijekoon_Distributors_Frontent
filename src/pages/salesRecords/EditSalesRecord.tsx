@@ -332,6 +332,7 @@ const EditSalesRecord = () => {
                             size="xs"
                             maxDate={new Date()}
                             {...salesRecordForm.getInputProps("date")}
+                            withAsterisk
                         />
                     </Group>
 
