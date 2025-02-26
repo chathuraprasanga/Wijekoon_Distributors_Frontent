@@ -25,7 +25,10 @@ import { useForm } from "@mantine/form";
 import { useNavigate } from "react-router";
 import { useLoading } from "../../../helpers/loadingContext.tsx";
 import { AppDispatch, RootState } from "../../../store/store.ts";
-import { addCustomer, getCustomers } from "../../../store/customerSlice/customerSlice.ts";
+import {
+    addCustomer,
+    getCustomers,
+} from "../../../store/customerSlice/customerSlice.ts";
 import { getProducts } from "../../../store/productSlice/productSlice.ts";
 import { amountPreview } from "../../../helpers/preview.tsx";
 import { addOrder } from "../../../store/orderSlice/orderSlice.ts";
@@ -61,13 +64,13 @@ const AddOrder = () => {
     const orderForm = useForm({
         initialValues: {
             customer: "",
-            date: null,
+            expectedDate: null,
             notes: "",
         },
 
         validate: {
             customer: (value) => (!value ? "Customer is required" : null),
-            date: (value) => (!value ? "Date is required" : null),
+            expectedDate: (value) => (!value ? "Expected date is required" : null),
         },
     });
 
@@ -176,8 +179,8 @@ const AddOrder = () => {
         try {
             const payload = {
                 customer: orderForm.values.customer,
-                date: orderForm.values.date
-                    ? new Date(orderForm.values.date).toISOString()
+                expectedDate: orderForm.values.expectedDate
+                    ? new Date(orderForm.values.expectedDate).toISOString()
                     : null,
                 products: selectedProducts,
                 subTotal: subTotal,
@@ -188,15 +191,9 @@ const AddOrder = () => {
             const response = await dispatch(addOrder(payload));
 
             if (response.type === "order/addOrder/fulfilled") {
-                toNotify(
-                    "Success",
-                    "Order created successfully",
-                    "SUCCESS"
-                );
+                toNotify("Success", "Order created successfully", "SUCCESS");
                 navigate("/app/sales-records/orders");
-            } else if (
-                response.type === "order/addOrder/rejected"
-            ) {
+            } else if (response.type === "order/addOrder/rejected") {
                 toNotify("Error", `${response.payload.error}`, "ERROR");
             } else {
                 toNotify("Warning", "Please contact system admin", "WARNING");
@@ -222,8 +219,7 @@ const AddOrder = () => {
                 value.trim() ? null : "Customer name is required.",
             phone: (value) => {
                 if (!value.trim()) {
-                    // return "Phone number is required.";
-                    return null;
+                    return "Phone number is required.";
                 }
                 if (!isValidPhone(value)) {
                     return "Please add a valid phone number.";
@@ -238,7 +234,7 @@ const AddOrder = () => {
     ) => {
         try {
             setIsLoading(true);
-            const response:any = await dispatch(addCustomer(values));
+            const response: any = await dispatch(addCustomer(values));
             if (response.type === "customer/addCustomer/fulfilled") {
                 setIsLoading(false);
                 toNotify("Success", "Customer created successfully", "SUCCESS");
@@ -285,7 +281,7 @@ const AddOrder = () => {
                     />
                     <TextInput
                         label="Phone"
-                        // withAsterisk
+                        withAsterisk
                         placeholder="Customer Phone"
                         {...customerAddForm.getInputProps("phone")}
                     />
@@ -329,14 +325,12 @@ const AddOrder = () => {
             </Group>
 
             <Box w={{ sm: "100%", lg: "50%" }} px="lg">
-                <form
-                    onSubmit={orderForm.onSubmit(handleSaveOrder)}
-                >
+                <form onSubmit={orderForm.onSubmit(handleSaveOrder)}>
                     <Group w="100%">
                         <Select
                             label="Customer"
                             placeholder="Select Customer"
-                            data={customers.map((c: any) => ({
+                            data={customers?.map((c: any) => ({
                                 label: c.name,
                                 value: c._id,
                             }))}
@@ -344,6 +338,7 @@ const AddOrder = () => {
                             w="45%"
                             size="xs"
                             {...orderForm.getInputProps("customer")}
+                            searchable
                         />
                         <DatePickerInput
                             style={{ width: "45%" }}
@@ -352,7 +347,8 @@ const AddOrder = () => {
                             rightSection={<IconCalendar size={16} />}
                             size="xs"
                             maxDate={new Date()}
-                            {...orderForm.getInputProps("date")}
+                            {...orderForm.getInputProps("expectedDate")}
+                            withAsterisk
                         />
                         <Text
                             size="xs"

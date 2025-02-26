@@ -29,8 +29,7 @@ const AddCustomer = () => {
             name: (value) => (value.trim() ? null : "Name is required"),
             phone: (value: string) => {
                 if (!value) {
-                    // return "Phone number is required";
-                    return null;
+                    return "Phone number is required";
                 }
                 return isValidPhone(value)
                     ? null
@@ -85,7 +84,7 @@ const AddCustomer = () => {
                     />
                     <TextInput
                         label="Phone"
-                        // withAsterisk
+                        withAsterisk
                         placeholder="Enter Customer Phone Number"
                         {...customerAddForm.getInputProps("phone")}
                     />

@@ -151,8 +151,7 @@ const AddCheque = () => {
                 value.trim() ? null : "Customer name is required.",
             phone: (value) => {
                 if (!value.trim()) {
-                    // return "Phone number is required.";
-                    return null;
+                    return "Phone number is required.";
                 }
                 if (!isValidPhone(value)) {
                     return "Please add a valid phone number.";
@@ -212,7 +211,7 @@ const AddCheque = () => {
                     />
                     <TextInput
                         label="Phone"
-                        // withAsterisk
+                        withAsterisk
                         placeholder="Customer Phone"
                         {...customerAddForm.getInputProps("phone")}
                     />
