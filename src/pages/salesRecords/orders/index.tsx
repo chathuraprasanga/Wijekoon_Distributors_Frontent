@@ -269,7 +269,7 @@ const Orders = () => {
                             ))
                         ) : (
                             <Table.Tr>
-                                <Table.Td colSpan={6} className="text-center">
+                                <Table.Td colSpan={7} className="text-center">
                                     <div className="flex justify-center items-center">
                                         <IconDatabaseOff
                                             color="red"
@@ -334,32 +334,37 @@ const Orders = () => {
                                     <Menu.Dropdown>
                                         <Menu.Label>Actions</Menu.Label>
                                         <Menu.Item
-                                            rightSection={<IconEye size={16} />}
+                                            rightSection={
+                                                <IconEye size={16} />
+                                            }
                                             onClick={() =>
                                                 navigate(
-                                                    `/app/sales-records/view-sales-record/${c?._id}`
+                                                    `/app/sales-records/orders/view-order/${c?._id}`
                                                 )
                                             }
                                         >
                                             View
                                         </Menu.Item>
                                         {hasAnyPrivilege(user.role, [
-                                            USER_ROLES.SUPER_ADMIN,
-                                            USER_ROLES.SALES_MANAGER,
-                                            USER_ROLES.SALES_REP,
-                                        ]) &&
-                                            c.paymentStatus === "NOT PAID" && (
+                                                USER_ROLES.SUPER_ADMIN,
+                                                USER_ROLES.SALES_MANAGER,
+                                                USER_ROLES.SALES_REP,
+                                            ]) &&
+                                            c.orderStatus ===
+                                            "PENDING" && (
                                                 <Menu.Item
                                                     disabled={
-                                                        c.invoiceStatus ===
-                                                        "PAID"
+                                                        c.orderStatus ===
+                                                        "COMPLETE"
                                                     }
                                                     rightSection={
-                                                        <IconEdit size={16} />
+                                                        <IconEdit
+                                                            size={16}
+                                                        />
                                                     }
                                                     onClick={() =>
                                                         navigate(
-                                                            `/app/sales-records/edit-sales-record/${c._id}`
+                                                            `/app/sales-records/orders/edit-order/${c._id}`
                                                         )
                                                     }
                                                 >

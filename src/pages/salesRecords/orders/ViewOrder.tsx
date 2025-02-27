@@ -36,7 +36,7 @@ const ViewOrder = () => {
 
     const gotoPdfView = (data: any) => {
         navigate("/app/pdf/view", {
-            state: { data: data, type: DOWNLOAD_TYPES.SALES_RECORD },
+            state: { data: data, type: DOWNLOAD_TYPES.ORDER },
         });
     };
 

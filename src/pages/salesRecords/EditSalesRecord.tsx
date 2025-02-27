@@ -38,9 +38,9 @@ const EditSalesRecord = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch<AppDispatch>();
     const isMobile = useMediaQuery("(max-width: 768px)");
-    const products = useSelector((state: RootState) => state.product.products);
+    const products = useSelector((state: RootState) => state.product?.products);
     const customers = useSelector(
-        (state: RootState) => state.customer.customers
+        (state: RootState) => state.customer?.customers
     );
     const [productSelectModalOpened, productSelectModalHandler] =
         useDisclosure(false);
@@ -55,7 +55,7 @@ const EditSalesRecord = () => {
         if (id) {
             fetchSelectedSalesRecord();
         }
-    }, [dispatch]);
+    }, [id]);
 
     const fetchSelectedSalesRecord = async () => {
         setLoading(true);
@@ -72,6 +72,7 @@ const EditSalesRecord = () => {
         await dispatch(getProducts({ status: true }));
     };
 
+    // Set up the form with a default valid date
     const salesRecordForm = useForm({
         initialValues: {
             customer: "",
@@ -81,7 +82,6 @@ const EditSalesRecord = () => {
             otherCost: 0,
             notes: "",
         },
-
         validate: {
             customer: (value) => (!value ? "Customer is required" : null),
             date: (value) => (!value ? "Date is required" : null),
@@ -89,15 +89,18 @@ const EditSalesRecord = () => {
     });
 
     useEffect(() => {
+        // Use metadata values if available; otherwise, fallback to safe defaults.
         salesRecordForm.setValues({
-            customer: metadata?.customer,
-            date: new Date(metadata?.date),
-            discount: metadata?.discount,
-            tax: metadata?.tax,
-            otherCost: metadata?.otherCost,
-            notes: metadata?.notes,
+            customer: metadata?.customer || "",
+            date: metadata?.date && !isNaN(new Date(metadata.date).getTime())
+                ? new Date(metadata.date)
+                : new Date(),
+            discount: metadata?.discount || 0,
+            tax: metadata?.tax || 0,
+            otherCost: metadata?.otherCost || 0,
+            notes: metadata?.notes || "",
         });
-        setSelectedProducts(metadata?.products);
+        setSelectedProducts(metadata?.products || []);
         salesRecordForm.resetDirty();
     }, [metadata]);
 
@@ -106,30 +109,30 @@ const EditSalesRecord = () => {
             salesRecordForm.values;
 
         const isDateChanged =
-            new Date(date).getTime() !== new Date(metadata.date).getTime();
+            new Date(date).getTime() !== new Date(metadata?.date).getTime();
 
         const areProductsChanged =
-            selectedProducts.length !== metadata.products.length ||
-            selectedProducts.some(
+            selectedProducts?.length !== metadata?.products?.length ||
+            selectedProducts?.some(
                 (p, index) =>
-                    p.id !== metadata.products[index].id ||
-                    p.amount !== metadata.products[index].amount
+                    p.id !== metadata?.products[index].id ||
+                    p.amount !== metadata?.products[index].amount
             );
 
         return (
-            customer !== metadata.customer ||
+            customer !== metadata?.customer ||
             isDateChanged ||
-            discount !== metadata.discount ||
-            tax !== metadata.tax ||
-            otherCost !== metadata.otherCost ||
-            notes !== metadata.notes ||
+            discount !== metadata?.discount ||
+            tax !== metadata?.tax ||
+            otherCost !== metadata?.otherCost ||
+            notes !== metadata?.notes ||
             areProductsChanged
         );
     };
 
     const updateSelectedProducts = (product: any) => {
         setSelectedProducts((prev) => {
-            const exists = prev.some((p) => p.product._id === product._id);
+            const exists = prev?.some((p) => p.product._id === product._id);
             if (!exists) {
                 return [...prev, { product, amount: 0, lineTotal: 0 }];
             }
@@ -161,7 +164,7 @@ const EditSalesRecord = () => {
                     </Table.Tr>
                 </Table.Thead>
                 <Table.Tbody>
-                    {products.map((p: any, i: any) => (
+                    {products?.map((p: any, i: any) => (
                         <Table.Tr key={i}>
                             <Table.Td>{p.name}</Table.Td>
                             <Table.Td>{p.productCode}</Table.Td>
@@ -170,14 +173,14 @@ const EditSalesRecord = () => {
                             <Table.Td>
                                 <Group
                                     onClick={() =>
-                                        selectedProducts.some(
+                                        selectedProducts?.some(
                                             (prod) => prod.product._id === p._id
                                         )
                                             ? removeSelectedProduct(p._id)
                                             : updateSelectedProducts(p)
                                     }
                                 >
-                                    {selectedProducts.some(
+                                    {selectedProducts?.some(
                                         (prod) => prod.product._id === p._id
                                     ) ? (
                                         <ActionIcon color="red">
@@ -213,17 +216,17 @@ const EditSalesRecord = () => {
             prev.map((p, i) =>
                 i === index
                     ? {
-                          ...p,
-                          amount: amount || 0,
-                          lineTotal: (p.product.unitPrice || 0) * (amount || 0),
-                      }
+                        ...p,
+                        amount: amount || 0,
+                        lineTotal: (p.product.unitPrice || 0) * (amount || 0),
+                    }
                     : p
             )
         );
     };
 
     const subTotal = useMemo(
-        () => selectedProducts.reduce((sum, p) => sum + (p.lineTotal || 0), 0),
+        () => selectedProducts?.reduce((sum, p) => sum + (p.lineTotal || 0), 0),
         [selectedProducts]
     );
 
@@ -244,21 +247,25 @@ const EditSalesRecord = () => {
     const handleUpdateSalesRecord = async () => {
         setLoading(true);
         try {
+            // Validate the date to ensure it's a valid Date object before calling toISOString()
+            const formDate = salesRecordForm.values?.date;
+            const dateObj = new Date(formDate);
+            const isoDate =
+                formDate && !isNaN(dateObj.getTime()) ? dateObj.toISOString() : null;
+
             const payload = {
                 id: id,
                 values: {
                     isUpdatePayments: false,
-                    customer: salesRecordForm.values.customer,
-                    date: salesRecordForm.values.date
-                        ? new Date(salesRecordForm.values.date).toISOString()
-                        : null,
+                    customer: salesRecordForm.values?.customer,
+                    date: isoDate,
                     products: selectedProducts,
                     subTotal: subTotal,
-                    discount: salesRecordForm.values.discount,
-                    tax: salesRecordForm.values.tax,
-                    otherCost: salesRecordForm.values.otherCost,
+                    discount: salesRecordForm.values?.discount,
+                    tax: salesRecordForm.values?.tax,
+                    otherCost: salesRecordForm.values?.otherCost,
                     netTotal: netTotal,
-                    notes: salesRecordForm.values.notes,
+                    notes: salesRecordForm.values?.notes,
                 },
             };
 
@@ -308,9 +315,7 @@ const EditSalesRecord = () => {
             </Group>
 
             <Box w={{ sm: "100%", lg: "50%" }} px="lg">
-                <form
-                    onSubmit={salesRecordForm.onSubmit(handleUpdateSalesRecord)}
-                >
+                <form onSubmit={salesRecordForm.onSubmit(handleUpdateSalesRecord)}>
                     <Group w="100%">
                         <Select
                             label="Customer"
@@ -337,7 +342,7 @@ const EditSalesRecord = () => {
                     </Group>
 
                     <Box mt="md">
-                        {selectedProducts.length > 0 && (
+                        {selectedProducts?.length > 0 && (
                             <Table>
                                 <Table.Thead>
                                     <Table.Tr>
@@ -347,24 +352,18 @@ const EditSalesRecord = () => {
                                     </Table.Tr>
                                 </Table.Thead>
                                 <Table.Tbody>
-                                    {selectedProducts.map((p, i) => (
+                                    {selectedProducts?.map((p, i) => (
                                         <Table.Tr key={i}>
-                                            <Table.Td>
-                                                {p.product.name}
-                                            </Table.Td>
+                                            <Table.Td>{p.product.name}</Table.Td>
                                             <Table.Td>
                                                 <NumberInput
                                                     size="xs"
                                                     hideControls
                                                     value={p.amount}
-                                                    onChange={(v: any) =>
-                                                        calculateLineTotal(i, v)
-                                                    }
+                                                    onChange={(v: any) => calculateLineTotal(i, v)}
                                                 />
                                             </Table.Td>
-                                            <Table.Td>
-                                                {amountPreview(p.lineTotal)}
-                                            </Table.Td>
+                                            <Table.Td>{amountPreview(p.lineTotal)}</Table.Td>
                                         </Table.Tr>
                                     ))}
                                 </Table.Tbody>
@@ -393,9 +392,7 @@ const EditSalesRecord = () => {
                                             Sub Total
                                         </Text>
                                     </Table.Td>
-                                    <Table.Td w="33%">
-                                        {amountPreview(subTotal)}
-                                    </Table.Td>
+                                    <Table.Td w="33%">{amountPreview(subTotal)}</Table.Td>
                                 </Table.Tr>
                                 <Table.Tr>
                                     <Table.Td w="33%"></Table.Td>
@@ -413,9 +410,7 @@ const EditSalesRecord = () => {
                                             hideControls
                                             allowNegative={false}
                                             prefix="Rs. "
-                                            {...salesRecordForm.getInputProps(
-                                                "discount"
-                                            )}
+                                            {...salesRecordForm.getInputProps("discount")}
                                         />
                                     </Table.Td>
                                 </Table.Tr>
@@ -435,9 +430,7 @@ const EditSalesRecord = () => {
                                             hideControls
                                             allowNegative={false}
                                             prefix="Rs. "
-                                            {...salesRecordForm.getInputProps(
-                                                "tax"
-                                            )}
+                                            {...salesRecordForm.getInputProps("tax")}
                                         />
                                     </Table.Td>
                                 </Table.Tr>
@@ -457,9 +450,7 @@ const EditSalesRecord = () => {
                                             hideControls
                                             allowNegative={false}
                                             prefix="Rs. "
-                                            {...salesRecordForm.getInputProps(
-                                                "otherCost"
-                                            )}
+                                            {...salesRecordForm.getInputProps("otherCost")}
                                         />
                                     </Table.Td>
                                 </Table.Tr>
@@ -470,9 +461,7 @@ const EditSalesRecord = () => {
                                             Net Total
                                         </Text>
                                     </Table.Td>
-                                    <Table.Td w="33%">
-                                        {amountPreview(netTotal)}
-                                    </Table.Td>
+                                    <Table.Td w="33%">{amountPreview(netTotal)}</Table.Td>
                                 </Table.Tr>
                             </Table.Tbody>
                         </Table>
@@ -492,10 +481,8 @@ const EditSalesRecord = () => {
                             className="ml-auto"
                             type="submit"
                             disabled={
-                                selectedProducts.length === 0 ||
-                                selectedProducts.some(
-                                    (p) => !p.amount || p.amount <= 0
-                                ) ||
+                                selectedProducts?.length === 0 ||
+                                selectedProducts?.some((p) => !p.amount || p.amount <= 0) ||
                                 !isFormEdited() // Disable when the form is NOT edited
                             }
                         >
