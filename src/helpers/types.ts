@@ -45,4 +45,5 @@ export const ORDER_STATUS_COLORS = Object.freeze({
 export const DOWNLOAD_TYPES = {
     BULK_INVOICE_PAYMENT: "BULK_INVOICE_PAYMENT",
     SALES_RECORD: "SALES_RECORD",
+    ORDER: "ORDER"
 };
