@@ -10,6 +10,7 @@ import {
     Card,
     TextInput,
     Select,
+    Checkbox,
 } from "@mantine/core";
 import {
     IconDatabaseOff,
@@ -33,7 +34,7 @@ import {
 import { useLoading } from "../../helpers/loadingContext.tsx";
 import toNotify from "../../helpers/toNotify.tsx";
 import { BASIC_STATUS_COLORS } from "../../helpers/types.ts";
-import { pageRange } from "../../helpers/preview.tsx";
+import { amountPreview, pageRange } from "../../helpers/preview.tsx";
 
 const Customers = () => {
     const { setLoading } = useLoading();
@@ -48,6 +49,7 @@ const Customers = () => {
     const filters = { pageSize, pageIndex, searchQuery, sort, status };
 
     const [metadata, setMetadata] = useState<any>();
+    const [showCredit, setShowCredit] = useState<boolean>(false);
 
     const customers = useSelector(
         (state: RootState) => state.customer.customers
@@ -153,6 +155,10 @@ const Customers = () => {
                             setPageIndex(1); // Reset the page index to 1
                         }}
                     />
+                    <Checkbox
+                        label="Show Credit Amounts"
+                        onChange={() => setShowCredit(!showCredit)}
+                    />
                 </Group>
             </Box>
 
@@ -167,11 +173,16 @@ const Customers = () => {
                     <Table.Thead>
                         <Table.Tr>
                             <Table.Th style={{ width: "20%" }}>Name</Table.Th>
-                            <Table.Th style={{ width: "15%" }}>Phone</Table.Th>
-                            <Table.Th style={{ width: "25%" }}>Email</Table.Th>
-                            <Table.Th style={{ width: "25%" }}>
+                            <Table.Th style={{ width: "10%" }}>Phone</Table.Th>
+                            <Table.Th style={{ width: "15%" }}>Email</Table.Th>
+                            <Table.Th style={{ width: "20%" }}>
                                 Address
                             </Table.Th>
+                            {showCredit && (
+                                <Table.Th style={{ width: "15%" }}>
+                                    Credit
+                                </Table.Th>
+                            )}
                             <Table.Th style={{ width: "10%" }}>Status</Table.Th>
                             <Table.Th style={{ width: "5%" }}></Table.Th>
                         </Table.Tr>
@@ -183,15 +194,20 @@ const Customers = () => {
                                     <Table.Td style={{ width: "20%" }}>
                                         {c?.name}
                                     </Table.Td>
-                                    <Table.Td style={{ width: "15%" }}>
+                                    <Table.Td style={{ width: "10%" }}>
                                         {c.phone}
                                     </Table.Td>
-                                    <Table.Td style={{ width: "25%" }}>
+                                    <Table.Td style={{ width: "15%" }}>
                                         {c.email || "-"}
                                     </Table.Td>
-                                    <Table.Td style={{ width: "25%" }}>
+                                    <Table.Td style={{ width: "20%" }}>
                                         {c.address || "-"}
                                     </Table.Td>
+                                    {showCredit && (
+                                        <Table.Td style={{ width: "15%" }}>
+                                            {amountPreview(c.creditAmount || 0)}
+                                        </Table.Td>
+                                    )}
                                     <Table.Td style={{ width: "10%" }}>
                                         <Badge
                                             color={c.status ? "green" : "red"}
@@ -244,7 +260,13 @@ const Customers = () => {
                                                     Edit
                                                 </Menu.Item>
                                                 <Menu.Item
-                                                    color={BASIC_STATUS_COLORS[c.status ? "false" : "true" as keyof typeof BASIC_STATUS_COLORS] || "gray"}
+                                                    color={
+                                                        BASIC_STATUS_COLORS[
+                                                            c.status
+                                                                ? "false"
+                                                                : ("true" as keyof typeof BASIC_STATUS_COLORS)
+                                                        ] || "gray"
+                                                    }
                                                     onClick={() =>
                                                         handleChangeStatus(c)
                                                     }
@@ -304,8 +326,17 @@ const Customers = () => {
                             <Text>Phone: {c.phone}</Text>
                             <Text>Email: {c.email}</Text>
                             <Text>Address: {c.address}</Text>
+                            {showCredit && (
+                                <Text>
+                                    Credit: {amountPreview(c.creditAmount || 0)}
+                                </Text>
+                            )}
                             <Badge
-                                color={BASIC_STATUS_COLORS[c.status as keyof typeof BASIC_STATUS_COLORS] || "gray"}
+                                color={
+                                    BASIC_STATUS_COLORS[
+                                        c.status as keyof typeof BASIC_STATUS_COLORS
+                                    ] || "gray"
+                                }
                                 size="sm"
                                 radius="xs"
                                 className="mt-2"
@@ -353,7 +384,13 @@ const Customers = () => {
                                             Edit
                                         </Menu.Item>
                                         <Menu.Item
-                                            color={BASIC_STATUS_COLORS[c.status ? "false" : "true" as keyof typeof BASIC_STATUS_COLORS] || "gray"}
+                                            color={
+                                                BASIC_STATUS_COLORS[
+                                                    c.status
+                                                        ? "false"
+                                                        : ("true" as keyof typeof BASIC_STATUS_COLORS)
+                                                ] || "gray"
+                                            }
                                             onClick={() =>
                                                 handleChangeStatus(c)
                                             }
