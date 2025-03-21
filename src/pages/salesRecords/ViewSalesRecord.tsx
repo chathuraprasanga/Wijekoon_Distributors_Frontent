@@ -61,8 +61,6 @@ const ViewSalesRecord = () => {
         credit: 0,
     });
 
-    console.log("salesRecord", salesRecord);
-
     useEffect(() => {
         if (id) {
             fetchSelectedSalesRecord();
@@ -586,7 +584,12 @@ const ViewSalesRecord = () => {
             </Box>
 
             <Box px={"lg"} pb="lg" w={{ sm: "100%", lg: "75%" }}>
-                <Table withTableBorder withColumnBorders highlightOnHover striped>
+                <Table
+                    withTableBorder
+                    withColumnBorders
+                    highlightOnHover
+                    striped
+                >
                     <Table.Thead>
                         <Table.Tr>
                             <Table.Th w="20">Product</Table.Th>
