@@ -89,7 +89,6 @@ const EditSalesRecord = () => {
     });
 
     useEffect(() => {
-        // Use metadata values if available; otherwise, fallback to safe defaults.
         salesRecordForm.setValues({
             customer: metadata?.customer || "",
             date: metadata?.date && !isNaN(new Date(metadata.date).getTime())
@@ -247,7 +246,6 @@ const EditSalesRecord = () => {
     const handleUpdateSalesRecord = async () => {
         setLoading(true);
         try {
-            // Validate the date to ensure it's a valid Date object before calling toISOString()
             const formDate = salesRecordForm.values?.date;
             const dateObj = new Date(formDate);
             const isoDate =

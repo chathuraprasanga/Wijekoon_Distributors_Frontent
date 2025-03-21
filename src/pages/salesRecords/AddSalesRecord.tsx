@@ -80,8 +80,10 @@ const AddSalesRecord = () => {
         fetchRelatedDetails();
     }, []);
 
+    const filters = {status:true};
+
     const fetchRelatedDetails = async () => {
-        await dispatch(getCustomers({ status: true }));
+        await dispatch(getCustomers({ filters }));
 
         if (warehouseId) {
             const response = await dispatch(getWarehouse(warehouseId));
@@ -94,7 +96,7 @@ const AddSalesRecord = () => {
             );
             setProducts(productArray);
         } else {
-            const response = await dispatch(getProducts({ status: true }));
+            const response = await dispatch(getProducts({ filters }));
             setProducts(response.payload.result);
         }
     };
@@ -614,7 +616,7 @@ const AddSalesRecord = () => {
         setLoading(true);
         try {
             const payload = {
-                isWarehouseSale: !!warehouse,
+                isWarehouseSale: !!warehouseId,
                 warehouseId: warehouse._id,
                 customer: salesRecordForm.values.customer,
                 date: salesRecordForm.values.date

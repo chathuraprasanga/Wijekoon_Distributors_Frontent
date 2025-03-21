@@ -7,6 +7,7 @@ import { useParams } from "react-router";
 import { useEffect } from "react";
 import { Badge, Box, Button, Card, Group, Text } from "@mantine/core";
 import { BASIC_STATUS_COLORS } from "../../helpers/types.ts";
+import { amountPreview } from "../../helpers/preview.tsx";
 
 const ViewCustomer = () => {
     const { setLoading } = useLoading();
@@ -67,6 +68,14 @@ const ViewCustomer = () => {
                         <div className="hidden lg:block lg:w-1/4">Address:</div>
                         <div>{customer?.address}</div>
                     </div>
+                    {customer.creditAmount > 0 && (
+                        <div className="flex flex-row">
+                            <div className="hidden lg:block lg:w-1/4">
+                                Credit:
+                            </div>
+                            <div>{amountPreview(customer?.creditAmount)}</div>
+                        </div>
+                    )}
                     <div className="flex items-end mt-4">
                         <Badge
                             color={
