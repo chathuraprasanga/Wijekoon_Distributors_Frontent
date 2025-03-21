@@ -77,32 +77,34 @@ const LoginPage = () => {
     };
 
     return (
-        <Box className="w-screen h-screen flex flex-row">
-            <Box className="lg:w-1/2 bg-black text-white p-4 flex-col hidden sm:flex">
+        <Box className="w-screen h-screen flex flex-col md:flex-row">
+            {/* Left Side (Shown on sm and above) */}
+            <Box className="hidden sm:flex md:w-1/2 bg-black text-white p-4 flex-col justify-between">
                 <Box>
                     <img src={logo} alt="logo" className="h-16" />
                 </Box>
-                <Box className="h-screen place-content-end">
-                    <Text className="text-lg">Wijekoon Distributors ⌘ </Text>
+                <Box className="flex-1 flex flex-col justify-end">
+                    <Text className="text-lg">Wijekoon Distributors ⌘</Text>
                     <br />
                     <Text className="text-sm">
-                        Wijekoon Distributors is a company located in
-                        Mawathagama, Kurunegala, Sri Lanka, specializing in
-                        business operations across the North Western Province.
-                        The company focuses on the distribution of mineral and
-                        chemical products, in collaboration with Keshara
-                        Minerals and Chemicals (Pvt) Limited. Their expertise in
-                        combining these products ensures efficient and reliable
-                        supply chain operations within the region.
+                        Wijekoon Distributors is a company located in Mawathagama,
+                        Kurunegala, Sri Lanka, specializing in business operations across
+                        the North Western Province. The company focuses on the
+                        distribution of mineral and chemical products, in collaboration
+                        with Keshara Minerals and Chemicals (Pvt) Limited. Their expertise
+                        in combining these products ensures efficient and reliable supply
+                        chain operations within the region.
                     </Text>
                 </Box>
             </Box>
+
+            {/* Right Side (Login area) */}
             <Box className="w-full md:w-1/2 h-full bg-white flex flex-col justify-center items-center p-4">
                 {/* Logo on Mobile */}
                 <Box className="flex md:hidden justify-center mb-4">
                     <img src={logo} alt="logo" className="h-32" />
                 </Box>
-                <Box maw={400} w="100%">
+                <Box className="max-w-[400px] w-full">
                     <form onSubmit={loginForm.onSubmit(handleLogin)}>
                         <TextInput
                             withAsterisk
@@ -134,7 +136,7 @@ const LoginPage = () => {
                     className="mt-4 flex flex-row items-center gap-4 border w-fit px-2 py-2 cursor-pointer"
                     onClick={() => window.open("https://xcorpion.xyz", "_blank")}
                 >
-                    <img src={xcorpion} className="w-4" />
+                    <img src={xcorpion} alt="xcorpion" className="w-4" />
                     <Text size="xs">XCORPION</Text>
                 </Group>
             </Box>
