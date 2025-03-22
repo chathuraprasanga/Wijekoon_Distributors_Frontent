@@ -217,13 +217,11 @@ const SalesRecords = () => {
                                                     USER_ROLES.SUPER_ADMIN,
                                                     USER_ROLES.SALES_MANAGER,
                                                     USER_ROLES.SALES_REP,
-                                                ]) &&
-                                                    c.paymentStatus ===
-                                                        "NOT PAID" && (
+                                                ]) && (
                                                         <Menu.Item
                                                             disabled={
-                                                                c.invoiceStatus ===
-                                                                "PAID"
+                                                                c.paymentStatus !==
+                                                                "NOT PAID"
                                                             }
                                                             rightSection={
                                                                 <IconEdit
@@ -311,12 +309,11 @@ const SalesRecords = () => {
                                                 USER_ROLES.SUPER_ADMIN,
                                                 USER_ROLES.SALES_MANAGER,
                                                 USER_ROLES.SALES_REP,]
-                                        ) &&
-                                            c.paymentStatus === "NOT PAID" && (
+                                        ) && (
                                                 <Menu.Item
                                                     disabled={
-                                                        c.invoiceStatus ===
-                                                        "PAID"
+                                                        c.paymentStatus !==
+                                                        "NOT PAID"
                                                     }
                                                     rightSection={
                                                         <IconEdit size={16} />
