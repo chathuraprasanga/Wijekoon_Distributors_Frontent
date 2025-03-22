@@ -17,13 +17,14 @@ import {
     IconX,
 } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
-import { BASIC_STATUS_COLORS } from "../../helpers/types.ts";
+import { BASIC_STATUS_COLORS, USER_ROLES } from "../../helpers/types.ts";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store/store.ts";
 import { useLoading } from "../../helpers/loadingContext.tsx";
 import { useNavigate } from "react-router";
 import { getPagedWarehouses } from "../../store/warehouseSlice/warehouseSlice.ts";
 import { pageRange } from "../../helpers/preview.tsx";
+import { hasAnyPrivilege } from "../../helpers/previlleges.ts";
 
 const Warehouses = () => {
     const { setLoading } = useLoading();
@@ -39,9 +40,21 @@ const Warehouses = () => {
     const warehouses = useSelector(
         (state: RootState) => state.warehouses.warehouses
     );
+    const user = useSelector((state: RootState) => state.auth.user);
+    const role = user.role;
 
     useEffect(() => {
-        fetchWarehouses();
+        if (
+            hasAnyPrivilege(role, [
+                USER_ROLES.ADMIN,
+                USER_ROLES.SUPER_ADMIN,
+                USER_ROLES.OWNER,
+                USER_ROLES.WAREHOUSE_MANAGER,
+                USER_ROLES.SALES_MANAGER,
+                USER_ROLES.STOCK_KEEPER,
+            ])
+        )
+            fetchWarehouses();
     }, [pageIndex, searchQuery, status]);
 
     const fetchWarehouses = async () => {

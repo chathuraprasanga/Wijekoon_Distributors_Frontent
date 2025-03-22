@@ -22,6 +22,8 @@ import {
 import { amountPreview } from "../../helpers/preview.tsx";
 import { useDisclosure } from "@mantine/hooks";
 import toNotify from "../../helpers/toNotify.tsx";
+import { hasAnyPrivilege } from "../../helpers/previlleges.ts";
+import { USER_ROLES } from "../../helpers/types.ts";
 
 const ViewWarehouse = () => {
     const { setLoading } = useLoading();
@@ -38,8 +40,21 @@ const ViewWarehouse = () => {
     const [products, setProducts] = useState<any[]>([]);
     const [isLoading, setIsLoading] = useState(false);
 
+    const user = useSelector((state: RootState) => state.auth.user);
+    const role = user.role;
+
     useEffect(() => {
-        if (id) {
+        if (
+            id &&
+            hasAnyPrivilege(role, [
+                USER_ROLES.ADMIN,
+                USER_ROLES.SUPER_ADMIN,
+                USER_ROLES.OWNER,
+                USER_ROLES.WAREHOUSE_MANAGER,
+                USER_ROLES.SALES_MANAGER,
+                USER_ROLES.STOCK_KEEPER,
+            ])
+        ) {
             fetchSelectedWarehouse();
         }
     }, [dispatch]);
@@ -238,10 +253,31 @@ const ViewWarehouse = () => {
                                 `/app/sales-records/add-sales-record?warehouseId=${warehouse._id}`
                             )
                         }
+                        disabled={
+                            !hasAnyPrivilege(role, [
+                                USER_ROLES.ADMIN,
+                                USER_ROLES.SUPER_ADMIN,
+                                USER_ROLES.OWNER,
+                                USER_ROLES.WAREHOUSE_MANAGER,
+                                USER_ROLES.STOCK_KEEPER,
+                            ])
+                        }
                     >
                         Sales
                     </Button>
-                    <Button size="xs" onClick={handleStockUpdateModal.open}>
+                    <Button
+                        size="xs"
+                        onClick={handleStockUpdateModal.open}
+                        disabled={
+                            !hasAnyPrivilege(role, [
+                                USER_ROLES.ADMIN,
+                                USER_ROLES.SUPER_ADMIN,
+                                USER_ROLES.OWNER,
+                                USER_ROLES.WAREHOUSE_MANAGER,
+                                USER_ROLES.STOCK_KEEPER,
+                            ])
+                        }
+                    >
                         Update Stocks
                     </Button>
                 </Group>
