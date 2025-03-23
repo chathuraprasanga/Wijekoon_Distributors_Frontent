@@ -30,10 +30,7 @@ import {
     datePreview,
     pageRange,
 } from "../../../helpers/preview.tsx";
-import {
-    ORDER_STATUS_COLORS,
-    USER_ROLES,
-} from "../../../helpers/types.ts";
+import { ORDER_STATUS_COLORS, USER_ROLES } from "../../../helpers/types.ts";
 import { hasAnyPrivilege } from "../../../helpers/previlleges.ts";
 import { getPagedOrders } from "../../../store/orderSlice/orderSlice.ts";
 
@@ -157,9 +154,7 @@ const Orders = () => {
                 >
                     <Table.Thead>
                         <Table.Tr>
-                            <Table.Th style={{ width: "15%" }}>
-                                PO Id
-                            </Table.Th>
+                            <Table.Th style={{ width: "15%" }}>PO Id</Table.Th>
                             <Table.Th style={{ width: "15%" }}>
                                 Expected Date
                             </Table.Th>
@@ -236,32 +231,30 @@ const Orders = () => {
                                                 >
                                                     View
                                                 </Menu.Item>
-                                                {hasAnyPrivilege(user.role, [
-                                                    USER_ROLES.SUPER_ADMIN,
-                                                    USER_ROLES.SALES_MANAGER,
-                                                    USER_ROLES.SALES_REP,
-                                                ]) &&
-                                                    c.orderStatus ===
-                                                        "PENDING" && (
-                                                        <Menu.Item
-                                                            disabled={
-                                                                c.orderStatus ===
-                                                                "COMPLETE"
-                                                            }
-                                                            rightSection={
-                                                                <IconEdit
-                                                                    size={16}
-                                                                />
-                                                            }
-                                                            onClick={() =>
-                                                                navigate(
-                                                                    `/app/sales-records/orders/edit-order/${c._id}`
-                                                                )
-                                                            }
-                                                        >
-                                                            Edit
-                                                        </Menu.Item>
-                                                    )}
+                                                <Menu.Item
+                                                    disabled={
+                                                        c.orderStatus ===
+                                                            "COMPLETE" &&
+                                                        hasAnyPrivilege(
+                                                            user.role,
+                                                            [
+                                                                USER_ROLES.SUPER_ADMIN,
+                                                                USER_ROLES.SALES_MANAGER,
+                                                                USER_ROLES.SALES_REP,
+                                                            ]
+                                                        )
+                                                    }
+                                                    rightSection={
+                                                        <IconEdit size={16} />
+                                                    }
+                                                    onClick={() =>
+                                                        navigate(
+                                                            `/app/sales-records/orders/edit-order/${c._id}`
+                                                        )
+                                                    }
+                                                >
+                                                    Edit
+                                                </Menu.Item>
                                             </Menu.Dropdown>
                                         </Menu>
                                     </Table.Td>
@@ -334,9 +327,7 @@ const Orders = () => {
                                     <Menu.Dropdown>
                                         <Menu.Label>Actions</Menu.Label>
                                         <Menu.Item
-                                            rightSection={
-                                                <IconEye size={16} />
-                                            }
+                                            rightSection={<IconEye size={16} />}
                                             onClick={() =>
                                                 navigate(
                                                     `/app/sales-records/orders/view-order/${c?._id}`
@@ -345,32 +336,26 @@ const Orders = () => {
                                         >
                                             View
                                         </Menu.Item>
-                                        {hasAnyPrivilege(user.role, [
-                                                USER_ROLES.SUPER_ADMIN,
-                                                USER_ROLES.SALES_MANAGER,
-                                                USER_ROLES.SALES_REP,
-                                            ]) &&
-                                            c.orderStatus ===
-                                            "PENDING" && (
-                                                <Menu.Item
-                                                    disabled={
-                                                        c.orderStatus ===
-                                                        "COMPLETE"
-                                                    }
-                                                    rightSection={
-                                                        <IconEdit
-                                                            size={16}
-                                                        />
-                                                    }
-                                                    onClick={() =>
-                                                        navigate(
-                                                            `/app/sales-records/orders/edit-order/${c._id}`
-                                                        )
-                                                    }
-                                                >
-                                                    Edit
-                                                </Menu.Item>
-                                            )}
+                                        <Menu.Item
+                                            disabled={
+                                                c.orderStatus === "COMPLETE" &&
+                                                hasAnyPrivilege(user.role, [
+                                                    USER_ROLES.SUPER_ADMIN,
+                                                    USER_ROLES.SALES_MANAGER,
+                                                    USER_ROLES.SALES_REP,
+                                                ])
+                                            }
+                                            rightSection={
+                                                <IconEdit size={16} />
+                                            }
+                                            onClick={() =>
+                                                navigate(
+                                                    `/app/sales-records/orders/edit-order/${c._id}`
+                                                )
+                                            }
+                                        >
+                                            Edit
+                                        </Menu.Item>
                                     </Menu.Dropdown>
                                 </Menu>
                             </Group>
