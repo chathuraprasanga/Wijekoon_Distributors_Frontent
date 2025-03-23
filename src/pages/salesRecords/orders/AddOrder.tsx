@@ -55,9 +55,10 @@ const AddOrder = () => {
         fetchRelatedDetails();
     }, []);
 
+    const filters = {status: true};
     const fetchRelatedDetails = async () => {
         await dispatch(getCustomers({ status: true }));
-        const response = await dispatch(getProducts({ status: true }));
+        const response = await dispatch(getProducts({filters: filters}));
         setProducts(response.payload.result);
     };
 
@@ -187,7 +188,6 @@ const AddOrder = () => {
                 notes: orderForm.values.notes,
             };
 
-            console.log("PAYLOAD", payload);
             const response = await dispatch(addOrder(payload));
 
             if (response.type === "order/addOrder/fulfilled") {

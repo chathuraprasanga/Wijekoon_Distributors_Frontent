@@ -49,7 +49,7 @@ const OrderPDF = ({ data }: any) => {
                     <Grid.Col span="auto">
                         <Box style={{ textAlign: "right" }}>
                             <Text fw={700} size="xl" c="blue">
-                                ORDER
+                                PURCHASE ORDER
                             </Text>
                         </Box>
                     </Grid.Col>
@@ -179,7 +179,7 @@ const OrderPDF = ({ data }: any) => {
                         2. Any discrepancies should be reported within 7 days.
                     </Text>
                     <Text size="sm" c="dimmed">
-                        3. Late payments may be subject to additional charges.
+                        3. Discounts and Taxes may added when create sales record.
                     </Text>
                     <Text size="sm" c="dimmed">
                         4. This invoice serves as a legal document for all
