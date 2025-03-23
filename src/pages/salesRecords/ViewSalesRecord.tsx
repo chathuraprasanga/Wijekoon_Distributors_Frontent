@@ -116,7 +116,7 @@ const ViewSalesRecord = () => {
                                                     data={
                                                         banks?.map((b) => ({
                                                             label: b.name,
-                                                            value: b.ID.toString(),
+                                                            value: b.name,
                                                         })) ?? []
                                                     }
                                                     value={cheque.bank}
@@ -227,7 +227,7 @@ const ViewSalesRecord = () => {
                                         data={
                                             banks?.map((b) => ({
                                                 label: b.name,
-                                                value: b.ID.toString(),
+                                                value: b.name,
                                             })) ?? []
                                         }
                                         value={cheque.bank}

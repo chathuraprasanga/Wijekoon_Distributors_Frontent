@@ -94,7 +94,7 @@ const AddOrder = () => {
         <Modal
             opened={productSelectModalOpened}
             onClose={productSelectModalHandler.close}
-            title={<Text>Select Products</Text>}
+            title={<Text size="lg" fw="bold">Select Products</Text>}
             size={isMobile ? "100%" : "50%"}
         >
             <Table>
@@ -268,7 +268,7 @@ const AddOrder = () => {
                     customerAddModalHandler.close();
                     customerAddForm.reset();
                 }}
-                title={<Text>Add Customer</Text>}
+                title={<Text size="lg" fw="bold">Add Customer</Text>}
             >
                 <form
                     onSubmit={customerAddForm.onSubmit(customerAddFormHandler)}
@@ -315,7 +315,7 @@ const AddOrder = () => {
                         onClick={() => history.back()}
                     />
                     <Text fw={500} ml="md" size="lg">
-                        Add Order
+                        Add Purchase Order
                     </Text>
                 </Group>
             </Group>
@@ -342,11 +342,11 @@ const AddOrder = () => {
                         />
                         <DatePickerInput
                             style={{ width: "45%" }}
-                            label="Date"
-                            placeholder="Select Date"
+                            label="Expected Date"
+                            placeholder="Select Expected Date"
                             rightSection={<IconCalendar size={16} />}
                             size="xs"
-                            maxDate={new Date()}
+                            minDate={new Date()}
                             {...orderForm.getInputProps("expectedDate")}
                             withAsterisk
                         />

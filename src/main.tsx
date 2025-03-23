@@ -324,7 +324,7 @@ const router = createBrowserRouter([
 
 createRoot(document.getElementById("root")!).render(
     <Provider store={store}>
-        <MantineProvider defaultColorScheme="light">
+        <MantineProvider defaultColorScheme="light" theme={{ fontFamily: "Ubuntu, sans-serif" }}>
             <DatesProvider settings={{ timezone: "UTC" }}>
                 <Suspense fallback={<Loading />}>
                     <LoadingProvider>

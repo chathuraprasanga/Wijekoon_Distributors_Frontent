@@ -88,7 +88,7 @@ const Orders = () => {
                             onClick={() => history.back()}
                         />
                         <Text fw={500} ml="md" size="lg">
-                            Orders
+                            Purchase Orders
                         </Text>
                     </Group>
                 </Box>
@@ -99,7 +99,7 @@ const Orders = () => {
                             navigate("/app/sales-records/orders/add-order")
                         }
                     >
-                        Add Order
+                        Add Purchase Order
                     </Button>
                 </Box>
             </Box>
@@ -158,7 +158,7 @@ const Orders = () => {
                     <Table.Thead>
                         <Table.Tr>
                             <Table.Th style={{ width: "15%" }}>
-                                Order Id
+                                PO Id
                             </Table.Th>
                             <Table.Th style={{ width: "15%" }}>
                                 Expected Date

@@ -149,7 +149,7 @@ const EditSalesRecord = () => {
         <Modal
             opened={productSelectModalOpened}
             onClose={productSelectModalHandler.close}
-            title={<Text>Select Products</Text>}
+            title={<Text size={"lg"} fw={"bold"}>Select Products</Text>}
             size={isMobile ? "100%" : "50%"}
         >
             <Table>

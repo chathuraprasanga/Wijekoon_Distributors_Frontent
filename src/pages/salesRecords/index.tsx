@@ -88,7 +88,7 @@ const SalesRecords = () => {
                         }
                         color="violet"
                     >
-                        Orders
+                        Purchase Orders
                     </Button>{" "}
                     <Button
                         size="xs"
@@ -155,7 +155,7 @@ const SalesRecords = () => {
                     <Table.Thead>
                         <Table.Tr>
                             <Table.Th style={{ width: "15%" }}>
-                                Order Id
+                                Sales Record Id
                             </Table.Th>
                             <Table.Th style={{ width: "15%" }}>Date</Table.Th>
                             <Table.Th style={{ width: "40%" }}>
@@ -217,13 +217,11 @@ const SalesRecords = () => {
                                                     USER_ROLES.SUPER_ADMIN,
                                                     USER_ROLES.SALES_MANAGER,
                                                     USER_ROLES.SALES_REP,
-                                                ]) &&
-                                                    c.paymentStatus ===
-                                                        "NOT PAID" && (
+                                                ]) && (
                                                         <Menu.Item
                                                             disabled={
-                                                                c.invoiceStatus ===
-                                                                "PAID"
+                                                                c.paymentStatus !==
+                                                                "NOT PAID"
                                                             }
                                                             rightSection={
                                                                 <IconEdit
@@ -311,12 +309,11 @@ const SalesRecords = () => {
                                                 USER_ROLES.SUPER_ADMIN,
                                                 USER_ROLES.SALES_MANAGER,
                                                 USER_ROLES.SALES_REP,]
-                                        ) &&
-                                            c.paymentStatus === "NOT PAID" && (
+                                        ) && (
                                                 <Menu.Item
                                                     disabled={
-                                                        c.invoiceStatus ===
-                                                        "PAID"
+                                                        c.paymentStatus !==
+                                                        "NOT PAID"
                                                     }
                                                     rightSection={
                                                         <IconEdit size={16} />
