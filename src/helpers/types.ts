@@ -39,7 +39,7 @@ export const SALES_RECORD_STATUS_COLORS = Object.freeze({
 export const ORDER_STATUS_COLORS = Object.freeze({
     PENDING: "yellow",
     INCOMPLETE: "red",
-    COMPLETE: "blue",
+    COMPLETE: "green",
 });
 
 export const DOWNLOAD_TYPES = {

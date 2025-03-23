@@ -118,7 +118,7 @@ const EditOrder = () => {
         <Modal
             opened={productSelectModalOpened}
             onClose={productSelectModalHandler.close}
-            title={<Text>Select Products</Text>}
+            title={<Text size="lg" fw="bold">Select Products</Text>}
             size={isMobile ? "100%" : "50%"}
         >
             <Table>
@@ -323,7 +323,7 @@ const EditOrder = () => {
                     customerAddModalHandler.close();
                     customerAddForm.reset();
                 }}
-                title={<Text>Add Customer</Text>}
+                title={<Text size={"lg"} fw={"bold"} >Add Customer</Text>}
             >
                 <form
                     onSubmit={customerAddForm.onSubmit(customerAddFormHandler)}
@@ -370,7 +370,7 @@ const EditOrder = () => {
                         onClick={() => history.back()}
                     />
                     <Text fw={500} ml="md" size="lg">
-                        Add Order
+                        Edit Purchase Order
                     </Text>
                 </Group>
             </Group>

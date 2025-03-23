@@ -88,7 +88,7 @@ const SalesRecords = () => {
                         }
                         color="violet"
                     >
-                        Orders
+                        Purchase Orders
                     </Button>{" "}
                     <Button
                         size="xs"
@@ -155,7 +155,7 @@ const SalesRecords = () => {
                     <Table.Thead>
                         <Table.Tr>
                             <Table.Th style={{ width: "15%" }}>
-                                Order Id
+                                Sales Record Id
                             </Table.Th>
                             <Table.Th style={{ width: "15%" }}>Date</Table.Th>
                             <Table.Th style={{ width: "40%" }}>

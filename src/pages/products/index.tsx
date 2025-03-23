@@ -199,7 +199,7 @@ const Products = () => {
                                         {c.productCode}
                                     </Table.Td>
                                     <Table.Td style={{ width: "15%" }}>
-                                        {c.size}
+                                        {c.size} KG
                                     </Table.Td>
                                     <Table.Td style={{ width: "15%" }}>
                                         {amountPreview(c.unitPrice)}
@@ -338,7 +338,7 @@ const Products = () => {
                                 Name: {c.name}
                             </Text>
                             <Text>Product Code: {c.productCode}</Text>
-                            <Text>Size: {c.size}</Text>
+                            <Text>Size: {c.size} KG</Text>
                             <Text>
                                 Unit Price: {amountPreview(c.unitPrice)}
                             </Text>

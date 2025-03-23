@@ -5,9 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../../store/store.ts";
 import { useNavigate, useParams } from "react-router";
 import { useEffect } from "react";
-import {
-    DOWNLOAD_TYPES, ORDER_STATUS_COLORS,
-} from "../../../helpers/types.ts";
+import { DOWNLOAD_TYPES, ORDER_STATUS_COLORS } from "../../../helpers/types.ts";
 import { amountPreview, datePreview } from "../../../helpers/preview.tsx";
 import { useMediaQuery } from "@mantine/hooks";
 import { getOrder } from "../../../store/orderSlice/orderSlice.ts";
@@ -98,7 +96,10 @@ const ViewOrder = () => {
                             <Table.Td fw={600}>Amount:</Table.Td>
                             <Table.Td>
                                 {amountPreview(
-                                    order?.orderDetails?.reduce((acc:any, o:any) => acc + o.lineTotal, 0)
+                                    order?.orderDetails?.reduce(
+                                        (acc: any, o: any) => acc + o.lineTotal,
+                                        0
+                                    )
                                 )}
                             </Table.Td>
                         </Table.Tr>
@@ -159,6 +160,22 @@ const ViewOrder = () => {
                         </Table.Tr>
                     </Table.Tbody>
                 </Table>
+
+                <Group mt="lg">
+                    <Button
+                        size="xs"
+                        color="violet"
+                        className="ml-auto"
+                        disabled={order.orderStatus !== "PENDING"}
+                        onClick={() =>
+                            navigate(
+                                `/app/sales-records/add-sales-record?orderId=${order._id}`
+                            )
+                        }
+                    >
+                        Create Sales Record
+                    </Button>
+                </Group>
             </Box>
         </>
     );
