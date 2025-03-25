@@ -11,7 +11,9 @@ import {
     Text,
     TextInput,
 } from "@mantine/core";
+import { useNavigate } from "react-router";
 import {
+    IconArrowLeft,
     IconDatabaseOff,
     IconDotsVertical,
     IconEdit,
@@ -20,16 +22,19 @@ import {
     IconX,
 } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
-import { SALES_RECORD_STATUS_COLORS, USER_ROLES } from "../../helpers/types.ts";
+import { useLoading } from "../../../helpers/loadingContext.tsx";
 import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "../../store/store.ts";
-import { useLoading } from "../../helpers/loadingContext.tsx";
-import { getPagedSalesRecords } from "../../store/salesRecordSlice/salesRecordSlice.ts";
-import { useNavigate } from "react-router";
-import { amountPreview, datePreview, pageRange } from "../../helpers/preview.tsx";
-import { hasAnyPrivilege } from "../../helpers/previlleges.ts";
+import { AppDispatch, RootState } from "../../../store/store.ts";
+import {
+    amountPreview,
+    datePreview,
+    pageRange,
+} from "../../../helpers/preview.tsx";
+import { ORDER_STATUS_COLORS, USER_ROLES } from "../../../helpers/types.ts";
+import { hasAnyPrivilege } from "../../../helpers/previlleges.ts";
+import { getPagedOrders } from "../../../store/orderSlice/orderSlice.ts";
 
-const SalesRecords = () => {
+const Orders = () => {
     const { setLoading } = useLoading();
     const dispatch = useDispatch<AppDispatch | any>();
     const navigate = useNavigate();
@@ -40,20 +45,18 @@ const SalesRecords = () => {
     const [status, setStatus] = useState<string | null>(null);
 
     const [metadata, setMetadata] = useState<any>();
-    const salesRecords = useSelector(
-        (state: RootState) => state.salesRecords.salesRecords
-    );
+    const orders = useSelector((state: RootState) => state.orders.orders);
     const user = useSelector((state: RootState) => state.auth.user);
 
     useEffect(() => {
-        fetchSalesRecords();
+        fetchOrders();
     }, [pageIndex, searchQuery, status]);
 
-    const fetchSalesRecords = async () => {
+    const fetchOrders = async () => {
         setLoading(true);
         try {
             const response = await dispatch(
-                getPagedSalesRecords({
+                getPagedOrders({
                     filters: {
                         pageSize,
                         pageIndex,
@@ -76,27 +79,24 @@ const SalesRecords = () => {
             {/* Page Header */}
             <Box display="flex" p="lg" className="items-center justify-between">
                 <Box>
-                    <Text size="lg" fw={500}>
-                        Sales Records
-                    </Text>
+                    <Group className="flex items-center">
+                        <IconArrowLeft
+                            className="cursor-pointer"
+                            onClick={() => history.back()}
+                        />
+                        <Text fw={500} ml="md" size="lg">
+                            Purchase Orders
+                        </Text>
+                    </Group>
                 </Box>
                 <Box>
                     <Button
                         size="xs"
                         onClick={() =>
-                            navigate("/app/sales-records/orders")
-                        }
-                        color="violet"
-                    >
-                        Purchase Orders
-                    </Button>{" "}
-                    <Button
-                        size="xs"
-                        onClick={() =>
-                            navigate("/app/sales-records/add-sales-record")
+                            navigate("/app/sales-records/orders/add-order")
                         }
                     >
-                        Add Sales Record
+                        Add Purchase Order
                     </Button>
                 </Box>
             </Box>
@@ -133,7 +133,7 @@ const SalesRecords = () => {
                         className="w-full lg:w-1/4"
                         size="xs"
                         placeholder="Select a status"
-                        data={["PAID", "NOT PAID", "PARTIALLY PAID", "COMPLETE", "INCOMPLETE"]}
+                        data={["PENDING", "COMPLETE", "INCOMPLETE"]}
                         clearable
                         value={status}
                         onChange={(value) => {
@@ -154,12 +154,15 @@ const SalesRecords = () => {
                 >
                     <Table.Thead>
                         <Table.Tr>
+                            <Table.Th style={{ width: "15%" }}>PO Id</Table.Th>
                             <Table.Th style={{ width: "15%" }}>
-                                Sales Record Id
+                                Expected Date
                             </Table.Th>
-                            <Table.Th style={{ width: "15%" }}>Date</Table.Th>
-                            <Table.Th style={{ width: "40%" }}>
+                            <Table.Th style={{ width: "25%" }}>
                                 Customer
+                            </Table.Th>
+                            <Table.Th style={{ width: "15%" }}>
+                                Quantity
                             </Table.Th>
                             <Table.Th style={{ width: "15%" }}>Amount</Table.Th>
                             <Table.Th style={{ width: "10%" }}>Status</Table.Th>
@@ -167,28 +170,43 @@ const SalesRecords = () => {
                         </Table.Tr>
                     </Table.Thead>
                     <Table.Tbody>
-                        {salesRecords?.length ? (
-                            salesRecords.map((c: any, i: number) => (
+                        {orders?.length ? (
+                            orders.map((c: any, i: number) => (
                                 <Table.Tr key={i}>
                                     <Table.Td>{c?.orderId}</Table.Td>
-                                    <Table.Td>{datePreview(c?.date)}</Table.Td>
+                                    <Table.Td>
+                                        {datePreview(c?.expectedDate)}
+                                    </Table.Td>
                                     <Table.Td>{c?.customer?.name}</Table.Td>
                                     <Table.Td>
+                                        {c?.orderDetails?.reduce(
+                                            (acc: any, o: any) =>
+                                                acc + o.amount,
+                                            0
+                                        )}{" "}
+                                        Bags
+                                    </Table.Td>
+                                    <Table.Td>
                                         {amountPreview(
-                                            c?.amountDetails?.netTotal
+                                            c?.orderDetails?.reduce(
+                                                (acc: any, o: any) =>
+                                                    acc + o.lineTotal,
+                                                0
+                                            )
                                         )}
                                     </Table.Td>
+
                                     <Table.Td>
                                         <Badge
                                             color={
-                                                SALES_RECORD_STATUS_COLORS[
-                                                    c.paymentStatus as keyof typeof SALES_RECORD_STATUS_COLORS
-                                                    ] || "gray"
+                                                ORDER_STATUS_COLORS[
+                                                    c.orderStatus as keyof typeof ORDER_STATUS_COLORS
+                                                ] || "gray"
                                             }
                                             size="sm"
                                             radius="xs"
                                         >
-                                            {c.paymentStatus}
+                                            {c.orderStatus}
                                         </Badge>
                                     </Table.Td>
                                     <Table.Td>
@@ -207,36 +225,36 @@ const SalesRecords = () => {
                                                     }
                                                     onClick={() =>
                                                         navigate(
-                                                            `/app/sales-records/view-sales-record/${c?._id}`
+                                                            `/app/sales-records/orders/view-order/${c?._id}`
                                                         )
                                                     }
                                                 >
                                                     View
                                                 </Menu.Item>
-                                                {hasAnyPrivilege(user.role, [
-                                                    USER_ROLES.SUPER_ADMIN,
-                                                    USER_ROLES.SALES_MANAGER,
-                                                    USER_ROLES.SALES_REP,
-                                                ]) && (
-                                                        <Menu.Item
-                                                            disabled={
-                                                                c.paymentStatus !==
-                                                                "NOT PAID"
-                                                            }
-                                                            rightSection={
-                                                                <IconEdit
-                                                                    size={16}
-                                                                />
-                                                            }
-                                                            onClick={() =>
-                                                                navigate(
-                                                                    `/app/sales-records/edit-sales-record/${c._id}`
-                                                                )
-                                                            }
-                                                        >
-                                                            Edit
-                                                        </Menu.Item>
-                                                    )}
+                                                <Menu.Item
+                                                    disabled={
+                                                        c.orderStatus ===
+                                                            "COMPLETE" &&
+                                                        hasAnyPrivilege(
+                                                            user.role,
+                                                            [
+                                                                USER_ROLES.SUPER_ADMIN,
+                                                                USER_ROLES.SALES_MANAGER,
+                                                                USER_ROLES.SALES_REP,
+                                                            ]
+                                                        )
+                                                    }
+                                                    rightSection={
+                                                        <IconEdit size={16} />
+                                                    }
+                                                    onClick={() =>
+                                                        navigate(
+                                                            `/app/sales-records/orders/edit-order/${c._id}`
+                                                        )
+                                                    }
+                                                >
+                                                    Edit
+                                                </Menu.Item>
                                             </Menu.Dropdown>
                                         </Menu>
                                     </Table.Td>
@@ -244,7 +262,7 @@ const SalesRecords = () => {
                             ))
                         ) : (
                             <Table.Tr>
-                                <Table.Td colSpan={6} className="text-center">
+                                <Table.Td colSpan={7} className="text-center">
                                     <div className="flex justify-center items-center">
                                         <IconDatabaseOff
                                             color="red"
@@ -262,28 +280,41 @@ const SalesRecords = () => {
 
             {/* Mobile Table */}
             <Box my="lg" mx="sm" hiddenFrom="lg">
-                {salesRecords?.length ? (
-                    salesRecords.map((c: any, i: number) => (
+                {orders?.length ? (
+                    orders.map((c: any, i: number) => (
                         <Card key={i} shadow="sm" withBorder mx="xs" my="lg">
                             <Text className="font-semibold">
                                 Order Id: {c?.orderId}
                             </Text>
                             <Text>Customer: {c?.customer?.name}</Text>
                             <Text>
+                                Quantity:{" "}
+                                {c?.orderDetails?.reduce(
+                                    (acc: any, o: any) => acc + o.amount,
+                                    0
+                                )}{" "}
+                                Bags
+                            </Text>
+                            <Text>
                                 Amount:{" "}
-                                {amountPreview(c?.amountDetails?.netTotal)}
+                                {amountPreview(
+                                    c?.orderDetails?.reduce(
+                                        (acc: any, o: any) => acc + o.lineTotal,
+                                        0
+                                    )
+                                )}
                             </Text>
                             <Badge
                                 color={
-                                    SALES_RECORD_STATUS_COLORS[
-                                        c.paymentStatus as keyof typeof SALES_RECORD_STATUS_COLORS
-                                        ] || "gray"
+                                    ORDER_STATUS_COLORS[
+                                        c.orderStatus as keyof typeof ORDER_STATUS_COLORS
+                                    ] || "gray"
                                 }
                                 size="sm"
                                 radius="xs"
                                 className="mt-2"
                             >
-                                {c.paymentStatus}
+                                {c.orderStatus}
                             </Badge>
                             <Group mt="md">
                                 <Menu width={150}>
@@ -299,34 +330,32 @@ const SalesRecords = () => {
                                             rightSection={<IconEye size={16} />}
                                             onClick={() =>
                                                 navigate(
-                                                    `/app/sales-records/view-sales-record/${c?._id}`
+                                                    `/app/sales-records/orders/view-order/${c?._id}`
                                                 )
                                             }
                                         >
                                             View
                                         </Menu.Item>
-                                        {hasAnyPrivilege(user.role, [
-                                                USER_ROLES.SUPER_ADMIN,
-                                                USER_ROLES.SALES_MANAGER,
-                                                USER_ROLES.SALES_REP,]
-                                        ) && (
-                                                <Menu.Item
-                                                    disabled={
-                                                        c.paymentStatus !==
-                                                        "NOT PAID"
-                                                    }
-                                                    rightSection={
-                                                        <IconEdit size={16} />
-                                                    }
-                                                    onClick={() =>
-                                                        navigate(
-                                                            `/app/sales-records/edit-sales-record/${c._id}`
-                                                        )
-                                                    }
-                                                >
-                                                    Edit
-                                                </Menu.Item>
-                                            )}
+                                        <Menu.Item
+                                            disabled={
+                                                c.orderStatus === "COMPLETE" &&
+                                                hasAnyPrivilege(user.role, [
+                                                    USER_ROLES.SUPER_ADMIN,
+                                                    USER_ROLES.SALES_MANAGER,
+                                                    USER_ROLES.SALES_REP,
+                                                ])
+                                            }
+                                            rightSection={
+                                                <IconEdit size={16} />
+                                            }
+                                            onClick={() =>
+                                                navigate(
+                                                    `/app/sales-records/orders/edit-order/${c._id}`
+                                                )
+                                            }
+                                        >
+                                            Edit
+                                        </Menu.Item>
                                     </Menu.Dropdown>
                                 </Menu>
                             </Group>
@@ -366,4 +395,4 @@ const SalesRecords = () => {
     );
 };
 
-export default SalesRecords;
+export default Orders;

@@ -10,6 +10,7 @@ import {
     Card,
     TextInput,
     Select,
+    Checkbox,
 } from "@mantine/core";
 import {
     IconDatabaseOff,
@@ -32,8 +33,9 @@ import {
 } from "../../store/customerSlice/customerSlice.ts";
 import { useLoading } from "../../helpers/loadingContext.tsx";
 import toNotify from "../../helpers/toNotify.tsx";
-import { BASIC_STATUS_COLORS } from "../../helpers/types.ts";
-import { pageRange } from "../../helpers/preview.tsx";
+import { BASIC_STATUS_COLORS, USER_ROLES } from "../../helpers/types.ts";
+import { amountPreview, pageRange } from "../../helpers/preview.tsx";
+import { hasAnyPrivilege } from "../../helpers/previlleges.ts";
 
 const Customers = () => {
     const { setLoading } = useLoading();
@@ -48,10 +50,14 @@ const Customers = () => {
     const filters = { pageSize, pageIndex, searchQuery, sort, status };
 
     const [metadata, setMetadata] = useState<any>();
+    const [showCredit, setShowCredit] = useState<boolean>(false);
 
     const customers = useSelector(
         (state: RootState) => state.customer.customers
     );
+
+    const user = useSelector((state: RootState) => state.auth.user);
+    const role = user.role;
 
     useEffect(() => {
         fetchCustomers();
@@ -108,6 +114,13 @@ const Customers = () => {
                     <Button
                         size="xs"
                         onClick={() => navigate("/app/customers/add-customer")}
+                        disabled={!hasAnyPrivilege(role, [
+                            USER_ROLES.ADMIN,
+                            USER_ROLES.SUPER_ADMIN,
+                            USER_ROLES.OWNER,
+                            USER_ROLES.SALES_MANAGER,
+                            USER_ROLES.WAREHOUSE_MANAGER,
+                        ])}
                     >
                         Add Customer
                     </Button>
@@ -153,6 +166,10 @@ const Customers = () => {
                             setPageIndex(1); // Reset the page index to 1
                         }}
                     />
+                    <Checkbox
+                        label="Show Credit Amounts"
+                        onChange={() => setShowCredit(!showCredit)}
+                    />
                 </Group>
             </Box>
 
@@ -167,11 +184,16 @@ const Customers = () => {
                     <Table.Thead>
                         <Table.Tr>
                             <Table.Th style={{ width: "20%" }}>Name</Table.Th>
-                            <Table.Th style={{ width: "15%" }}>Phone</Table.Th>
-                            <Table.Th style={{ width: "25%" }}>Email</Table.Th>
-                            <Table.Th style={{ width: "25%" }}>
+                            <Table.Th style={{ width: "10%" }}>Phone</Table.Th>
+                            <Table.Th style={{ width: "15%" }}>Email</Table.Th>
+                            <Table.Th style={{ width: "20%" }}>
                                 Address
                             </Table.Th>
+                            {showCredit && (
+                                <Table.Th style={{ width: "15%" }}>
+                                    Credit
+                                </Table.Th>
+                            )}
                             <Table.Th style={{ width: "10%" }}>Status</Table.Th>
                             <Table.Th style={{ width: "5%" }}></Table.Th>
                         </Table.Tr>
@@ -183,15 +205,20 @@ const Customers = () => {
                                     <Table.Td style={{ width: "20%" }}>
                                         {c?.name}
                                     </Table.Td>
-                                    <Table.Td style={{ width: "15%" }}>
+                                    <Table.Td style={{ width: "10%" }}>
                                         {c.phone}
                                     </Table.Td>
-                                    <Table.Td style={{ width: "25%" }}>
+                                    <Table.Td style={{ width: "15%" }}>
                                         {c.email || "-"}
                                     </Table.Td>
-                                    <Table.Td style={{ width: "25%" }}>
+                                    <Table.Td style={{ width: "20%" }}>
                                         {c.address || "-"}
                                     </Table.Td>
+                                    {showCredit && (
+                                        <Table.Td style={{ width: "15%" }}>
+                                            {amountPreview(c.creditAmount || 0)}
+                                        </Table.Td>
+                                    )}
                                     <Table.Td style={{ width: "10%" }}>
                                         <Badge
                                             color={c.status ? "green" : "red"}
@@ -240,11 +267,24 @@ const Customers = () => {
                                                     rightSection={
                                                         <IconEdit size={16} />
                                                     }
+                                                    disabled={!hasAnyPrivilege(role, [
+                                                        USER_ROLES.ADMIN,
+                                                        USER_ROLES.SUPER_ADMIN,
+                                                        USER_ROLES.OWNER,
+                                                        USER_ROLES.SALES_MANAGER,
+                                                        USER_ROLES.WAREHOUSE_MANAGER,
+                                                    ])}
                                                 >
                                                     Edit
                                                 </Menu.Item>
                                                 <Menu.Item
-                                                    color={BASIC_STATUS_COLORS[c.status ? "false" : "true" as keyof typeof BASIC_STATUS_COLORS] || "gray"}
+                                                    color={
+                                                        BASIC_STATUS_COLORS[
+                                                            c.status
+                                                                ? "false"
+                                                                : ("true" as keyof typeof BASIC_STATUS_COLORS)
+                                                        ] || "gray"
+                                                    }
                                                     onClick={() =>
                                                         handleChangeStatus(c)
                                                     }
@@ -259,6 +299,12 @@ const Customers = () => {
                                                             />
                                                         )
                                                     }
+                                                    disabled={!hasAnyPrivilege(role, [
+                                                        USER_ROLES.ADMIN,
+                                                        USER_ROLES.SUPER_ADMIN,
+                                                        USER_ROLES.OWNER,
+                                                        USER_ROLES.SALES_MANAGER,
+                                                    ])}
                                                 >
                                                     {c.status ? (
                                                         <span className="text-red-700">
@@ -304,8 +350,17 @@ const Customers = () => {
                             <Text>Phone: {c.phone}</Text>
                             <Text>Email: {c.email}</Text>
                             <Text>Address: {c.address}</Text>
+                            {showCredit && (
+                                <Text>
+                                    Credit: {amountPreview(c.creditAmount || 0)}
+                                </Text>
+                            )}
                             <Badge
-                                color={BASIC_STATUS_COLORS[c.status as keyof typeof BASIC_STATUS_COLORS] || "gray"}
+                                color={
+                                    BASIC_STATUS_COLORS[
+                                        c.status as keyof typeof BASIC_STATUS_COLORS
+                                    ] || "gray"
+                                }
                                 size="sm"
                                 radius="xs"
                                 className="mt-2"
@@ -349,11 +404,24 @@ const Customers = () => {
                                             rightSection={
                                                 <IconEdit size={16} />
                                             }
+                                            disabled={!hasAnyPrivilege(role, [
+                                                USER_ROLES.ADMIN,
+                                                USER_ROLES.SUPER_ADMIN,
+                                                USER_ROLES.OWNER,
+                                                USER_ROLES.SALES_MANAGER,
+                                                USER_ROLES.WAREHOUSE_MANAGER,
+                                            ])}
                                         >
                                             Edit
                                         </Menu.Item>
                                         <Menu.Item
-                                            color={BASIC_STATUS_COLORS[c.status ? "false" : "true" as keyof typeof BASIC_STATUS_COLORS] || "gray"}
+                                            color={
+                                                BASIC_STATUS_COLORS[
+                                                    c.status
+                                                        ? "false"
+                                                        : ("true" as keyof typeof BASIC_STATUS_COLORS)
+                                                ] || "gray"
+                                            }
                                             onClick={() =>
                                                 handleChangeStatus(c)
                                             }
@@ -366,6 +434,12 @@ const Customers = () => {
                                                     <IconMobiledata size={16} />
                                                 )
                                             }
+                                            disabled={!hasAnyPrivilege(role, [
+                                                USER_ROLES.ADMIN,
+                                                USER_ROLES.SUPER_ADMIN,
+                                                USER_ROLES.OWNER,
+                                                USER_ROLES.SALES_MANAGER,
+                                            ])}
                                         >
                                             {c.status ? (
                                                 <span className="text-red-700">

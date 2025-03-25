@@ -80,9 +80,11 @@ const SettingsPage = () => {
     }));
 
     useEffect(() => {
-        getAllUsers();
-        getAllBankDetails();
-        getAllWarehouseDetails();
+        if (hasAnyPrivilege(role, [USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN, USER_ROLES.OWNER])){
+            getAllUsers();
+            getAllBankDetails();
+            getAllWarehouseDetails();
+        }
     }, [dispatch]);
 
     const getAllUsers = async () => {
@@ -250,7 +252,7 @@ const SettingsPage = () => {
                 pwForm.reset();
                 setIsLoading(false);
             }}
-            title={<Text size="lg">Change Password</Text>}
+            title={<Text size="lg" fw="bold">Change Password</Text>}
         >
             <form onSubmit={pwForm.onSubmit(handlePasswordChange)}>
                 <TextInput
@@ -291,7 +293,11 @@ const SettingsPage = () => {
         <Modal
             opened={usersViewOpened}
             onClose={handleUsersView.close}
-            title={<Text size="lg">Users</Text>}
+            title={
+                <Text size="lg" fw="bold">
+                    Users
+                </Text>
+            }
             size={isSmallScreen ? "100%" : "70%"}
             className="max-h-80"
         >
@@ -476,7 +482,7 @@ const SettingsPage = () => {
         <Modal
             opened={bankDetailsOpened}
             onClose={handleBankDetailsView.close}
-            title={<Text size="lg">Bank Account Details</Text>}
+            title={<Text size="lg" fw="bold">Bank Account Details</Text>}
             size={isSmallScreen ? "100%" : "70%"}
             className="max-h-80"
         >
@@ -622,7 +628,7 @@ const SettingsPage = () => {
                 handleAddUser.close();
                 addUserForm.reset();
             }}
-            title={<Text size="lg">Add Users</Text>}
+            title={<Text size="lg" fw="bold">Add Users</Text>}
         >
             <form onSubmit={addUserForm.onSubmit(handleAddUseForm)}>
                 <TextInput
@@ -674,7 +680,7 @@ const SettingsPage = () => {
                 handleAddBankDetail.close();
                 addBankDetailForm.reset();
             }}
-            title={<Text size="lg">Add Bank Detail</Text>}
+            title={<Text size="lg" fw="bold">Add Bank Detail</Text>}
         >
             <form
                 onSubmit={addBankDetailForm.onSubmit(handleAddBankDetailForm)}
@@ -746,7 +752,7 @@ const SettingsPage = () => {
                 handleAddWarehouseDetail.close();
                 warehouseAddForm.reset();
             }}
-            title={<Text size="lg">Add Warehouse Detail</Text>}
+            title={<Text size="lg" fw="bold">Add Warehouse Detail</Text>}
         >
             <form
                 onSubmit={warehouseAddForm.onSubmit(
@@ -790,7 +796,7 @@ const SettingsPage = () => {
         <Modal
             opened={warehouseDetailsOpened}
             onClose={handleWarehouseDetailsView.close}
-            title={<Text size="lg">Warehouse Details</Text>}
+            title={<Text size="lg" fw="bold">Warehouse Details</Text>}
             size={isSmallScreen ? "100%" : "lg"}
         >
             <ScrollArea className="overflow-x-auto">

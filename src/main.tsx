@@ -134,6 +134,10 @@ const EditSalesRecord = React.lazy(
 );
 
 const PdfView = React.lazy(() => import("./pages/PdfViewPage.tsx"));
+const Orders = React.lazy(() => import("./pages/salesRecords/orders"));
+const AddOrder = React.lazy(() => import("./pages/salesRecords/orders/AddOrder.tsx"));
+const EditOrder = React.lazy(() => import("./pages/salesRecords/orders/EditOrder.tsx"));
+const ViewOrder = React.lazy(() => import("./pages/salesRecords/orders/ViewOrder.tsx"));
 
 const router = createBrowserRouter([
     {
@@ -286,6 +290,22 @@ const router = createBrowserRouter([
                 element: <PdfView />,
             },
             {
+                path: "sales-records/orders",
+                element: <Orders />,
+            },
+            {
+                path: "sales-records/orders/add-order",
+                element: <AddOrder />,
+            },
+            {
+                path: "sales-records/orders/edit-order/:id",
+                element: <EditOrder />,
+            },
+            {
+                path: "sales-records/orders/view-order/:id",
+                element: <ViewOrder />,
+            },
+            {
                 path: "*",
                 element: <Navigate to="/app/dashboard" replace />,
             },
@@ -304,7 +324,7 @@ const router = createBrowserRouter([
 
 createRoot(document.getElementById("root")!).render(
     <Provider store={store}>
-        <MantineProvider defaultColorScheme="light">
+        <MantineProvider defaultColorScheme="light" theme={{ fontFamily: "Ubuntu, sans-serif" }}>
             <DatesProvider settings={{ timezone: "UTC" }}>
                 <Suspense fallback={<Loading />}>
                     <LoadingProvider>

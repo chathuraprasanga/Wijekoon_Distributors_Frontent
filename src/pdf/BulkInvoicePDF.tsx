@@ -245,17 +245,13 @@ const BulkInvoicePDF = ({data}:any) => {
                         Terms & Conditions:
                     </Text>
                     <Text size="sm" c="dimmed">
-                        1. Payment should be made within the agreed credit
-                        period.
+                        1. Any discrepancies should be reported within 7 days.
                     </Text>
                     <Text size="sm" c="dimmed">
-                        2. Any discrepancies should be reported within 7 days.
+                        2. Late payments may be subject to additional charges.
                     </Text>
                     <Text size="sm" c="dimmed">
-                        3. Late payments may be subject to additional charges.
-                    </Text>
-                    <Text size="sm" c="dimmed">
-                        4. This invoice serves as a legal document for all
+                        3. This payment receipt serves as a legal document for all
                         financial transactions.
                     </Text>
                 </Box>

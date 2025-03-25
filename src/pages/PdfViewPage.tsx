@@ -6,6 +6,7 @@ import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 import BulkInvoicePDF from "../pdf/BulkInvoicePDF.tsx";
 import SalesRecordPDF from "../pdf/SalesRecordPDF.tsx";
+import OrderPDF from "../pdf/OrderPDF.tsx";
 
 const PdfViewPage = () => {
     const location = useLocation();
@@ -76,6 +77,9 @@ const PdfViewPage = () => {
                 )}
                 {type === DOWNLOAD_TYPES.SALES_RECORD && (
                     <SalesRecordPDF data={data} />
+                )}
+                {type === DOWNLOAD_TYPES.ORDER && (
+                    <OrderPDF data={data} />
                 )}
             </Box>
         </>

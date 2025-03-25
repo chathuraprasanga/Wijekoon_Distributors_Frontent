@@ -1,14 +1,18 @@
-import { Box, Flex, Grid, Group, Table, Text, Divider } from "@mantine/core";
+import { Box, Divider, Flex, Grid, Group, Table, Text } from "@mantine/core";
 import logo from "../assets/logo1.png";
 import { amountPreview, datePreview } from "../helpers/preview.tsx";
 
-const SalesRecordPDF = ({ data }: any) => {
+const OrderPDF = ({ data }: any) => {
     console.log("data", data);
 
-    const amount = data.amountDetails.netTotal;
+    const amount = data?.orderDetails?.reduce(
+        (acc: number, o: { lineTotal: number }) => acc + o.lineTotal,
+        0
+    );
+
 
     const orderDetails = data.orderDetails;
-    const amountDetails = data.amountDetails;
+    // const amountDetails = data.amountDetails;
     // const payments = data.metadata.paymets;
     const customer = data.customer;
 
@@ -45,7 +49,7 @@ const SalesRecordPDF = ({ data }: any) => {
                     <Grid.Col span="auto">
                         <Box style={{ textAlign: "right" }}>
                             <Text fw={700} size="xl" c="blue">
-                                SALES RECORD
+                                PURCHASE ORDER
                             </Text>
                         </Box>
                     </Grid.Col>
@@ -67,18 +71,28 @@ const SalesRecordPDF = ({ data }: any) => {
                     <Grid.Col span="auto">
                         <Flex direction="column" align="flex-end" gap="xs">
                             <Flex justify="flex-end">
-                                <Text fw={600} c="black">Sales Record ID:</Text>
-                                <Text ml="md" c="black">{data?.orderId}</Text>
+                                <Text fw={600} c="black">
+                                    Sales Record ID:
+                                </Text>
+                                <Text ml="md" c="black">
+                                    {data?.orderId}
+                                </Text>
                             </Flex>
                             <Flex justify="flex-end">
-                                <Text fw={600} c="black">Date:</Text>
+                                <Text fw={600} c="black">
+                                    Date:
+                                </Text>
                                 <Text ml="md" c="black">
                                     {datePreview(data?.createdAt)}
                                 </Text>
                             </Flex>
                             <Flex justify="flex-end">
-                                <Text fw={600} c="black">Amount:</Text>
-                                <Text ml="md" c="black">{amountPreview(amount)}</Text>
+                                <Text fw={600} c="black">
+                                    Amount:
+                                </Text>
+                                <Text ml="md" c="black">
+                                    {amountPreview(amount)}
+                                </Text>
                             </Flex>
                         </Flex>
                     </Grid.Col>
@@ -122,35 +136,7 @@ const SalesRecordPDF = ({ data }: any) => {
                             <Table.Td colSpan={4}></Table.Td>
                             <Table.Td>Sub total: </Table.Td>
                             <Table.Td>
-                                {amountPreview(amountDetails?.subTotal)}
-                            </Table.Td>
-                        </Table.Tr>
-                        <Table.Tr>
-                            <Table.Td colSpan={4}></Table.Td>
-                            <Table.Td>Discount: </Table.Td>
-                            <Table.Td>
-                                {amountPreview(amountDetails?.discount)}
-                            </Table.Td>
-                        </Table.Tr>
-                        <Table.Tr>
-                            <Table.Td colSpan={4}></Table.Td>
-                            <Table.Td>Tax: </Table.Td>
-                            <Table.Td>
-                                {amountPreview(amountDetails?.tax)}
-                            </Table.Td>
-                        </Table.Tr>
-                        <Table.Tr>
-                            <Table.Td colSpan={4}></Table.Td>
-                            <Table.Td>Other Cost: </Table.Td>
-                            <Table.Td>
-                                {amountPreview(amountDetails?.otherCost)}
-                            </Table.Td>
-                        </Table.Tr>
-                        <Table.Tr>
-                            <Table.Td colSpan={4}></Table.Td>
-                            <Table.Td>Net total: </Table.Td>
-                            <Table.Td>
-                                {amountPreview(amountDetails?.netTotal)}
+                                {amountPreview(amount)}
                             </Table.Td>
                         </Table.Tr>
                     </Table.Tbody>
@@ -193,7 +179,7 @@ const SalesRecordPDF = ({ data }: any) => {
                         2. Any discrepancies should be reported within 7 days.
                     </Text>
                     <Text size="sm" c="dimmed">
-                        3. Late payments may be subject to additional charges.
+                        3. Discounts and Taxes may added when create sales record.
                     </Text>
                     <Text size="sm" c="dimmed">
                         4. This invoice serves as a legal document for all
@@ -205,4 +191,4 @@ const SalesRecordPDF = ({ data }: any) => {
     );
 };
 
-export default SalesRecordPDF;
+export default OrderPDF;

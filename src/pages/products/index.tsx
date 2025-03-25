@@ -23,7 +23,6 @@ import {
 } from "@tabler/icons-react";
 import { useNavigate } from "react-router";
 import { useEffect, useState } from "react";
-// import products from "../products/product_data.json";
 import { useLoading } from "../../helpers/loadingContext.tsx";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store/store.ts";
@@ -33,7 +32,8 @@ import {
 } from "../../store/productSlice/productSlice.ts";
 import toNotify from "../../helpers/toNotify.tsx";
 import { amountPreview, pageRange } from "../../helpers/preview.tsx";
-import { BASIC_STATUS_COLORS } from "../../helpers/types.ts";
+import { BASIC_STATUS_COLORS, USER_ROLES } from "../../helpers/types.ts";
+import { hasAnyPrivilege } from "../../helpers/previlleges.ts";
 
 const Products = () => {
     const { setLoading } = useLoading();
@@ -50,6 +50,8 @@ const Products = () => {
     const [metadata, setMetadata] = useState<any>();
 
     const products = useSelector((state: RootState) => state.product.products);
+    const user = useSelector((state: RootState) => state.auth.user);
+    const role = user.role;
 
     useEffect(() => {
         fetchProducts();
@@ -104,6 +106,13 @@ const Products = () => {
                     <Button
                         size="xs"
                         onClick={() => navigate("/app/products/add-product")}
+                        disabled={
+                            !hasAnyPrivilege(role, [
+                                USER_ROLES.ADMIN,
+                                USER_ROLES.SUPER_ADMIN,
+                                USER_ROLES.OWNER,
+                            ])
+                        }
                     >
                         Add Products
                     </Button>
@@ -190,14 +199,18 @@ const Products = () => {
                                         {c.productCode}
                                     </Table.Td>
                                     <Table.Td style={{ width: "15%" }}>
-                                        {c.size}
+                                        {c.size} KG
                                     </Table.Td>
                                     <Table.Td style={{ width: "15%" }}>
                                         {amountPreview(c.unitPrice)}
                                     </Table.Td>
                                     <Table.Td style={{ width: "10%" }}>
                                         <Badge
-                                            color={BASIC_STATUS_COLORS[c.status as keyof typeof BASIC_STATUS_COLORS] || "gray"}
+                                            color={
+                                                BASIC_STATUS_COLORS[
+                                                    c.status as keyof typeof BASIC_STATUS_COLORS
+                                                ] || "gray"
+                                            }
                                             size="sm"
                                             radius="xs"
                                         >
@@ -243,11 +256,24 @@ const Products = () => {
                                                     rightSection={
                                                         <IconEdit size={16} />
                                                     }
+                                                    disabled={
+                                                        !hasAnyPrivilege(role, [
+                                                            USER_ROLES.OWNER,
+                                                            USER_ROLES.SUPER_ADMIN,
+                                                            USER_ROLES.ADMIN,
+                                                        ])
+                                                    }
                                                 >
                                                     Edit
                                                 </Menu.Item>
                                                 <Menu.Item
-                                                    color={BASIC_STATUS_COLORS[c.status ? "false" : "true" as keyof typeof BASIC_STATUS_COLORS] || "gray"}
+                                                    color={
+                                                        BASIC_STATUS_COLORS[
+                                                            c.status
+                                                                ? "false"
+                                                                : ("true" as keyof typeof BASIC_STATUS_COLORS)
+                                                        ] || "gray"
+                                                    }
                                                     onClick={() =>
                                                         handleChangeStatus(c)
                                                     }
@@ -261,6 +287,13 @@ const Products = () => {
                                                                 size={16}
                                                             />
                                                         )
+                                                    }
+                                                    disabled={
+                                                        !hasAnyPrivilege(role, [
+                                                            USER_ROLES.OWNER,
+                                                            USER_ROLES.SUPER_ADMIN,
+                                                            USER_ROLES.ADMIN,
+                                                        ])
                                                     }
                                                 >
                                                     {c.status ? (
@@ -305,12 +338,16 @@ const Products = () => {
                                 Name: {c.name}
                             </Text>
                             <Text>Product Code: {c.productCode}</Text>
-                            <Text>Size: {c.size}</Text>
+                            <Text>Size: {c.size} KG</Text>
                             <Text>
                                 Unit Price: {amountPreview(c.unitPrice)}
                             </Text>
                             <Badge
-                                color={BASIC_STATUS_COLORS[c.status as keyof typeof BASIC_STATUS_COLORS] || "gray"}
+                                color={
+                                    BASIC_STATUS_COLORS[
+                                        c.status as keyof typeof BASIC_STATUS_COLORS
+                                    ] || "gray"
+                                }
                                 size="sm"
                                 radius="xs"
                                 className="mt-2"
@@ -354,11 +391,24 @@ const Products = () => {
                                             rightSection={
                                                 <IconEdit size={16} />
                                             }
+                                            disabled={
+                                                !hasAnyPrivilege(role, [
+                                                    USER_ROLES.OWNER,
+                                                    USER_ROLES.SUPER_ADMIN,
+                                                    USER_ROLES.ADMIN,
+                                                ])
+                                            }
                                         >
                                             Edit
                                         </Menu.Item>
                                         <Menu.Item
-                                            color={BASIC_STATUS_COLORS[c.status ? "false" : "true" as keyof typeof BASIC_STATUS_COLORS] || "gray"}
+                                            color={
+                                                BASIC_STATUS_COLORS[
+                                                    c.status
+                                                        ? "false"
+                                                        : ("true" as keyof typeof BASIC_STATUS_COLORS)
+                                                ] || "gray"
+                                            }
                                             onClick={() =>
                                                 handleChangeStatus(c)
                                             }
@@ -370,6 +420,13 @@ const Products = () => {
                                                 ) : (
                                                     <IconMobiledata size={16} />
                                                 )
+                                            }
+                                            disabled={
+                                                !hasAnyPrivilege(role, [
+                                                    USER_ROLES.OWNER,
+                                                    USER_ROLES.SUPER_ADMIN,
+                                                    USER_ROLES.ADMIN,
+                                                ])
                                             }
                                         >
                                             {c.status ? (

@@ -61,8 +61,6 @@ const ViewSalesRecord = () => {
         credit: 0,
     });
 
-    console.log("salesRecord", salesRecord);
-
     useEffect(() => {
         if (id) {
             fetchSelectedSalesRecord();
@@ -118,7 +116,7 @@ const ViewSalesRecord = () => {
                                                     data={
                                                         banks?.map((b) => ({
                                                             label: b.name,
-                                                            value: b.ID.toString(),
+                                                            value: b.name,
                                                         })) ?? []
                                                     }
                                                     value={cheque.bank}
@@ -229,7 +227,7 @@ const ViewSalesRecord = () => {
                                         data={
                                             banks?.map((b) => ({
                                                 label: b.name,
-                                                value: b.ID.toString(),
+                                                value: b.name,
                                             })) ?? []
                                         }
                                         value={cheque.bank}
@@ -586,7 +584,12 @@ const ViewSalesRecord = () => {
             </Box>
 
             <Box px={"lg"} pb="lg" w={{ sm: "100%", lg: "75%" }}>
-                <Table withTableBorder withColumnBorders highlightOnHover striped>
+                <Table
+                    withTableBorder
+                    withColumnBorders
+                    highlightOnHover
+                    striped
+                >
                     <Table.Thead>
                         <Table.Tr>
                             <Table.Th w="20">Product</Table.Th>
@@ -654,7 +657,9 @@ const ViewSalesRecord = () => {
                             </Table.Td>
                         </Table.Tr>
                         <Table.Tr fw={600}>
-                            Notes: {salesRecord?.notes}
+                            <Table.Td colSpan={5}>
+                                Notes: {salesRecord?.notes}
+                            </Table.Td>
                         </Table.Tr>
                     </Table.Tbody>
                 </Table>

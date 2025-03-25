@@ -23,7 +23,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store/store.ts";
 import { getProducts } from "../../store/productSlice/productSlice.ts";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { addCustomer, getCustomers } from "../../store/customerSlice/customerSlice.ts";
+import {
+    addCustomer,
+    getCustomers,
+} from "../../store/customerSlice/customerSlice.ts";
 import { DatePickerInput } from "@mantine/dates";
 import { useDisclosure, useMediaQuery } from "@mantine/hooks";
 import { amountPreview } from "../../helpers/preview.tsx";
@@ -35,6 +38,7 @@ import toNotify from "../../helpers/toNotify.tsx";
 import { addSalesRecord } from "../../store/salesRecordSlice/salesRecordSlice.ts";
 import { getWarehouse } from "../../store/warehouseSlice/warehouseSlice.ts";
 import { isValidPhone } from "../../utils/inputValidators.ts";
+import { getOrder } from "../../store/orderSlice/orderSlice.ts";
 
 const AddSalesRecord = () => {
     const { setLoading } = useLoading();
@@ -42,7 +46,6 @@ const AddSalesRecord = () => {
     const [searchParams] = useSearchParams();
     const dispatch = useDispatch<AppDispatch>();
     const isMobile = useMediaQuery("(max-width: 768px)");
-    // const products = useSelector((state: RootState) => state.product.products);
     const [products, setProducts] = useState<any[]>([]);
     const customers = useSelector(
         (state: RootState) => state.customer.customers
@@ -64,8 +67,12 @@ const AddSalesRecord = () => {
         credit: 0,
     });
     const warehouseId = searchParams.get("warehouseId");
+    const orderId = searchParams.get("orderId");
     const warehouse = useSelector(
         (state: RootState) => state.warehouses.selectedWarehouse
+    );
+    const order = useSelector(
+        (state: RootState) => state.orders.selectedSalesOrder
     );
     const [warehouseStockModalOpened, warehouseStockModalHandler] =
         useDisclosure(false);
@@ -77,8 +84,10 @@ const AddSalesRecord = () => {
         fetchRelatedDetails();
     }, []);
 
+    const filters = { status: true };
+
     const fetchRelatedDetails = async () => {
-        await dispatch(getCustomers({ status: true }));
+        await dispatch(getCustomers({ filters }));
 
         if (warehouseId) {
             const response = await dispatch(getWarehouse(warehouseId));
@@ -90,8 +99,19 @@ const AddSalesRecord = () => {
                 })
             );
             setProducts(productArray);
+        } else if (orderId) {
+            const response = await dispatch(getOrder(orderId));
+            const productResponse = await dispatch(getProducts({ filters }));
+            setProducts(productResponse.payload.result);
+            const data: any = response.payload.result.metadata;
+            salesRecordForm.setValues({
+                customer: data.customer,
+                date: null,
+                notes: data.notes,
+            });
+            setSelectedProducts(data.products);
         } else {
-            const response = await dispatch(getProducts({ status: true }));
+            const response = await dispatch(getProducts({ filters }));
             setProducts(response.payload.result);
         }
     };
@@ -132,7 +152,7 @@ const AddSalesRecord = () => {
         <Modal
             opened={productSelectModalOpened}
             onClose={productSelectModalHandler.close}
-            title={<Text>Select Products</Text>}
+            title={<Text size={"lg"} fw={"bold"}>Select Products</Text>}
             size={isMobile ? "100%" : "50%"}
         >
             <Table>
@@ -146,7 +166,7 @@ const AddSalesRecord = () => {
                     </Table.Tr>
                 </Table.Thead>
                 <Table.Tbody>
-                    {products.map((p: any, i: any) => (
+                    {products?.map((p: any, i: any) => (
                         <Table.Tr key={i}>
                             <Table.Td>{p.name}</Table.Td>
                             <Table.Td>{p.productCode}</Table.Td>
@@ -243,7 +263,9 @@ const AddSalesRecord = () => {
         setPaymentDetailsOpen(true);
         setPaymentDetails({ cash: 0, cheques: [], credit: netTotal });
 
-        navigate("/app/sales-records/add-sales-record#payment-details");
+        navigate(
+            `/app/sales-records/add-sales-record?warehouseId=${warehouseId}&orderId=${orderId}#payment-details`
+        );
 
         setTimeout(() => {
             paymentDetailsRef.current?.scrollIntoView({
@@ -258,7 +280,7 @@ const AddSalesRecord = () => {
             <Modal
                 opened={chequeAddModalOpened}
                 onClose={chequeAddModalOpenedGHandler.close}
-                title={<Text>Add Customer Cheques</Text>}
+                title={<Text size={"lg"} fw={"bold"}>Add Customer Cheques</Text>}
                 size={isMobile ? "100%" : "70%"}
                 styles={{
                     body: {
@@ -289,7 +311,7 @@ const AddSalesRecord = () => {
                                                 data={
                                                     banks?.map((b) => ({
                                                         label: b.name,
-                                                        value: b.ID.toString(),
+                                                        value: b.name,
                                                     })) ?? []
                                                 }
                                                 value={cheque.bank}
@@ -399,7 +421,7 @@ const AddSalesRecord = () => {
                                         data={
                                             banks?.map((b) => ({
                                                 label: b.name,
-                                                value: b.ID.toString(),
+                                                value: b.name,
                                             })) ?? []
                                         }
                                         value={cheque.bank}
@@ -607,11 +629,16 @@ const AddSalesRecord = () => {
         );
     };
 
+    console.log(orderId);
+
     const handleSaveSalesRecord = async () => {
         setLoading(true);
+        console.log("orderId", orderId);
         try {
             const payload = {
-                isWarehouseSale: !!warehouse,
+                isOrdered: !!orderId,
+                orderId: order._id,
+                isWarehouseSale: !!warehouseId,
                 warehouseId: warehouse._id,
                 customer: salesRecordForm.values.customer,
                 date: salesRecordForm.values.date
@@ -636,7 +663,6 @@ const AddSalesRecord = () => {
                 },
             };
 
-            console.log("PAYLOAD", payload);
             const response = await dispatch(addSalesRecord(payload));
 
             if (response.type === "salesRecord/addSalesRecord/fulfilled") {
@@ -668,7 +694,7 @@ const AddSalesRecord = () => {
                 opened={warehouseStockModalOpened}
                 onClose={warehouseStockModalHandler.close}
                 title={
-                    <Text size="lg" fw={600}>
+                    <Text size={"lg"} fw={"bold"}>
                         Warehouse Stock Details
                     </Text>
                 }
@@ -690,7 +716,7 @@ const AddSalesRecord = () => {
                             </Table.Tr>
                         </Table.Thead>
                         <Table.Tbody>
-                            {products.map((p, i) => (
+                            {products?.map((p, i) => (
                                 <Table.Tr key={i}>
                                     <Table.Td>{p?.name}</Table.Td>
                                     <Table.Td>{p?.productCode}</Table.Td>
@@ -770,9 +796,11 @@ const AddSalesRecord = () => {
                     customerAddModalHandler.close();
                     customerAddForm.reset();
                 }}
-                title={<Text>Add Customer</Text>}
+                title={<Text size={"lg"} fw={"bold"}>Add Customer</Text>}
             >
-                <form onSubmit={customerAddForm.onSubmit(customerAddFormHandler)}>
+                <form
+                    onSubmit={customerAddForm.onSubmit(customerAddFormHandler)}
+                >
                     <TextInput
                         label="Name"
                         withAsterisk
@@ -829,20 +857,21 @@ const AddSalesRecord = () => {
                     onSubmit={salesRecordForm.onSubmit(handleSalesRecordSubmit)}
                 >
                     <Group w="100%">
-                            <Select
-                                label="Customer"
-                                placeholder="Select Customer"
-                                data={customers.map((c: any) => ({
-                                    label: c.name,
-                                    value: c._id,
-                                }))}
-                                withAsterisk
-                                w="45%"
-                                size="xs"
-                                disabled={paymentDetailsOpen}
-                                {...salesRecordForm.getInputProps("customer")}
-                            />
-                            <DatePickerInput
+                        <Select
+                            label="Customer"
+                            placeholder="Select Customer"
+                            data={customers?.map((c: any) => ({
+                                label: c.name,
+                                value: c._id,
+                            }))}
+                            withAsterisk
+                            w="45%"
+                            size="xs"
+                            disabled={paymentDetailsOpen}
+                            {...salesRecordForm.getInputProps("customer")}
+                            searchable
+                        />
+                        <DatePickerInput
                             style={{ width: "45%" }}
                             label="Date"
                             placeholder="Select Date"
@@ -851,6 +880,7 @@ const AddSalesRecord = () => {
                             maxDate={new Date()}
                             disabled={paymentDetailsOpen}
                             {...salesRecordForm.getInputProps("date")}
+                            withAsterisk
                         />
                         <Text
                             size="xs"
@@ -874,7 +904,7 @@ const AddSalesRecord = () => {
                                     </Table.Tr>
                                 </Table.Thead>
                                 <Table.Tbody>
-                                    {selectedProducts.map((p, i) => (
+                                    {selectedProducts?.map((p, i) => (
                                         <Table.Tr key={i}>
                                             <Table.Td>
                                                 {p.product.name}
