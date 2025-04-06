@@ -3,6 +3,7 @@ import {
     Box,
     Button,
     Card,
+    Flex,
     Group,
     Menu,
     Pagination,
@@ -74,31 +75,27 @@ const SalesRecords = () => {
     return (
         <>
             {/* Page Header */}
-            <Box display="flex" p="lg" className="items-center justify-between">
-                <Box>
+            <Box display="flex" p="lg" className="items-center justify-between flex-wrap">
+                <Box mb={{ base: "sm", md: 0 }}>
                     <Text size="lg" fw={500}>
                         Sales Records
                     </Text>
                 </Box>
-                <Box>
+                <Flex gap="sm" wrap="wrap">
                     <Button
                         size="xs"
-                        onClick={() =>
-                            navigate("/app/sales-records/orders")
-                        }
+                        onClick={() => navigate("/app/sales-records/orders")}
                         color="violet"
                     >
                         Purchase Orders
-                    </Button>{" "}
+                    </Button>
                     <Button
                         size="xs"
-                        onClick={() =>
-                            navigate("/app/sales-records/add-sales-record")
-                        }
+                        onClick={() => navigate("/app/sales-records/add-sales-record")}
                     >
                         Add Sales Record
                     </Button>
-                </Box>
+                </Flex>
             </Box>
 
             {/* Search & Filter */}

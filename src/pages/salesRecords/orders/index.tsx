@@ -2,7 +2,7 @@ import {
     Badge,
     Box,
     Button,
-    Card,
+    Card, Flex,
     Group,
     Menu,
     Pagination,
@@ -89,7 +89,7 @@ const Orders = () => {
                         </Text>
                     </Group>
                 </Box>
-                <Box>
+                <Flex gap="sm" wrap="wrap">
                     <Button
                         size="xs"
                         onClick={() =>
@@ -98,7 +98,7 @@ const Orders = () => {
                     >
                         Add Purchase Order
                     </Button>
-                </Box>
+                </Flex>
             </Box>
 
             {/* Search & Filter */}

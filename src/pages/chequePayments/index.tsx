@@ -5,7 +5,7 @@ import {
     Badge,
     Box,
     Button,
-    Card,
+    Card, Flex,
     Group,
     Menu,
     Pagination,
@@ -150,7 +150,7 @@ const ChequePayments = () => {
                         Cheque Payments
                     </Text>
                 </Box>
-                <Box>
+                <Flex gap="sm" wrap="wrap">
                     <Button
                         size="xs"
                         onClick={() =>
@@ -160,7 +160,7 @@ const ChequePayments = () => {
                     >
                         Add Payment
                     </Button>
-                </Box>
+                </Flex>
             </Box>
             <>
                 {!isBankDetailsAdded && (

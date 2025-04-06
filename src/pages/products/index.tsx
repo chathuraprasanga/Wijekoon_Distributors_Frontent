@@ -2,7 +2,7 @@ import {
     Badge,
     Box,
     Button,
-    Card,
+    Card, Flex,
     Group,
     Menu,
     Pagination,
@@ -102,7 +102,7 @@ const Products = () => {
                         Products
                     </Text>
                 </Box>
-                <Box>
+                <Flex gap="sm" wrap="wrap">
                     <Button
                         size="xs"
                         onClick={() => navigate("/app/products/add-product")}
@@ -116,7 +116,7 @@ const Products = () => {
                     >
                         Add Products
                     </Button>
-                </Box>
+                </Flex>
             </Box>
 
             {/* Search Input */}
