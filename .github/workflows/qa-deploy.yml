@@ -60,7 +60,7 @@ jobs:
             nvm use node || echo "⚠️ NVM not found, skipping..."
 
             echo "📂 Navigating to project root directory..."
-            cd /var/www/qa
+            cd /var/www/qa/qa-wd-app
 
             echo "📥 Pulling latest changes from qa branch..."
             git pull origin qa
