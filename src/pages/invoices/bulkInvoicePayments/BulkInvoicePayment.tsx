@@ -508,11 +508,11 @@ const BulkInvoicePayment = () => {
                         Bulk Invoice Payment
                     </span>
                 </Group>
-                <Group>
+                <Flex gap="sm" wrap="wrap">
                     <Button size="xs" leftSection={<IconClock size={16}/>} onClick={() => navigate("/app/invoices/previous-bulk-invoice-payments")}>
                         Previous Bulk Payments
                     </Button>
-                </Group>
+                </Flex>
             </Group>
             <Box w={{ sm: "100%", lg: "100%" }} px="lg" py="lg">
                 <form
