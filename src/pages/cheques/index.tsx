@@ -4,7 +4,7 @@ import {
     Badge,
     Box,
     Button,
-    Card,
+    Card, Flex,
     Group,
     Menu,
     Pagination,
@@ -143,7 +143,7 @@ const Cheques = () => {
                         Cheques
                     </Text>
                 </Box>
-                <Box>
+                <Flex gap="sm" wrap="wrap">
                     <Button
                         size="xs"
                         onClick={() => navigate("/app/cheques/add-cheque")}
@@ -157,7 +157,7 @@ const Cheques = () => {
                     >
                         Add Cheque
                     </Button>
-                </Box>
+                </Flex>
             </Box>
 
             {/* Search Input */}

@@ -10,7 +10,7 @@ import {
     Card,
     TextInput,
     Select,
-    Checkbox,
+    Checkbox, Flex,
 } from "@mantine/core";
 import {
     IconDatabaseOff,
@@ -110,7 +110,7 @@ const Customers = () => {
                         Customers
                     </Text>
                 </Box>
-                <Box>
+                <Flex gap="sm" wrap="wrap">
                     <Button
                         size="xs"
                         onClick={() => navigate("/app/customers/add-customer")}
@@ -124,7 +124,7 @@ const Customers = () => {
                     >
                         Add Customer
                     </Button>
-                </Box>
+                </Flex>
             </Box>
 
             {/* Search Input */}

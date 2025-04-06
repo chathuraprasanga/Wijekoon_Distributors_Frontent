@@ -4,7 +4,7 @@ import {
     Badge,
     Box,
     Button,
-    Card,
+    Card, Flex,
     Group,
     Menu,
     Pagination,
@@ -125,7 +125,7 @@ const Invoices = () => {
                         Invoices
                     </Text>
                 </Box>
-                <Box>
+                <Flex gap="sm" wrap="wrap">
                     <Button
                         size="xs"
                         color="violet"
@@ -141,7 +141,7 @@ const Invoices = () => {
                     >
                         Add Invoice
                     </Button>{" "}
-                </Box>
+                </Flex>
             </Box>
 
             {/* Search Input */}

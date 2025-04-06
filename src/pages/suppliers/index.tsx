@@ -4,7 +4,7 @@ import {
     Badge,
     Box,
     Button,
-    Card,
+    Card, Flex,
     Group,
     Menu,
     Pagination,
@@ -103,14 +103,14 @@ const Suppliers = () => {
                         Suppliers
                     </Text>
                 </Box>
-                <Box>
+                <Flex gap="sm" wrap="wrap">
                     <Button
                         size="xs"
                         onClick={() => navigate("/app/suppliers/add-supplier")}
                     >
                         Add Supplier
                     </Button>
-                </Box>
+                </Flex>
             </Box>
 
             {/* Search Input */}
