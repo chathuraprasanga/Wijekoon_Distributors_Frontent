@@ -1,4 +1,4 @@
-name: 🚀 Deploy Wijekoon Distributors Frontend to QA Droplet
+name: 🚀 Deploy Wijekoon Distributors Frontend to Droplet
 
 on:
   push:
@@ -29,7 +29,7 @@ jobs:
           npm install
           echo "🏗️ Building QA frontend..."
           npm run build:qa
-          echo "📦 Creating archive of build files..."
+          echo "📦 Creating build archive..."
           tar -czf frontend-dist.tar.gz dist
           echo "✅ Build and packaging complete."
 
@@ -46,7 +46,7 @@ jobs:
           scp -o StrictHostKeyChecking=no frontend-dist.tar.gz ${{ secrets.DROPLET_USER }}@${{ secrets.DROPLET_HOST }}:/var/www/qa/qa-wd-app/
           echo "✅ Build archive copied to VPS."
 
-      # ✅ Deploy frontend on VPS
+      # ✅ Extract and Deploy Frontend on VPS
       - name: 🖥️ Deploy Frontend to VPS
         run: |
           echo "🚀 Starting deployment on VPS..."
@@ -54,30 +54,27 @@ jobs:
             set -e
 
             echo "🧩 Loading NVM environment if available..."
-            export NVM_DIR="\$HOME/.nvm"
-            [ -s "\$NVM_DIR/nvm.sh" ] && \. "\$NVM_DIR/nvm.sh"
-            [ -s "\$NVM_DIR/bash_completion" ] && \. "\$NVM_DIR/bash_completion"
+            export NVM_DIR="$HOME/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+            [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
             nvm use node || echo "⚠️ NVM not found, skipping..."
 
-            echo "📂 Navigating to project root directory..."
+            echo "📂 Navigating to project directory..."
             cd /var/www/qa/qa-wd-app
 
             echo "📥 Pulling latest changes from qa branch..."
             git pull origin qa
 
-            echo "📂 Navigating to frontend directory..."
-            cd qa-wd-app
-
-            echo "🧹 Cleaning old dist directory..."
+            echo "🧹 Removing old dist directory..."
             rm -rf dist
 
             echo "📦 Extracting new build archive..."
             tar -xzf frontend-dist.tar.gz
 
-            echo "🧹 Cleaning up archive..."
+            echo "🧹 Cleaning up build archive..."
             rm frontend-dist.tar.gz
 
-            echo "✅ Deployment complete on VPS."
+            echo "✅ Deployment completed on VPS."
           EOF
 
       # ✅ Restart Nginx

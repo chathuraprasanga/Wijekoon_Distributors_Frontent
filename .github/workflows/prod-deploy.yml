@@ -52,33 +52,29 @@ jobs:
           echo "🚀 Starting deployment on VPS..."
           ssh -o ServerAliveInterval=60 -o StrictHostKeyChecking=no ${{ secrets.DROPLET_USER }}@${{ secrets.DROPLET_HOST }} << 'EOF'
             set -e
-          
             echo "🧩 Loading NVM environment if available..."
-            export NVM_DIR="\$HOME/.nvm"
-            [ -s "\$NVM_DIR/nvm.sh" ] && \. "\$NVM_DIR/nvm.sh"
-            [ -s "\$NVM_DIR/bash_completion" ] && \. "\$NVM_DIR/bash_completion"
+            export NVM_DIR="$HOME/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+            [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
             nvm use node || echo "⚠️ NVM not found, skipping..."
-          
-            echo "📂 Navigating to project root directory..."
+
+            echo "📂 Navigating to project directory..."
             cd /var/www/wijekoon-distributors/frontend
-          
+
             echo "📥 Pulling latest changes from main branch..."
             git pull origin main
-          
-            echo "📂 Navigating to frontend directory..."
-            cd frontend
-          
+
             echo "🧹 Cleaning old dist directory..."
             rm -rf dist
-          
+
             echo "📦 Extracting new build archive..."
             tar -xzf frontend-dist.tar.gz
-          
+
             echo "🧹 Cleaning up archive..."
             rm frontend-dist.tar.gz
-          
+
             echo "✅ Deployment complete on VPS."
-          EOF 
+          EOF
 
       # ✅ Restart Nginx
       - name: 🔄 Restart Nginx
