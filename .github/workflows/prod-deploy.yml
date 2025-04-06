@@ -1,4 +1,4 @@
-name: Deploy Wijekoon Distributors Frontend to Droplet
+name: 🚀 Deploy Wijekoon Distributors Frontend to Droplet
 
 on:
   push:
@@ -7,65 +7,80 @@ on:
 
 jobs:
   deploy:
-    name: Wijekoon Distributors Prod Frontend Deployment
+    name: 🌐 Wijekoon Distributors Prod Frontend Deployment
     runs-on: ubuntu-latest
 
     steps:
       # ✅ Checkout the repository
-      - name: Checkout code
+      - name: 📥 Checkout code
         uses: actions/checkout@v4
 
       # ✅ Install Node.js
-      - name: Install Node.js
+      - name: 🧩 Install Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 18
           cache: 'npm'
 
       # ✅ Install dependencies and build frontend
-      - name: Install dependencies and build frontend
+      - name: 🛠️ Install dependencies and build frontend
         run: |
+          echo "🔍 Installing dependencies..."
           npm install
+          echo "🏗️ Building production frontend..."
           npm run build:prod
+          echo "📦 Creating archive of build files..."
           tar -czf frontend-dist.tar.gz dist
+          echo "✅ Build and packaging complete."
 
       # ✅ Set up SSH agent
-      - name: Set up SSH agent
+      - name: 🗝️ Set up SSH agent
         uses: webfactory/ssh-agent@v0.9.0
         with:
           ssh-private-key: ${{ secrets.PRIVATE_KEY }}
 
-      # ✅ Directly Copy `dist` to the VPS
-      - name: Copy Frontend Build to VPS
+      # ✅ Copy dist to VPS
+      - name: 📡 Copy Frontend Build to VPS
         run: |
+          echo "🚚 Copying build archive to VPS..."
           scp -o StrictHostKeyChecking=no frontend-dist.tar.gz ${{ secrets.DROPLET_USER }}@${{ secrets.DROPLET_HOST }}:/var/www/wijekoon-distributors/frontend/
+          echo "✅ Build archive copied to VPS."
 
-      # ✅ Extract and Deploy Frontend on VPS
-      - name: Deploy Frontend to VPS
+      # ✅ Deploy frontend on VPS
+      - name: 🖥️ Deploy Frontend to VPS
         run: |
+          echo "🚀 Starting deployment on VPS..."
           ssh -o ServerAliveInterval=60 -o StrictHostKeyChecking=no ${{ secrets.DROPLET_USER }}@${{ secrets.DROPLET_HOST }} << 'EOF'
             set -e
-
-            # Load NVM if available
+            echo "🧩 Loading NVM environment if available..."
             export NVM_DIR="$HOME/.nvm"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
             [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
-            nvm use node || echo "NVM not found, skipping..."
+            nvm use node || echo "⚠️ NVM not found, skipping..."
 
+            echo "📂 Navigating to project directory..."
             cd /var/www/wijekoon-distributors/frontend
+
+            echo "📥 Pulling latest changes from main branch..."
             git pull origin main
 
-            # Remove old dist folder and extract new one
+            echo "🧹 Cleaning old dist directory..."
             rm -rf dist
+
+            echo "📦 Extracting new build archive..."
             tar -xzf frontend-dist.tar.gz
 
-            # Clean up
+            echo "🧹 Cleaning up archive..."
             rm frontend-dist.tar.gz
+
+            echo "✅ Deployment complete on VPS."
           EOF
 
       # ✅ Restart Nginx
-      - name: Restart Nginx
+      - name: 🔄 Restart Nginx
         run: |
+          echo "♻️ Restarting Nginx service..."
           ssh -o ServerAliveInterval=60 -o StrictHostKeyChecking=no ${{ secrets.DROPLET_USER }}@${{ secrets.DROPLET_HOST }} << 'EOF'
             sudo systemctl restart nginx
+            echo "✅ Nginx restarted successfully."
           EOF
