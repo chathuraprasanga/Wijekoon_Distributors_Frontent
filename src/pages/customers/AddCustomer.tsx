@@ -24,6 +24,7 @@ const AddCustomer = () => {
             phone: "",
             email: "",
             address: "",
+            remarks: "",
         },
         validate: {
             name: (value) => (value.trim() ? null : "Name is required"),
@@ -97,6 +98,11 @@ const AddCustomer = () => {
                         label="Address"
                         placeholder="Enter Customer Address"
                         {...customerAddForm.getInputProps("address")}
+                    />
+                    <Textarea
+                        label="Remarks"
+                        placeholder="Enter Remarks"
+                        {...customerAddForm.getInputProps("remarks")}
                     />
                     <Group justify="flex-end" display="flex" pb="md" mt="md">
                         <Button size="xs" type="submit">

@@ -68,6 +68,10 @@ const ViewCustomer = () => {
                         <div className="hidden lg:block lg:w-1/4">Address:</div>
                         <div>{customer?.address}</div>
                     </div>
+                    <div className="flex flex-row">
+                        <div className="hidden lg:block lg:w-1/4">Remarks:</div>
+                        <div>{customer?.remarks}</div>
+                    </div>
                     {customer.creditAmount > 0 && (
                         <div className="flex flex-row">
                             <div className="hidden lg:block lg:w-1/4">
