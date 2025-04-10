@@ -9,10 +9,8 @@ import {
     Group,
     Menu,
     Pagination,
-    Select,
     Table,
     Text,
-    TextInput,
 } from "@mantine/core";
 import {
     IconCertificate,
@@ -22,8 +20,6 @@ import {
     IconEdit,
     IconEye,
     IconInfoCircle,
-    IconSearch,
-    IconX,
 } from "@tabler/icons-react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store/store.ts";
@@ -34,13 +30,13 @@ import {
     bankPreview,
     datePreview, pageRange,
 } from "../../helpers/preview.tsx";
-import { DateInput } from "@mantine/dates";
 import {
     changeStatusChequePayment,
     getPagedChequePayments,
 } from "../../store/chequePaymentSlice/chequePaymentSlice.ts";
 import { getBankDetails } from "../../store/bankDetailSlice/bankDetailSlice.ts";
 import { CHEQUES_STATUS_COLORS } from "../../helpers/types.ts";
+import { DynamicSearchBar } from "../../components/DynamicSearchBar.tsx";
 
 const ChequePayments = () => {
     const { setLoading } = useLoading();
@@ -195,86 +191,59 @@ const ChequePayments = () => {
                 )}
 
                 {/* Search Input */}
-                <Box px="lg">
-                    <Group w={{ lg: "60%", sm: "100%" }}>
-                        <TextInput
-                            className="w-full lg:w-1/4"
-                            size="xs"
-                            placeholder="Receiver, Cheque Number"
-                            onChange={(event) => {
-                                setSearchQuery(event.target.value); // Update the search query
-                                setPageIndex(1); // Reset the page index to 1
-                            }}
-                            value={searchQuery}
-                            rightSection={
-                                searchQuery ? (
-                                    <IconX
-                                        className="cursor-pointer"
-                                        onClick={() => {
-                                            setSearchQuery(""); // Clear the search query
-                                            setPageIndex(1); // Reset the page index to 1
-                                        }}
-                                        size={14}
-                                    />
-                                ) : (
-                                    ""
-                                )
-                            }
-                            leftSection={<IconSearch size={14} />}
-                        />
-
-                        <Select
-                            className="w-full lg:w-1/4"
-                            size="xs"
-                            placeholder="Select a status"
-                            data={["PENDING", "RETURNED", "COMPLETED"]}
-                            clearable
-                            onChange={(value: string | null) => {
+                <DynamicSearchBar
+                    fields={[
+                        {
+                            type: "text",
+                            placeholder: "Receiver, Cheque Number",
+                            value: searchQuery,
+                            onChange: (value) => {
+                                setSearchQuery(value);
+                                setPageIndex(1);
+                            },
+                        },
+                        {
+                            type: "select",
+                            placeholder: "Select a status",
+                            options: ["PENDING", "RETURNED", "COMPLETED"],
+                            clearable: true,
+                            onChange: (value: string | null) => {
                                 if (value) {
-                                    setStatus(value); // Update the status
+                                    setStatus(value);
                                 } else {
-                                    setStatus(""); // Clear the status
+                                    setStatus("");
                                 }
-                                setPageIndex(1); // Reset the page index to 1
-                            }}
-                        />
-
-                        <DateInput
-                            className="w-full lg:w-1/4"
-                            size="xs"
-                            placeholder="Select deposit date"
-                            clearable
-                            onChange={(e: any) => {
-                                setDate(e); // Update the date
-                                setPageIndex(1); // Reset the page index to 1
-                            }}
-                        />
-
-                        <DateInput
-                            className="w-full lg:w-1/4"
-                            size="xs"
-                            placeholder="Date range from"
-                            clearable
-                            onChange={(e: any) => {
-                                setFromDate(e); // Update the deposit date
-                                setPageIndex(1); // Reset the page index to 1
-                            }}
-                            maxDate={toDate}
-                        />
-
-                        <DateInput
-                            className="w-full lg:w-1/4"
-                            size="xs"
-                            placeholder="Date range to"
-                            clearable
-                            onChange={(e: any) => {
-                                setToDate(e); // Update the deposit date
-                                setPageIndex(1); // Reset the page index to 1
-                            }}
-                            minDate={fromDate}
-                        />
-                    </Group>
-                </Box>
+                                setPageIndex(1);
+                            },
+                        },
+                        {
+                            type: "date",
+                            placeholder: "Select deposit date",
+                            onChange: (e: any) => {
+                                setDate(e);
+                                setPageIndex(1);
+                            },
+                        },
+                        {
+                            type: "date",
+                            placeholder: "Date range from",
+                            onChange: (e: any) => {
+                                setFromDate(e);
+                                setPageIndex(1);
+                            },
+                            maxDate: toDate,
+                        },
+                        {
+                            type: "date",
+                            placeholder: "Date range to",
+                            onChange: (e: any) => {
+                                setToDate(e);
+                                setPageIndex(1);
+                            },
+                            minDate: fromDate,
+                        },
+                    ]}
+                />
 
                 {/* Desktop Table */}
                 <Box

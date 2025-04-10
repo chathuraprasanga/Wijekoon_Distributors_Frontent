@@ -7,18 +7,14 @@ import {
     Group,
     Menu,
     Pagination,
-    Select,
     Table,
     Text,
-    TextInput,
 } from "@mantine/core";
 import {
     IconDatabaseOff,
     IconDotsVertical,
     IconEdit,
     IconEye,
-    IconSearch,
-    IconX,
 } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
 import { SALES_RECORD_STATUS_COLORS, USER_ROLES } from "../../helpers/types.ts";
@@ -29,6 +25,7 @@ import { getPagedSalesRecords } from "../../store/salesRecordSlice/salesRecordSl
 import { useNavigate } from "react-router";
 import { amountPreview, datePreview, pageRange } from "../../helpers/preview.tsx";
 import { hasAnyPrivilege } from "../../helpers/previlleges.ts";
+import { DynamicSearchBar } from "../../components/DynamicSearchBar.tsx";
 
 const SalesRecords = () => {
     const { setLoading } = useLoading();
@@ -113,54 +110,37 @@ const SalesRecords = () => {
                 </Flex>
             </Box>
 
-            {/* Search & Filter */}
-            <Box px="lg">
-                <Group w={{ lg: "60%", sm: "100%" }}>
-                    <TextInput
-                        className="w-full lg:w-1/4"
-                        size="xs"
-                        placeholder="Customer Name or Number"
-                        onChange={(event) => {
-                            setSearchQuery(event.target.value);
+            <DynamicSearchBar
+                fields={[
+                    {
+                        type: "text",
+                        placeholder: "Customer Name or Number",
+                        value: searchQuery,
+                        onChange: (value) => {
+                            setSearchQuery(value);
                             setPageIndex(1);
-                        }}
-                        value={searchQuery}
-                        rightSection={
-                            searchQuery ? (
-                                <IconX
-                                    className="cursor-pointer"
-                                    onClick={() => {
-                                        setSearchQuery("");
-                                        setPageIndex(1);
-                                    }}
-                                    size={14}
-                                />
-                            ) : (
-                                ""
-                            )
-                        }
-                        leftSection={<IconSearch size={14} />}
-                    />
-                    <Select
-                        className="w-full lg:w-1/4"
-                        size="xs"
-                        placeholder="Select a status"
-                        data={[
+                        },
+                    },
+                    {
+                        type: "select",
+                        placeholder: "Select a status",
+                        value: status,
+                        options: [
                             "PAID",
                             "NOT PAID",
                             "PARTIALLY PAID",
                             "COMPLETE",
                             "INCOMPLETE",
-                        ]}
-                        clearable
-                        value={status}
-                        onChange={(value) => {
+                        ],
+                        clearable: true,
+                        onChange: (value) => {
                             setStatus(value || null);
                             setPageIndex(1);
-                        }}
-                    />
-                </Group>
-            </Box>
+                        },
+                    },
+                ]}
+            />
+
 
             {/* Desktop Table */}
             <Box visibleFrom="lg" mx="lg" my="lg" className="overflow-x-auto">

@@ -9,10 +9,8 @@ import {
     Group,
     Menu,
     Pagination,
-    Select,
     Table,
     Text,
-    TextInput,
 } from "@mantine/core";
 import {
     IconCertificate,
@@ -21,9 +19,7 @@ import {
     IconDotsVertical,
     IconEdit,
     IconEye,
-    IconSearch,
     IconTruck,
-    IconX,
 } from "@tabler/icons-react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store/store.ts";
@@ -34,7 +30,6 @@ import {
 } from "../../store/chequeSlice/chequeSlice.ts";
 import toNotify from "../../helpers/toNotify.tsx";
 import { getCustomers } from "../../store/customerSlice/customerSlice.ts";
-import { DateInput } from "@mantine/dates";
 import {
     amountPreview,
     datePreview,
@@ -42,6 +37,7 @@ import {
 } from "../../helpers/preview.tsx";
 import { CHEQUES_STATUS_COLORS, USER_ROLES } from "../../helpers/types.ts";
 import { hasAnyPrivilege, hasPrivilege } from "../../helpers/previlleges.ts";
+import { DynamicSearchBar } from "../../components/DynamicSearchBar.tsx";
 
 const Cheques = () => {
     const { setLoading } = useLoading();
@@ -161,110 +157,82 @@ const Cheques = () => {
             </Box>
 
             {/* Search Input */}
-            <Box px="lg">
-                <Group w={{ lg: "60%", sm: "100%" }}>
-                    <Select
-                        className="w-full lg:w-1/4"
-                        size="xs"
-                        placeholder="Select a customer"
-                        data={selectableCustomers}
-                        searchable
-                        clearable
-                        onChange={(value: string | null) => {
+            <DynamicSearchBar
+                fields={[
+                    {
+                        type: "select",
+                        placeholder: "Select a customer",
+                        options: selectableCustomers,
+                        searchable: true,
+                        clearable: true,
+                        onChange: (value: string | null) => {
                             if (value) {
                                 setCustomer(value); // Update the selected customer
                             } else {
                                 setCustomer(""); // Clear the selected customer
                             }
                             setPageIndex(1); // Reset the page index to 1
-                        }}
-                    />
-
-                    <Select
-                        className="w-full lg:w-1/4"
-                        size="xs"
-                        placeholder="Select a status"
-                        data={[
+                        },
+                    },
+                    {
+                        type: "select",
+                        placeholder: "Select a status",
+                        options: [
                             "PENDING",
                             "SEND TO SUPPLIER",
                             "DEPOSITED",
                             "RETURNED",
                             "COMPLETED",
-                        ]}
-                        clearable
-                        onChange={(value: string | null) => {
+                        ],
+                        clearable: true,
+                        onChange: (value: string | null) => {
                             if (value) {
                                 setStatus(value); // Update the selected status
                             } else {
                                 setStatus(""); // Clear the selected status
                             }
                             setPageIndex(1); // Reset the page index to 1
-                        }}
-                    />
-
-                    <DateInput
-                        className="w-full lg:w-1/4"
-                        size="xs"
-                        placeholder="Select deposit date"
-                        clearable
-                        onChange={(e: any) => {
+                        },
+                    },
+                    {
+                        type: "date",
+                        placeholder: "Select deposit date",
+                        onChange: (e: any) => {
                             setDepositDate(e); // Update the deposit date
                             setPageIndex(1); // Reset the page index to 1
-                        }}
-                    />
-
-                    <TextInput
-                        className="w-full lg:w-1/4"
-                        size="xs"
-                        placeholder="Cheque Number"
-                        type="number"
-                        onChange={(event) => {
-                            setSearchQuery(event.target.value); // Update the search query
+                        },
+                    },
+                    {
+                        type: "text",
+                        placeholder: "Cheque Number",
+                        // If you require a numeric input, you might extend your DynamicSearchBar to include an 'inputType' property.
+                        // For now, this will behave as a text input.
+                        value: searchQuery,
+                        onChange: (value: string) => {
+                            setSearchQuery(value); // Update the search query
                             setPageIndex(1); // Reset the page index to 1
-                        }}
-                        value={searchQuery}
-                        rightSection={
-                            searchQuery ? (
-                                <IconX
-                                    className="cursor-pointer"
-                                    onClick={() => {
-                                        setSearchQuery(""); // Clear the search query
-                                        setPageIndex(1); // Reset the page index to 1
-                                    }}
-                                    size={14}
-                                />
-                            ) : (
-                                ""
-                            )
-                        }
-                        leftSection={<IconSearch size={14} />}
-                    />
-
-                    <DateInput
-                        className="w-full lg:w-1/4"
-                        size="xs"
-                        placeholder="Date range from"
-                        clearable
-                        onChange={(e: any) => {
-                            setFromDate(e); // Update the deposit date
+                        },
+                    },
+                    {
+                        type: "date",
+                        placeholder: "Date range from",
+                        onChange: (e: any) => {
+                            setFromDate(e); // Update the deposit date from
                             setPageIndex(1); // Reset the page index to 1
-                        }}
-                        maxDate={toDate}
-                    />
-
-                    <DateInput
-                        className="w-full lg:w-1/4"
-                        size="xs"
-                        placeholder="Date range to"
-                        clearable
-                        onChange={(e: any) => {
-                            setToDate(e); // Update the deposit date
+                        },
+                        maxDate: toDate,
+                    },
+                    {
+                        type: "date",
+                        placeholder: "Date range to",
+                        onChange: (e: any) => {
+                            setToDate(e); // Update the deposit date to
                             setPageIndex(1); // Reset the page index to 1
-                        }}
-                        minDate={fromDate}
-                    />
-                </Group>
-            </Box>
+                        },
+                        minDate: fromDate,
+                    },
+                ]}
+            />
 
             {/* Desktop Table */}
             <Box visibleFrom="lg" mx="lg" my="lg" className="overflow-x-auto">

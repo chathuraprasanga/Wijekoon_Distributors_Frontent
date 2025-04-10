@@ -4,20 +4,20 @@ import {
     Badge,
     Box,
     Button,
-    Card, Flex,
+    Card,
+    Flex,
     Group,
     Menu,
     Pagination,
-    Select,
     Table,
-    Text, TextInput,
+    Text,
 } from "@mantine/core";
 import {
     IconCertificate,
     IconDatabaseOff,
     IconDotsVertical,
     IconEdit,
-    IconEye, IconSearch, IconX,
+    IconEye,
 } from "@tabler/icons-react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store/store.ts";
@@ -27,12 +27,16 @@ import {
     getPagedInvoices,
 } from "../../store/invoiceSlice/invoiceSlice.ts";
 import toNotify from "../../helpers/toNotify.tsx";
-import { amountPreview, datePreview, pageRange } from "../../helpers/preview.tsx";
-import { DateInput } from "@mantine/dates";
+import {
+    amountPreview,
+    datePreview,
+    pageRange,
+} from "../../helpers/preview.tsx";
 
 import { getSuppliers } from "../../store/supplierSlice/supplierSlice.ts";
 import { PAYMENT_STATUS_COLORS, USER_ROLES } from "../../helpers/types.ts";
 import { hasPrivilege } from "../../helpers/previlleges.ts";
+import { DynamicSearchBar } from "../../components/DynamicSearchBar.tsx";
 
 const Invoices = () => {
     const { setLoading } = useLoading();
@@ -59,7 +63,16 @@ const Invoices = () => {
 
     useEffect(() => {
         fetchInvoices();
-    }, [dispatch, pageIndex, status, supplier, invoicedDate, fromDate, toDate, searchQuery]);
+    }, [
+        dispatch,
+        pageIndex,
+        status,
+        supplier,
+        invoicedDate,
+        fromDate,
+        toDate,
+        searchQuery,
+    ]);
 
     const fetchInvoices = async () => {
         setLoading(true);
@@ -73,7 +86,7 @@ const Invoices = () => {
             invoicedDate,
             fromDate,
             toDate,
-            searchQuery
+            searchQuery,
         };
         const response = await dispatch(getPagedInvoices({ filters: filters }));
         setMetadata(response.payload.result.metadata);
@@ -145,103 +158,74 @@ const Invoices = () => {
             </Box>
 
             {/* Search Input */}
-            <Box px="lg">
-                <Group w={{ lg: "60%", sm: "100%" }}>
-                    <Select
-                        className="w-full lg:w-1/4"
-                        size="xs"
-                        placeholder="Select a supplier"
-                        data={selectableSuppliers}
-                        searchable
-                        clearable
-                        onChange={(value: string | null) => {
+            <DynamicSearchBar
+                fields={[
+                    {
+                        type: "select",
+                        placeholder: "Select a supplier",
+                        options: selectableSuppliers, // expects an array of strings or { label, value } objects
+                        searchable: true,
+                        clearable: true,
+                        onChange: (value: string | null) => {
                             if (value) {
                                 setSupplier(value); // Update the supplier
                             } else {
                                 setSupplier(""); // Clear the supplier
                             }
                             setPageIndex(1); // Reset the page index to 1
-                        }}
-                    />
-
-                    <Select
-                        className="w-full lg:w-1/4"
-                        size="xs"
-                        placeholder="Select a status"
-                        data={["PAID", "NOT PAID"]}
-                        clearable
-                        onChange={(value: string | null) => {
+                        },
+                    },
+                    {
+                        type: "select",
+                        placeholder: "Select a status",
+                        options: ["PAID", "NOT PAID"],
+                        clearable: true,
+                        onChange: (value: string | null) => {
                             if (value) {
                                 setStatus(value); // Update the status
                             } else {
                                 setStatus(""); // Clear the status
                             }
-                            setPageIndex(1); // Reset the page index to 1
-                        }}
-                    />
-
-                    <DateInput
-                        className="w-full lg:w-1/4"
-                        size="xs"
-                        placeholder="Select invoice date"
-                        clearable
-                        onChange={(e: any) => {
+                            setPageIndex(1);
+                        },
+                    },
+                    {
+                        type: "date",
+                        placeholder: "Select invoice date",
+                        onChange: (e: any) => {
                             setInvoicedDate(e); // Update the invoice date
-                            setPageIndex(1); // Reset the page index to 1
-                        }}
-                    />
-
-                    <TextInput
-                        className="w-full lg:w-1/4"
-                        size="xs"
-                        placeholder="Invoice Number"
-                        onChange={(event) => {
-                            setSearchQuery(event.target.value); // Update the search query
-                            setPageIndex(1); // Reset the page index to 1
-                        }}
-                        value={searchQuery}
-                        rightSection={
-                            searchQuery ? (
-                                <IconX
-                                    className="cursor-pointer"
-                                    onClick={() => {
-                                        setSearchQuery(""); // Clear the search query
-                                        setPageIndex(1); // Reset the page index to 1
-                                    }}
-                                    size={14}
-                                />
-                            ) : (
-                                ""
-                            )
-                        }
-                        leftSection={<IconSearch size={14} />}
-                    />
-
-                    <DateInput
-                        className="w-full lg:w-1/4"
-                        size="xs"
-                        placeholder="Date range from"
-                        clearable
-                        onChange={(e: any) => {
-                            setFromDate(e); // Update the deposit date
-                            setPageIndex(1); // Reset the page index to 1
-                        }}
-                        maxDate={toDate}
-                    />
-
-                    <DateInput
-                        className="w-full lg:w-1/4"
-                        size="xs"
-                        placeholder="Date range to"
-                        clearable
-                        onChange={(e: any) => {
-                            setToDate(e); // Update the deposit date
-                            setPageIndex(1); // Reset the page index to 1
-                        }}
-                        minDate={fromDate}
-                    />
-                </Group>
-            </Box>
+                            setPageIndex(1);
+                        },
+                    },
+                    {
+                        type: "text",
+                        placeholder: "Invoice Number",
+                        value: searchQuery,
+                        onChange: (value: string) => {
+                            setSearchQuery(value); // Update the search query (invoice number)
+                            setPageIndex(1);
+                        },
+                    },
+                    {
+                        type: "date",
+                        placeholder: "Date range from",
+                        onChange: (e: any) => {
+                            setFromDate(e); // Update the date range start
+                            setPageIndex(1);
+                        },
+                        maxDate: toDate,
+                    },
+                    {
+                        type: "date",
+                        placeholder: "Date range to",
+                        onChange: (e: any) => {
+                            setToDate(e); // Update the date range end
+                            setPageIndex(1);
+                        },
+                        minDate: fromDate,
+                    },
+                ]}
+            />
 
             {/* Desktop Table */}
             <Box visibleFrom="lg" mx="lg" my="lg" className="overflow-x-auto">
