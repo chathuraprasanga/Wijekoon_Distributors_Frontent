@@ -8,10 +8,8 @@ import {
     Group,
     Menu,
     Pagination,
-    Select,
     Table,
     Text,
-    TextInput,
 } from "@mantine/core";
 import {
     IconDatabaseOff,
@@ -20,8 +18,6 @@ import {
     IconEye,
     IconMobiledata,
     IconMobiledataOff,
-    IconSearch,
-    IconX,
 } from "@tabler/icons-react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store/store.ts";
@@ -33,6 +29,7 @@ import {
 import toNotify from "../../helpers/toNotify.tsx";
 import { BASIC_STATUS_COLORS } from "../../helpers/types.ts";
 import { pageRange } from "../../helpers/preview.tsx";
+import { DynamicSearchBar } from "../../components/DynamicSearchBar.tsx";
 
 const Suppliers = () => {
     const { setLoading } = useLoading();
@@ -114,51 +111,34 @@ const Suppliers = () => {
             </Box>
 
             {/* Search Input */}
-            <Box px="lg">
-                <Group w={{ lg: "60%", sm: "100%" }}>
-                    <TextInput
-                        className="w-full lg:w-1/4"
-                        size="xs"
-                        placeholder="Name, Phone, Email"
-                        onChange={(event) => {
-                            setSearchQuery(event.target.value); // Update the search query
-                            setPageIndex(1); // Reset the page index to 1
-                        }}
-                        value={searchQuery}
-                        rightSection={
-                            searchQuery ? (
-                                <IconX
-                                    className="cursor-pointer"
-                                    onClick={() => {
-                                        setSearchQuery(""); // Clear the search query
-                                        setPageIndex(1); // Reset the page index to 1
-                                    }}
-                                    size={14}
-                                />
-                            ) : (
-                                ""
-                            )
-                        }
-                        leftSection={<IconSearch size={14} />}
-                    />
-
-                    <Select
-                        className="w-full lg:w-1/4"
-                        size="xs"
-                        placeholder="Select a status"
-                        data={["ACTIVE", "INACTIVE"]}
-                        clearable
-                        onChange={(value: string | null) => {
+            <DynamicSearchBar
+                fields={[
+                    {
+                        type: "text",
+                        placeholder: "Name, Phone, Email",
+                        value: searchQuery,
+                        onChange: (value) => {
+                            setSearchQuery(value);
+                            setPageIndex(1);
+                        },
+                    },
+                    {
+                        type: "select",
+                        placeholder: "Select a status",
+                        value: status,
+                        options: ["ACTIVE", "INACTIVE"],
+                        clearable: true,
+                        onChange: (value: string | null) => {
                             if (value) {
-                                setStatus(value); // Update the status
+                                setStatus(value);
                             } else {
-                                setStatus(""); // Clear the status
+                                setStatus("");
                             }
-                            setPageIndex(1); // Reset the page index to 1
-                        }}
-                    />
-                </Group>
-            </Box>
+                            setPageIndex(1);
+                        },
+                    },
+                ]}
+            />
 
             {/* Desktop Table */}
             <Box visibleFrom="lg" mx="lg" my="lg" className="overflow-x-auto">
