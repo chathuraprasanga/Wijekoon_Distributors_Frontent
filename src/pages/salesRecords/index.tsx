@@ -42,7 +42,7 @@ const SalesRecords = () => {
 
     const [metadata, setMetadata] = useState<any>();
     const salesRecords = useSelector(
-        (state: RootState) => state.salesRecords.salesRecords
+        (state: RootState) => state.salesRecords.salesRecords,
     );
     const user = useSelector((state: RootState) => state.auth.user);
 
@@ -62,7 +62,7 @@ const SalesRecords = () => {
                         sort: -1,
                         status,
                     },
-                })
+                }),
             );
             setMetadata(response.payload?.result?.metadata);
         } catch (error) {
@@ -75,23 +75,38 @@ const SalesRecords = () => {
     return (
         <>
             {/* Page Header */}
-            <Box display="flex" p="lg" className="items-center justify-between flex-wrap">
+            <Box
+                display="flex"
+                p="lg"
+                className="items-center justify-between flex-wrap"
+            >
                 <Box mb={{ base: "sm", md: 0 }}>
                     <Text size="lg" fw={500}>
                         Sales Records
                     </Text>
                 </Box>
                 <Flex gap="sm" wrap="wrap">
+                    {hasAnyPrivilege(user.role, [
+                        USER_ROLES.SALES_MANAGER,
+                        USER_ROLES.SALES_REP,
+                        USER_ROLES.OWNER,
+                        USER_ROLES.ADMIN,
+                        USER_ROLES.SUPER_ADMIN,
+                    ]) && (
+                        <Button
+                            size="xs"
+                            onClick={() => navigate("/app/sales-records/orders")}
+                            color="violet"
+                        >
+                            Purchase Orders
+                        </Button>
+                    )}
+
                     <Button
                         size="xs"
-                        onClick={() => navigate("/app/sales-records/orders")}
-                        color="violet"
-                    >
-                        Purchase Orders
-                    </Button>
-                    <Button
-                        size="xs"
-                        onClick={() => navigate("/app/sales-records/add-sales-record")}
+                        onClick={() =>
+                            navigate("/app/sales-records/add-sales-record")
+                        }
                     >
                         Add Sales Record
                     </Button>
@@ -130,7 +145,13 @@ const SalesRecords = () => {
                         className="w-full lg:w-1/4"
                         size="xs"
                         placeholder="Select a status"
-                        data={["PAID", "NOT PAID", "PARTIALLY PAID", "COMPLETE", "INCOMPLETE"]}
+                        data={[
+                            "PAID",
+                            "NOT PAID",
+                            "PARTIALLY PAID",
+                            "COMPLETE",
+                            "INCOMPLETE",
+                        ]}
                         clearable
                         value={status}
                         onChange={(value) => {
@@ -172,7 +193,7 @@ const SalesRecords = () => {
                                     <Table.Td>{c?.customer?.name}</Table.Td>
                                     <Table.Td>
                                         {amountPreview(
-                                            c?.amountDetails?.netTotal
+                                            c?.amountDetails?.netTotal,
                                         )}
                                     </Table.Td>
                                     <Table.Td>
@@ -204,7 +225,7 @@ const SalesRecords = () => {
                                                     }
                                                     onClick={() =>
                                                         navigate(
-                                                            `/app/sales-records/view-sales-record/${c?._id}`
+                                                            `/app/sales-records/view-sales-record/${c?._id}`,
                                                         )
                                                     }
                                                 >
@@ -215,25 +236,25 @@ const SalesRecords = () => {
                                                     USER_ROLES.SALES_MANAGER,
                                                     USER_ROLES.SALES_REP,
                                                 ]) && (
-                                                        <Menu.Item
-                                                            disabled={
-                                                                c.paymentStatus !==
-                                                                "NOT PAID"
-                                                            }
-                                                            rightSection={
-                                                                <IconEdit
-                                                                    size={16}
-                                                                />
-                                                            }
-                                                            onClick={() =>
-                                                                navigate(
-                                                                    `/app/sales-records/edit-sales-record/${c._id}`
-                                                                )
-                                                            }
-                                                        >
-                                                            Edit
-                                                        </Menu.Item>
-                                                    )}
+                                                    <Menu.Item
+                                                        disabled={
+                                                            c.paymentStatus !==
+                                                            "NOT PAID"
+                                                        }
+                                                        rightSection={
+                                                            <IconEdit
+                                                                size={16}
+                                                            />
+                                                        }
+                                                        onClick={() =>
+                                                            navigate(
+                                                                `/app/sales-records/edit-sales-record/${c._id}`,
+                                                            )
+                                                        }
+                                                    >
+                                                        Edit
+                                                    </Menu.Item>
+                                                )}
                                             </Menu.Dropdown>
                                         </Menu>
                                     </Table.Td>
@@ -296,34 +317,34 @@ const SalesRecords = () => {
                                             rightSection={<IconEye size={16} />}
                                             onClick={() =>
                                                 navigate(
-                                                    `/app/sales-records/view-sales-record/${c?._id}`
+                                                    `/app/sales-records/view-sales-record/${c?._id}`,
                                                 )
                                             }
                                         >
                                             View
                                         </Menu.Item>
                                         {hasAnyPrivilege(user.role, [
-                                                USER_ROLES.SUPER_ADMIN,
-                                                USER_ROLES.SALES_MANAGER,
-                                                USER_ROLES.SALES_REP,]
-                                        ) && (
-                                                <Menu.Item
-                                                    disabled={
-                                                        c.paymentStatus !==
-                                                        "NOT PAID"
-                                                    }
-                                                    rightSection={
-                                                        <IconEdit size={16} />
-                                                    }
-                                                    onClick={() =>
-                                                        navigate(
-                                                            `/app/sales-records/edit-sales-record/${c._id}`
-                                                        )
-                                                    }
-                                                >
-                                                    Edit
-                                                </Menu.Item>
-                                            )}
+                                            USER_ROLES.SUPER_ADMIN,
+                                            USER_ROLES.SALES_MANAGER,
+                                            USER_ROLES.SALES_REP,
+                                        ]) && (
+                                            <Menu.Item
+                                                disabled={
+                                                    c.paymentStatus !==
+                                                    "NOT PAID"
+                                                }
+                                                rightSection={
+                                                    <IconEdit size={16} />
+                                                }
+                                                onClick={() =>
+                                                    navigate(
+                                                        `/app/sales-records/edit-sales-record/${c._id}`,
+                                                    )
+                                                }
+                                            >
+                                                Edit
+                                            </Menu.Item>
+                                        )}
                                     </Menu.Dropdown>
                                 </Menu>
                             </Group>

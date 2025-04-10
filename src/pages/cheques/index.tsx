@@ -4,7 +4,8 @@ import {
     Badge,
     Box,
     Button,
-    Card, Flex,
+    Card,
+    Flex,
     Group,
     Menu,
     Pagination,
@@ -144,19 +145,18 @@ const Cheques = () => {
                     </Text>
                 </Box>
                 <Flex gap="sm" wrap="wrap">
-                    <Button
-                        size="xs"
-                        onClick={() => navigate("/app/cheques/add-cheque")}
-                        disabled={
-                            !hasAnyPrivilege(role, [
-                                USER_ROLES.ADMIN,
-                                USER_ROLES.SUPER_ADMIN,
-                                USER_ROLES.OWNER,
-                            ])
-                        }
-                    >
-                        Add Cheque
-                    </Button>
+                    {hasAnyPrivilege(role, [
+                        USER_ROLES.ADMIN,
+                        USER_ROLES.SUPER_ADMIN,
+                        USER_ROLES.OWNER,
+                    ]) && (
+                        <Button
+                            size="xs"
+                            onClick={() => navigate("/app/cheques/add-cheque")}
+                        >
+                            Add Cheque
+                        </Button>
+                    )}
                 </Flex>
             </Box>
 

@@ -10,7 +10,8 @@ import {
     Card,
     TextInput,
     Select,
-    Checkbox, Flex,
+    Checkbox,
+    Flex,
 } from "@mantine/core";
 import {
     IconDatabaseOff,
@@ -111,19 +112,22 @@ const Customers = () => {
                     </Text>
                 </Box>
                 <Flex gap="sm" wrap="wrap">
-                    <Button
-                        size="xs"
-                        onClick={() => navigate("/app/customers/add-customer")}
-                        disabled={!hasAnyPrivilege(role, [
-                            USER_ROLES.ADMIN,
-                            USER_ROLES.SUPER_ADMIN,
-                            USER_ROLES.OWNER,
-                            USER_ROLES.SALES_MANAGER,
-                            USER_ROLES.WAREHOUSE_MANAGER,
-                        ])}
-                    >
-                        Add Customer
-                    </Button>
+                    {hasAnyPrivilege(role, [
+                        USER_ROLES.ADMIN,
+                        USER_ROLES.SUPER_ADMIN,
+                        USER_ROLES.OWNER,
+                        USER_ROLES.SALES_MANAGER,
+                        USER_ROLES.WAREHOUSE_MANAGER,
+                    ]) && (
+                        <Button
+                            size="xs"
+                            onClick={() =>
+                                navigate("/app/customers/add-customer")
+                            }
+                        >
+                            Add Customer
+                        </Button>
+                    )}
                 </Flex>
             </Box>
 
@@ -273,13 +277,15 @@ const Customers = () => {
                                                     rightSection={
                                                         <IconEdit size={16} />
                                                     }
-                                                    disabled={!hasAnyPrivilege(role, [
-                                                        USER_ROLES.ADMIN,
-                                                        USER_ROLES.SUPER_ADMIN,
-                                                        USER_ROLES.OWNER,
-                                                        USER_ROLES.SALES_MANAGER,
-                                                        USER_ROLES.WAREHOUSE_MANAGER,
-                                                    ])}
+                                                    disabled={
+                                                        !hasAnyPrivilege(role, [
+                                                            USER_ROLES.ADMIN,
+                                                            USER_ROLES.SUPER_ADMIN,
+                                                            USER_ROLES.OWNER,
+                                                            USER_ROLES.SALES_MANAGER,
+                                                            USER_ROLES.WAREHOUSE_MANAGER,
+                                                        ])
+                                                    }
                                                 >
                                                     Edit
                                                 </Menu.Item>
@@ -305,12 +311,14 @@ const Customers = () => {
                                                             />
                                                         )
                                                     }
-                                                    disabled={!hasAnyPrivilege(role, [
-                                                        USER_ROLES.ADMIN,
-                                                        USER_ROLES.SUPER_ADMIN,
-                                                        USER_ROLES.OWNER,
-                                                        USER_ROLES.SALES_MANAGER,
-                                                    ])}
+                                                    disabled={
+                                                        !hasAnyPrivilege(role, [
+                                                            USER_ROLES.ADMIN,
+                                                            USER_ROLES.SUPER_ADMIN,
+                                                            USER_ROLES.OWNER,
+                                                            USER_ROLES.SALES_MANAGER,
+                                                        ])
+                                                    }
                                                 >
                                                     {c.status ? (
                                                         <span className="text-red-700">
@@ -411,13 +419,15 @@ const Customers = () => {
                                             rightSection={
                                                 <IconEdit size={16} />
                                             }
-                                            disabled={!hasAnyPrivilege(role, [
-                                                USER_ROLES.ADMIN,
-                                                USER_ROLES.SUPER_ADMIN,
-                                                USER_ROLES.OWNER,
-                                                USER_ROLES.SALES_MANAGER,
-                                                USER_ROLES.WAREHOUSE_MANAGER,
-                                            ])}
+                                            disabled={
+                                                !hasAnyPrivilege(role, [
+                                                    USER_ROLES.ADMIN,
+                                                    USER_ROLES.SUPER_ADMIN,
+                                                    USER_ROLES.OWNER,
+                                                    USER_ROLES.SALES_MANAGER,
+                                                    USER_ROLES.WAREHOUSE_MANAGER,
+                                                ])
+                                            }
                                         >
                                             Edit
                                         </Menu.Item>
@@ -441,12 +451,14 @@ const Customers = () => {
                                                     <IconMobiledata size={16} />
                                                 )
                                             }
-                                            disabled={!hasAnyPrivilege(role, [
-                                                USER_ROLES.ADMIN,
-                                                USER_ROLES.SUPER_ADMIN,
-                                                USER_ROLES.OWNER,
-                                                USER_ROLES.SALES_MANAGER,
-                                            ])}
+                                            disabled={
+                                                !hasAnyPrivilege(role, [
+                                                    USER_ROLES.ADMIN,
+                                                    USER_ROLES.SUPER_ADMIN,
+                                                    USER_ROLES.OWNER,
+                                                    USER_ROLES.SALES_MANAGER,
+                                                ])
+                                            }
                                         >
                                             {c.status ? (
                                                 <span className="text-red-700">

@@ -2,7 +2,8 @@ import {
     Badge,
     Box,
     Button,
-    Card, Flex,
+    Card,
+    Flex,
     Group,
     Menu,
     Pagination,
@@ -103,19 +104,20 @@ const Products = () => {
                     </Text>
                 </Box>
                 <Flex gap="sm" wrap="wrap">
-                    <Button
-                        size="xs"
-                        onClick={() => navigate("/app/products/add-product")}
-                        disabled={
-                            !hasAnyPrivilege(role, [
-                                USER_ROLES.ADMIN,
-                                USER_ROLES.SUPER_ADMIN,
-                                USER_ROLES.OWNER,
-                            ])
-                        }
-                    >
-                        Add Products
-                    </Button>
+                    {hasAnyPrivilege(role, [
+                        USER_ROLES.ADMIN,
+                        USER_ROLES.SUPER_ADMIN,
+                        USER_ROLES.OWNER,
+                    ]) && (
+                        <Button
+                            size="xs"
+                            onClick={() =>
+                                navigate("/app/products/add-product")
+                            }
+                        >
+                            Add Products
+                        </Button>
+                    )}
                 </Flex>
             </Box>
 
