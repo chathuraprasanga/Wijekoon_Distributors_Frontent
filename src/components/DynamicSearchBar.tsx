@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Group, TextInput, Select, Checkbox, Button } from "@mantine/core";
+import { Box, Group, TextInput, Select, Checkbox } from "@mantine/core";
 import { IconSearch, IconX } from "@tabler/icons-react";
 import { DateInput } from "@mantine/dates";
 
