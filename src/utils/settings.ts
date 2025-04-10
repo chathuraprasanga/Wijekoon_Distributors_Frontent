@@ -9,3 +9,7 @@ export const rolesData = [
     { label: "Super Admin", value: "super_admin", color: "#dc3545" }, // Red
     { label: "Warehouse Manager", value: "warehouse_manager", color: "#20c997" }, // Light Green
 ];
+
+export const searchTypes = {
+    CUSTOMER: "CUSTOMER"
+}

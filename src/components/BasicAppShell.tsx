@@ -156,6 +156,7 @@ const BasicAppShell = () => {
                         USER_ROLES.SALES_REP,
                         USER_ROLES.SALES_MANAGER,
                         USER_ROLES.DRIVER,
+                        USER_ROLES.WAREHOUSE_MANAGER
                     ]) && (
                         <NavLink
                             onClick={() => handleNavLinkClick("customers")}
@@ -173,6 +174,7 @@ const BasicAppShell = () => {
                         USER_ROLES.OWNER,
                         USER_ROLES.SALES_REP,
                         USER_ROLES.SALES_MANAGER,
+                        USER_ROLES.WAREHOUSE_MANAGER
                     ]) && (
                         <NavLink
                             onClick={() => handleNavLinkClick("products")}
@@ -203,6 +205,7 @@ const BasicAppShell = () => {
                         USER_ROLES.OWNER,
                         USER_ROLES.SALES_REP,
                         USER_ROLES.SALES_MANAGER,
+                        USER_ROLES.WAREHOUSE_MANAGER
                     ]) && (
                         <NavLink
                             onClick={() => handleNavLinkClick("cheques")}

@@ -10,7 +10,8 @@ import {
     Card,
     TextInput,
     Select,
-    Checkbox, Flex,
+    Checkbox,
+    Flex,
 } from "@mantine/core";
 import {
     IconDatabaseOff,
@@ -111,19 +112,22 @@ const Customers = () => {
                     </Text>
                 </Box>
                 <Flex gap="sm" wrap="wrap">
-                    <Button
-                        size="xs"
-                        onClick={() => navigate("/app/customers/add-customer")}
-                        disabled={!hasAnyPrivilege(role, [
-                            USER_ROLES.ADMIN,
-                            USER_ROLES.SUPER_ADMIN,
-                            USER_ROLES.OWNER,
-                            USER_ROLES.SALES_MANAGER,
-                            USER_ROLES.WAREHOUSE_MANAGER,
-                        ])}
-                    >
-                        Add Customer
-                    </Button>
+                    {hasAnyPrivilege(role, [
+                        USER_ROLES.ADMIN,
+                        USER_ROLES.SUPER_ADMIN,
+                        USER_ROLES.OWNER,
+                        USER_ROLES.SALES_MANAGER,
+                        USER_ROLES.WAREHOUSE_MANAGER,
+                    ]) && (
+                        <Button
+                            size="xs"
+                            onClick={() =>
+                                navigate("/app/customers/add-customer")
+                            }
+                        >
+                            Add Customer
+                        </Button>
+                    )}
                 </Flex>
             </Box>
 
@@ -190,12 +194,15 @@ const Customers = () => {
                                 Address
                             </Table.Th>
                             {showCredit && (
-                                <Table.Th style={{ width: "15%" }}>
+                                <Table.Th style={{ width: "13%" }}>
                                     Credit
                                 </Table.Th>
                             )}
+                            <Table.Th style={{ width: "15%" }}>
+                                Remarks
+                            </Table.Th>
                             <Table.Th style={{ width: "10%" }}>Status</Table.Th>
-                            <Table.Th style={{ width: "5%" }}></Table.Th>
+                            <Table.Th style={{ width: "2%" }}></Table.Th>
                         </Table.Tr>
                     </Table.Thead>
                     <Table.Tbody>
@@ -215,10 +222,13 @@ const Customers = () => {
                                         {c.address || "-"}
                                     </Table.Td>
                                     {showCredit && (
-                                        <Table.Td style={{ width: "15%" }}>
+                                        <Table.Td style={{ width: "13%" }}>
                                             {amountPreview(c.creditAmount || 0)}
                                         </Table.Td>
                                     )}
+                                    <Table.Td style={{ width: "15%" }}>
+                                        {c.remarks || "-"}
+                                    </Table.Td>
                                     <Table.Td style={{ width: "10%" }}>
                                         <Badge
                                             color={c.status ? "green" : "red"}
@@ -228,7 +238,7 @@ const Customers = () => {
                                             {c.status ? "ACTIVE" : "INACTIVE"}
                                         </Badge>
                                     </Table.Td>
-                                    <Table.Td style={{ width: "5%" }}>
+                                    <Table.Td style={{ width: "2%" }}>
                                         <Menu width={150}>
                                             <Menu.Target>
                                                 <IconDotsVertical
@@ -267,13 +277,15 @@ const Customers = () => {
                                                     rightSection={
                                                         <IconEdit size={16} />
                                                     }
-                                                    disabled={!hasAnyPrivilege(role, [
-                                                        USER_ROLES.ADMIN,
-                                                        USER_ROLES.SUPER_ADMIN,
-                                                        USER_ROLES.OWNER,
-                                                        USER_ROLES.SALES_MANAGER,
-                                                        USER_ROLES.WAREHOUSE_MANAGER,
-                                                    ])}
+                                                    disabled={
+                                                        !hasAnyPrivilege(role, [
+                                                            USER_ROLES.ADMIN,
+                                                            USER_ROLES.SUPER_ADMIN,
+                                                            USER_ROLES.OWNER,
+                                                            USER_ROLES.SALES_MANAGER,
+                                                            USER_ROLES.WAREHOUSE_MANAGER,
+                                                        ])
+                                                    }
                                                 >
                                                     Edit
                                                 </Menu.Item>
@@ -299,12 +311,14 @@ const Customers = () => {
                                                             />
                                                         )
                                                     }
-                                                    disabled={!hasAnyPrivilege(role, [
-                                                        USER_ROLES.ADMIN,
-                                                        USER_ROLES.SUPER_ADMIN,
-                                                        USER_ROLES.OWNER,
-                                                        USER_ROLES.SALES_MANAGER,
-                                                    ])}
+                                                    disabled={
+                                                        !hasAnyPrivilege(role, [
+                                                            USER_ROLES.ADMIN,
+                                                            USER_ROLES.SUPER_ADMIN,
+                                                            USER_ROLES.OWNER,
+                                                            USER_ROLES.SALES_MANAGER,
+                                                        ])
+                                                    }
                                                 >
                                                     {c.status ? (
                                                         <span className="text-red-700">
@@ -355,6 +369,7 @@ const Customers = () => {
                                     Credit: {amountPreview(c.creditAmount || 0)}
                                 </Text>
                             )}
+                            <Text>Remarks: {c.remarks}</Text>
                             <Badge
                                 color={
                                     BASIC_STATUS_COLORS[
@@ -404,13 +419,15 @@ const Customers = () => {
                                             rightSection={
                                                 <IconEdit size={16} />
                                             }
-                                            disabled={!hasAnyPrivilege(role, [
-                                                USER_ROLES.ADMIN,
-                                                USER_ROLES.SUPER_ADMIN,
-                                                USER_ROLES.OWNER,
-                                                USER_ROLES.SALES_MANAGER,
-                                                USER_ROLES.WAREHOUSE_MANAGER,
-                                            ])}
+                                            disabled={
+                                                !hasAnyPrivilege(role, [
+                                                    USER_ROLES.ADMIN,
+                                                    USER_ROLES.SUPER_ADMIN,
+                                                    USER_ROLES.OWNER,
+                                                    USER_ROLES.SALES_MANAGER,
+                                                    USER_ROLES.WAREHOUSE_MANAGER,
+                                                ])
+                                            }
                                         >
                                             Edit
                                         </Menu.Item>
@@ -434,12 +451,14 @@ const Customers = () => {
                                                     <IconMobiledata size={16} />
                                                 )
                                             }
-                                            disabled={!hasAnyPrivilege(role, [
-                                                USER_ROLES.ADMIN,
-                                                USER_ROLES.SUPER_ADMIN,
-                                                USER_ROLES.OWNER,
-                                                USER_ROLES.SALES_MANAGER,
-                                            ])}
+                                            disabled={
+                                                !hasAnyPrivilege(role, [
+                                                    USER_ROLES.ADMIN,
+                                                    USER_ROLES.SUPER_ADMIN,
+                                                    USER_ROLES.OWNER,
+                                                    USER_ROLES.SALES_MANAGER,
+                                                ])
+                                            }
                                         >
                                             {c.status ? (
                                                 <span className="text-red-700">

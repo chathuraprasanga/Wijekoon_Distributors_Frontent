@@ -46,6 +46,7 @@ const EditCustomer = () => {
             phone: "",
             email: "",
             address: "",
+            remarks: "",
         },
         validate: {
             name: (value) => (value.trim() ? null : "Name is required"),
@@ -122,6 +123,11 @@ const EditCustomer = () => {
                         label="Address"
                         placeholder="Enter Customer Address"
                         {...customerEditForm.getInputProps("address")}
+                    />
+                    <Textarea
+                        label="Remarks"
+                        placeholder="Enter Remarks"
+                        {...customerEditForm.getInputProps("remarks")}
                     />
                     <Group justify="flex-end" display="flex" pb="md" mt="md">
                         <Button size="xs" disabled={!customerEditForm.isDirty()} type="submit">
