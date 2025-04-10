@@ -37,7 +37,6 @@ import toNotify from "../../helpers/toNotify.tsx";
 import { BASIC_STATUS_COLORS, USER_ROLES } from "../../helpers/types.ts";
 import { amountPreview, pageRange } from "../../helpers/preview.tsx";
 import { hasAnyPrivilege } from "../../helpers/previlleges.ts";
-import SearchComponent from "../../components/SearchComponent.tsx";
 
 const Customers = () => {
     const { setLoading } = useLoading();
@@ -113,28 +112,24 @@ const Customers = () => {
                     </Text>
                 </Box>
                 <Flex gap="sm" wrap="wrap">
-                    <Button
-                        size="xs"
-                        onClick={() => navigate("/app/customers/add-customer")}
-                        disabled={
-                            !hasAnyPrivilege(role, [
-                                USER_ROLES.ADMIN,
-                                USER_ROLES.SUPER_ADMIN,
-                                USER_ROLES.OWNER,
-                                USER_ROLES.SALES_MANAGER,
-                                USER_ROLES.WAREHOUSE_MANAGER,
-                            ])
-                        }
-                    >
-                        Add Customer
-                    </Button>
+                    {hasAnyPrivilege(role, [
+                        USER_ROLES.ADMIN,
+                        USER_ROLES.SUPER_ADMIN,
+                        USER_ROLES.OWNER,
+                        USER_ROLES.SALES_MANAGER,
+                        USER_ROLES.WAREHOUSE_MANAGER,
+                    ]) && (
+                        <Button
+                            size="xs"
+                            onClick={() =>
+                                navigate("/app/customers/add-customer")
+                            }
+                        >
+                            Add Customer
+                        </Button>
+                    )}
                 </Flex>
             </Box>
-
-            {/*New Search Component Testing*/}
-            {/*<Box px="lg" py="lg">*/}
-            {/*    <SearchComponent />*/}
-            {/*</Box>*/}
 
             {/* Search Input */}
             <Box px="lg">

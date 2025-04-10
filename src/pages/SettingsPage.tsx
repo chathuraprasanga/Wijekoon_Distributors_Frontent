@@ -94,7 +94,7 @@ const SettingsPage = () => {
             setLoading(false);
         } else if (response.type === "user/getUsers/rejected") {
             setLoading(false);
-            toNotify("Error", "Something went wrong", "ERROR");
+            toNotify("Error", `${response.payload.error}`, "ERROR");
         } else {
             setLoading(false);
             toNotify("Warning", "Please contact system admin", "WARNING");
@@ -614,7 +614,7 @@ const SettingsPage = () => {
             handleAddUser.close();
         } else if (response.type === "user/addUser/rejected") {
             setIsLoading(false);
-            toNotify("Error", "User created failed", "ERROR");
+            toNotify("Error",` ${response.payload.error}`, "ERROR");
         } else {
             setIsLoading(false);
             toNotify("Warning", "Please contact system admin", "WARNING");

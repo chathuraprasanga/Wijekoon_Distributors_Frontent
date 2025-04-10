@@ -1,6 +1,7 @@
 import { Box, Button, Grid, TextInput } from "@mantine/core";
 
-const SearchComponent = () => {
+const SearchComponent = ({ data }: any) => {
+    console.log("data", data.type);
     return (
         <>
             <Box>
