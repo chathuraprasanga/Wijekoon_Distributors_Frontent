@@ -8,9 +8,6 @@ import {
     Text,
     Table,
     Card,
-    TextInput,
-    Select,
-    Checkbox,
     Flex,
 } from "@mantine/core";
 import {
@@ -20,10 +17,7 @@ import {
     IconEye,
     IconMobiledata,
     IconMobiledataOff,
-    IconSearch,
-    IconX,
 } from "@tabler/icons-react";
-// import customers from "./customer_data.json";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
@@ -37,6 +31,7 @@ import toNotify from "../../helpers/toNotify.tsx";
 import { BASIC_STATUS_COLORS, USER_ROLES } from "../../helpers/types.ts";
 import { amountPreview, pageRange } from "../../helpers/preview.tsx";
 import { hasAnyPrivilege } from "../../helpers/previlleges.ts";
+import { DynamicSearchBar } from "../../components/DynamicSearchBar.tsx";
 
 const Customers = () => {
     const { setLoading } = useLoading();
@@ -132,50 +127,37 @@ const Customers = () => {
             </Box>
 
             {/* Search Input */}
-            <Box px="lg">
-                <Group w={{ lg: "60%", sm: "100%" }}>
-                    <TextInput
-                        className="w-full lg:w-1/4"
-                        size="xs"
-                        placeholder="Name, Phone, Email"
-                        onChange={(event) => {
-                            setSearchQuery(event.target.value); // Update the search query
-                            setPageIndex(1); // Reset the page index to 1
-                        }}
-                        value={searchQuery}
-                        rightSection={
-                            searchQuery ? (
-                                <IconX
-                                    className="cursor-pointer"
-                                    onClick={() => {
-                                        setSearchQuery(""); // Clear the search query
-                                        setPageIndex(1); // Reset the page index to 1
-                                    }}
-                                    size={14}
-                                />
-                            ) : (
-                                ""
-                            )
-                        }
-                        leftSection={<IconSearch size={14} />}
-                    />
-                    <Select
-                        className="w-full lg:w-1/4"
-                        size="xs"
-                        placeholder="Select a status"
-                        data={["ACTIVE", "INACTIVE"]}
-                        clearable
-                        onChange={(value: string | null) => {
-                            setStatus(value || ""); // Update the status
-                            setPageIndex(1); // Reset the page index to 1
-                        }}
-                    />
-                    <Checkbox
-                        label="Show Credit Amounts"
-                        onChange={() => setShowCredit(!showCredit)}
-                    />
-                </Group>
-            </Box>
+            <DynamicSearchBar
+                fields={[
+                    {
+                        type: "text",
+                        placeholder: "Name, Phone, Email",
+                        value: searchQuery,
+                        onChange: (value) => {
+                            setSearchQuery(value);
+                            setPageIndex(1);
+                        },
+                    },
+                    {
+                        type: "select",
+                        placeholder: "Select a status",
+                        value: status,
+                        options: ["ACTIVE", "INACTIVE"],
+                        clearable: true,
+                        onChange: (value: string | null) => {
+                            setStatus(value || "");
+                            setPageIndex(1);
+                        },
+                    },
+                    {
+                        type: "checkbox",
+                        label: "Show Credit Amounts",
+                        value: showCredit,
+                        onChange: () => setShowCredit(!showCredit),
+                    },
+                ]}
+            />
+
 
             {/* Desktop Table */}
             <Box visibleFrom="lg" mx="lg" my="lg" className="overflow-x-auto">

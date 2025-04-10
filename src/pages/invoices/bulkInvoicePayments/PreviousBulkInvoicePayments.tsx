@@ -7,7 +7,6 @@ import {
     Group,
     Menu,
     Pagination,
-    Select,
     Table,
     Text,
 } from "@mantine/core";
@@ -25,6 +24,7 @@ import { amountPreview, datePreview, pageRange } from "../../../helpers/preview.
 
 import { getSuppliers } from "../../../store/supplierSlice/supplierSlice.ts";
 import { PAYMENT_STATUS_COLORS } from "../../../helpers/types.ts";
+import { DynamicSearchBar } from "../../../components/DynamicSearchBar.tsx";
 
 const PreviousBulkInvoicePayments = () => {
     const { setLoading } = useLoading();
@@ -94,26 +94,25 @@ const PreviousBulkInvoicePayments = () => {
             </Box>
 
             {/* Search Input */}
-            <Box px="lg">
-                <Group w={{ lg: "60%", sm: "100%" }}>
-                    <Select
-                        className="w-full lg:w-1/4"
-                        size="xs"
-                        placeholder="Select a supplier"
-                        data={selectableSuppliers}
-                        searchable
-                        clearable
-                        onChange={(value: string | null) => {
+            <DynamicSearchBar
+                fields={[
+                    {
+                        type: "select",
+                        placeholder: "Select a supplier",
+                        options: selectableSuppliers, // Should be an array of strings or objects with label/value properties
+                        searchable: true,
+                        clearable: true,
+                        onChange: (value: string | null) => {
                             if (value) {
                                 setSupplier(value); // Update the supplier
                             } else {
                                 setSupplier(""); // Clear the supplier
                             }
                             setPageIndex(1); // Reset the page index to 1
-                        }}
-                    />
-                </Group>
-            </Box>
+                        },
+                    },
+                ]}
+            />
 
             {/* Desktop Table */}
             <Box visibleFrom="lg" mx="lg" my="lg" className="overflow-x-auto">
