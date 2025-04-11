@@ -125,10 +125,6 @@ const Products = () => {
                         type: "text",
                         placeholder: "Name, ProductCode",
                         value: searchQuery,
-                        onChange: (value) => {
-                            setSearchQuery(value);
-                            setPageIndex(1);
-                        },
                     },
                     {
                         type: "select",
@@ -136,17 +132,20 @@ const Products = () => {
                         value: status,
                         options: ["ACTIVE", "INACTIVE"],
                         clearable: true,
-                        onChange: (value: string | null) => {
-                            if (value) {
-                                setStatus(value);
-                            } else {
-                                setStatus("");
-                            }
-                            setPageIndex(1);
-                        },
                     },
                 ]}
+                onSearch={(values) => {
+                    setSearchQuery(values[0]);
+                    setStatus(values[1] || "");
+                    setPageIndex(1);
+                }}
+                onClear={() => {
+                    setSearchQuery("");
+                    setStatus("");
+                    setPageIndex(1);
+                }}
             />
+
 
             {/* Desktop Table */}
             <Box visibleFrom="lg" mx="lg" my="lg" className="overflow-x-auto">

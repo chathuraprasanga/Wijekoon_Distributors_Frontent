@@ -23,7 +23,11 @@ import { AppDispatch, RootState } from "../../store/store.ts";
 import { useLoading } from "../../helpers/loadingContext.tsx";
 import { getPagedSalesRecords } from "../../store/salesRecordSlice/salesRecordSlice.ts";
 import { useNavigate } from "react-router";
-import { amountPreview, datePreview, pageRange } from "../../helpers/preview.tsx";
+import {
+    amountPreview,
+    datePreview,
+    pageRange,
+} from "../../helpers/preview.tsx";
 import { hasAnyPrivilege } from "../../helpers/previlleges.ts";
 import { DynamicSearchBar } from "../../components/DynamicSearchBar.tsx";
 
@@ -39,7 +43,7 @@ const SalesRecords = () => {
 
     const [metadata, setMetadata] = useState<any>();
     const salesRecords = useSelector(
-        (state: RootState) => state.salesRecords.salesRecords,
+        (state: RootState) => state.salesRecords.salesRecords
     );
     const user = useSelector((state: RootState) => state.auth.user);
 
@@ -59,7 +63,7 @@ const SalesRecords = () => {
                         sort: -1,
                         status,
                     },
-                }),
+                })
             );
             setMetadata(response.payload?.result?.metadata);
         } catch (error) {
@@ -92,7 +96,9 @@ const SalesRecords = () => {
                     ]) && (
                         <Button
                             size="xs"
-                            onClick={() => navigate("/app/sales-records/orders")}
+                            onClick={() =>
+                                navigate("/app/sales-records/orders")
+                            }
                             color="violet"
                         >
                             Purchase Orders
@@ -110,16 +116,13 @@ const SalesRecords = () => {
                 </Flex>
             </Box>
 
+            {/*Search Function*/}
             <DynamicSearchBar
                 fields={[
                     {
                         type: "text",
                         placeholder: "Customer Name or Number",
                         value: searchQuery,
-                        onChange: (value) => {
-                            setSearchQuery(value);
-                            setPageIndex(1);
-                        },
                     },
                     {
                         type: "select",
@@ -133,14 +136,19 @@ const SalesRecords = () => {
                             "INCOMPLETE",
                         ],
                         clearable: true,
-                        onChange: (value) => {
-                            setStatus(value || null);
-                            setPageIndex(1);
-                        },
                     },
                 ]}
+                onSearch={(values) => {
+                    setSearchQuery(values[0]);
+                    setStatus(values[1] || null);
+                    setPageIndex(1);
+                }}
+                onClear={() => {
+                    setSearchQuery("");
+                    setStatus(null);
+                    setPageIndex(1);
+                }}
             />
-
 
             {/* Desktop Table */}
             <Box visibleFrom="lg" mx="lg" my="lg" className="overflow-x-auto">
@@ -173,7 +181,7 @@ const SalesRecords = () => {
                                     <Table.Td>{c?.customer?.name}</Table.Td>
                                     <Table.Td>
                                         {amountPreview(
-                                            c?.amountDetails?.netTotal,
+                                            c?.amountDetails?.netTotal
                                         )}
                                     </Table.Td>
                                     <Table.Td>
@@ -181,7 +189,7 @@ const SalesRecords = () => {
                                             color={
                                                 SALES_RECORD_STATUS_COLORS[
                                                     c.paymentStatus as keyof typeof SALES_RECORD_STATUS_COLORS
-                                                    ] || "gray"
+                                                ] || "gray"
                                             }
                                             size="sm"
                                             radius="xs"
@@ -205,7 +213,7 @@ const SalesRecords = () => {
                                                     }
                                                     onClick={() =>
                                                         navigate(
-                                                            `/app/sales-records/view-sales-record/${c?._id}`,
+                                                            `/app/sales-records/view-sales-record/${c?._id}`
                                                         )
                                                     }
                                                 >
@@ -228,7 +236,7 @@ const SalesRecords = () => {
                                                         }
                                                         onClick={() =>
                                                             navigate(
-                                                                `/app/sales-records/edit-sales-record/${c._id}`,
+                                                                `/app/sales-records/edit-sales-record/${c._id}`
                                                             )
                                                         }
                                                     >
@@ -275,7 +283,7 @@ const SalesRecords = () => {
                                 color={
                                     SALES_RECORD_STATUS_COLORS[
                                         c.paymentStatus as keyof typeof SALES_RECORD_STATUS_COLORS
-                                        ] || "gray"
+                                    ] || "gray"
                                 }
                                 size="sm"
                                 radius="xs"
@@ -297,7 +305,7 @@ const SalesRecords = () => {
                                             rightSection={<IconEye size={16} />}
                                             onClick={() =>
                                                 navigate(
-                                                    `/app/sales-records/view-sales-record/${c?._id}`,
+                                                    `/app/sales-records/view-sales-record/${c?._id}`
                                                 )
                                             }
                                         >
@@ -318,7 +326,7 @@ const SalesRecords = () => {
                                                 }
                                                 onClick={() =>
                                                     navigate(
-                                                        `/app/sales-records/edit-sales-record/${c._id}`,
+                                                        `/app/sales-records/edit-sales-record/${c._id}`
                                                     )
                                                 }
                                             >
