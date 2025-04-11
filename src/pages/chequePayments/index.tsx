@@ -197,52 +197,48 @@ const ChequePayments = () => {
                             type: "text",
                             placeholder: "Receiver, Cheque Number",
                             value: searchQuery,
-                            onChange: (value) => {
-                                setSearchQuery(value);
-                                setPageIndex(1);
-                            },
                         },
                         {
                             type: "select",
                             placeholder: "Select a status",
                             options: ["PENDING", "RETURNED", "COMPLETED"],
                             clearable: true,
-                            onChange: (value: string | null) => {
-                                if (value) {
-                                    setStatus(value);
-                                } else {
-                                    setStatus("");
-                                }
-                                setPageIndex(1);
-                            },
+                            value: status,
                         },
                         {
                             type: "date",
                             placeholder: "Select deposit date",
-                            onChange: (e: any) => {
-                                setDate(e);
-                                setPageIndex(1);
-                            },
+                            value: date,
                         },
                         {
                             type: "date",
                             placeholder: "Date range from",
-                            onChange: (e: any) => {
-                                setFromDate(e);
-                                setPageIndex(1);
-                            },
+                            value: fromDate,
                             maxDate: toDate,
                         },
                         {
                             type: "date",
                             placeholder: "Date range to",
-                            onChange: (e: any) => {
-                                setToDate(e);
-                                setPageIndex(1);
-                            },
+                            value: toDate,
                             minDate: fromDate,
                         },
                     ]}
+                    onSearch={(values) => {
+                        setSearchQuery(values[0] || "");
+                        setStatus(values[1] || "");
+                        setDate(values[2]);
+                        setFromDate(values[3]);
+                        setToDate(values[4]);
+                        setPageIndex(1);
+                    }}
+                    onClear={() => {
+                        setSearchQuery("");
+                        setStatus("");
+                        setDate(null);
+                        setFromDate(null);
+                        setToDate(null);
+                        setPageIndex(1);
+                    }}
                 />
 
                 {/* Desktop Table */}

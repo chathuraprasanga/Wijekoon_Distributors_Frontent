@@ -133,10 +133,6 @@ const Customers = () => {
                         type: "text",
                         placeholder: "Name, Phone, Email",
                         value: searchQuery,
-                        onChange: (value) => {
-                            setSearchQuery(value);
-                            setPageIndex(1);
-                        },
                     },
                     {
                         type: "select",
@@ -144,20 +140,28 @@ const Customers = () => {
                         value: status,
                         options: ["ACTIVE", "INACTIVE"],
                         clearable: true,
-                        onChange: (value: string | null) => {
-                            setStatus(value || "");
-                            setPageIndex(1);
-                        },
+                        searchable: true,
                     },
                     {
                         type: "checkbox",
                         label: "Show Credit Amounts",
                         value: showCredit,
-                        onChange: () => setShowCredit(!showCredit),
                     },
                 ]}
+                onSearch={(values) => {
+                    // Map the values appropriately.
+                    setSearchQuery(values[0]);
+                    setStatus(values[1]);
+                    setShowCredit(values[2]);
+                    setPageIndex(1);
+                }}
+                onClear={() => {
+                    setSearchQuery("");
+                    setStatus("");
+                    setShowCredit(false);
+                    setPageIndex(1);
+                }}
             />
-
 
             {/* Desktop Table */}
             <Box visibleFrom="lg" mx="lg" my="lg" className="overflow-x-auto">

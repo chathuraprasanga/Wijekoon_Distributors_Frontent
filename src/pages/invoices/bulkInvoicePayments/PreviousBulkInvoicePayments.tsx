@@ -20,7 +20,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../../store/store.ts";
 import { useLoading } from "../../../helpers/loadingContext.tsx";
 import { getPagedBulkInvoicePayments } from "../../../store/invoiceSlice/invoiceSlice.ts";
-import { amountPreview, datePreview, pageRange } from "../../../helpers/preview.tsx";
+import {
+    amountPreview,
+    datePreview,
+    pageRange,
+} from "../../../helpers/preview.tsx";
 
 import { getSuppliers } from "../../../store/supplierSlice/supplierSlice.ts";
 import { PAYMENT_STATUS_COLORS } from "../../../helpers/types.ts";
@@ -99,19 +103,20 @@ const PreviousBulkInvoicePayments = () => {
                     {
                         type: "select",
                         placeholder: "Select a supplier",
-                        options: selectableSuppliers, // Should be an array of strings or objects with label/value properties
+                        options: selectableSuppliers,
                         searchable: true,
                         clearable: true,
-                        onChange: (value: string | null) => {
-                            if (value) {
-                                setSupplier(value); // Update the supplier
-                            } else {
-                                setSupplier(""); // Clear the supplier
-                            }
-                            setPageIndex(1); // Reset the page index to 1
-                        },
+                        value: supplier,
                     },
                 ]}
+                onSearch={(values) => {
+                    setSupplier(values[0] || "");
+                    setPageIndex(1);
+                }}
+                onClear={() => {
+                    setSupplier("");
+                    setPageIndex(1);
+                }}
             />
 
             {/* Desktop Table */}

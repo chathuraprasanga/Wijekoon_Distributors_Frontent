@@ -2,7 +2,8 @@ import {
     Badge,
     Box,
     Button,
-    Card, Flex,
+    Card,
+    Flex,
     Group,
     Menu,
     Pagination,
@@ -105,10 +106,6 @@ const Orders = () => {
                         type: "text",
                         placeholder: "Customer Name or Number",
                         value: searchQuery,
-                        onChange: (value) => {
-                            setSearchQuery(value);
-                            setPageIndex(1);
-                        },
                     },
                     {
                         type: "select",
@@ -116,12 +113,18 @@ const Orders = () => {
                         value: status,
                         options: ["PENDING", "COMPLETE", "INCOMPLETE"],
                         clearable: true,
-                        onChange: (value) => {
-                            setStatus(value || null);
-                            setPageIndex(1);
-                        },
                     },
                 ]}
+                onSearch={(values) => {
+                    setSearchQuery(values[0]);
+                    setStatus(values[1] || null);
+                    setPageIndex(1);
+                }}
+                onClear={() => {
+                    setSearchQuery("");
+                    setStatus(null);
+                    setPageIndex(1);
+                }}
             />
 
             {/* Desktop Table */}
@@ -257,7 +260,6 @@ const Orders = () => {
                     </Table.Tbody>
                 </Table>
             </Box>
-
             {/* Mobile Table */}
             <Box my="lg" mx="sm" hiddenFrom="lg">
                 {orders?.length ? (
@@ -348,7 +350,6 @@ const Orders = () => {
                     </Group>
                 )}
             </Box>
-
             {/* Pagination */}
             <Group my="md" ms="md" px="lg" justify="space-between">
                 <Group>

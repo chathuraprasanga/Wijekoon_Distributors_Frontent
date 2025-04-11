@@ -165,14 +165,7 @@ const Cheques = () => {
                         options: selectableCustomers,
                         searchable: true,
                         clearable: true,
-                        onChange: (value: string | null) => {
-                            if (value) {
-                                setCustomer(value); // Update the selected customer
-                            } else {
-                                setCustomer(""); // Clear the selected customer
-                            }
-                            setPageIndex(1); // Reset the page index to 1
-                        },
+                        value: customer,
                     },
                     {
                         type: "select",
@@ -185,53 +178,50 @@ const Cheques = () => {
                             "COMPLETED",
                         ],
                         clearable: true,
-                        onChange: (value: string | null) => {
-                            if (value) {
-                                setStatus(value); // Update the selected status
-                            } else {
-                                setStatus(""); // Clear the selected status
-                            }
-                            setPageIndex(1); // Reset the page index to 1
-                        },
+                        value: status,
                     },
                     {
                         type: "date",
                         placeholder: "Select deposit date",
-                        onChange: (e: any) => {
-                            setDepositDate(e); // Update the deposit date
-                            setPageIndex(1); // Reset the page index to 1
-                        },
+                        value: depositDate,
                     },
                     {
                         type: "text",
                         placeholder: "Cheque Number",
-                        // If you require a numeric input, you might extend your DynamicSearchBar to include an 'inputType' property.
-                        // For now, this will behave as a text input.
                         value: searchQuery,
-                        onChange: (value: string) => {
-                            setSearchQuery(value); // Update the search query
-                            setPageIndex(1); // Reset the page index to 1
-                        },
                     },
                     {
                         type: "date",
                         placeholder: "Date range from",
-                        onChange: (e: any) => {
-                            setFromDate(e); // Update the deposit date from
-                            setPageIndex(1); // Reset the page index to 1
-                        },
+                        value: fromDate,
                         maxDate: toDate,
                     },
                     {
                         type: "date",
                         placeholder: "Date range to",
-                        onChange: (e: any) => {
-                            setToDate(e); // Update the deposit date to
-                            setPageIndex(1); // Reset the page index to 1
-                        },
+                        value: toDate,
                         minDate: fromDate,
                     },
                 ]}
+                onSearch={(values) => {
+                    setCustomer(values[0] || "");
+                    setStatus(values[1] || "");
+                    setDepositDate(values[2]);
+                    setSearchQuery(values[3] || "");
+                    setFromDate(values[4]);
+                    setToDate(values[5]);
+                    setPageIndex(1);
+                }}
+                onClear={() => {
+                    // Reset parent's state for each field.
+                    setCustomer("");
+                    setStatus("");
+                    setDepositDate(null);
+                    setSearchQuery("");
+                    setFromDate(null);
+                    setToDate(null);
+                    setPageIndex(1);
+                }}
             />
 
             {/* Desktop Table */}
