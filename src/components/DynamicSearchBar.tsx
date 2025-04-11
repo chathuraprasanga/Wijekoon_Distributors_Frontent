@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Box, Group, TextInput, Select, Checkbox, Button } from "@mantine/core";
-import { IconClearAll, IconSearch, IconX } from "@tabler/icons-react";
+import { IconClearAll, IconSearch } from "@tabler/icons-react";
 import { DateInput } from "@mantine/dates";
 
 interface FieldConfig {
@@ -84,15 +84,6 @@ export const DynamicSearchBar: React.FC<DynamicSearchBarProps> = ({ fields, onSe
                                     onChange={(event) =>
                                         handleFieldChange(index, event.target.value)
                                     }
-                                    rightSection={
-                                        localValues[index] ? (
-                                            <IconX
-                                                className="cursor-pointer"
-                                                onClick={() => handleFieldChange(index, "")}
-                                                size={14}
-                                            />
-                                        ) : null
-                                    }
                                     leftSection={<IconSearch size={14} />}
                                 />
                             );
@@ -103,7 +94,7 @@ export const DynamicSearchBar: React.FC<DynamicSearchBarProps> = ({ fields, onSe
                                     {...commonProps}
                                     data={field.options || []}
                                     clearable={field.clearable}
-                                    searchable={field.searchable}
+                                    // searchable={field.searchable}
                                     onChange={(value) => handleFieldChange(index, value)}
                                 />
                             );
