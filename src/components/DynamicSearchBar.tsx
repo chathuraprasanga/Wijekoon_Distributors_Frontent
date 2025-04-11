@@ -93,8 +93,8 @@ export const DynamicSearchBar: React.FC<DynamicSearchBarProps> = ({ fields, onSe
                                     key={index}
                                     {...commonProps}
                                     data={field.options || []}
-                                    clearable={field.clearable}
-                                    // searchable={field.searchable}
+                                    // clearable={field.clearable}
+                                    searchable={field.searchable}
                                     onChange={(value) => handleFieldChange(index, value)}
                                 />
                             );
