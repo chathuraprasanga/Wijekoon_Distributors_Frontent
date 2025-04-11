@@ -163,68 +163,59 @@ const Invoices = () => {
                     {
                         type: "select",
                         placeholder: "Select a supplier",
-                        options: selectableSuppliers, // expects an array of strings or { label, value } objects
+                        options: selectableSuppliers,
                         searchable: true,
                         clearable: true,
-                        onChange: (value: string | null) => {
-                            if (value) {
-                                setSupplier(value); // Update the supplier
-                            } else {
-                                setSupplier(""); // Clear the supplier
-                            }
-                            setPageIndex(1); // Reset the page index to 1
-                        },
+                        value: supplier,
                     },
                     {
                         type: "select",
                         placeholder: "Select a status",
                         options: ["PAID", "NOT PAID"],
                         clearable: true,
-                        onChange: (value: string | null) => {
-                            if (value) {
-                                setStatus(value); // Update the status
-                            } else {
-                                setStatus(""); // Clear the status
-                            }
-                            setPageIndex(1);
-                        },
+                        value: status,
                     },
                     {
                         type: "date",
                         placeholder: "Select invoice date",
-                        onChange: (e: any) => {
-                            setInvoicedDate(e); // Update the invoice date
-                            setPageIndex(1);
-                        },
+                        value: invoicedDate,
                     },
                     {
                         type: "text",
                         placeholder: "Invoice Number",
                         value: searchQuery,
-                        onChange: (value: string) => {
-                            setSearchQuery(value); // Update the search query (invoice number)
-                            setPageIndex(1);
-                        },
                     },
                     {
                         type: "date",
                         placeholder: "Date range from",
-                        onChange: (e: any) => {
-                            setFromDate(e); // Update the date range start
-                            setPageIndex(1);
-                        },
+                        value: fromDate,
                         maxDate: toDate,
                     },
                     {
                         type: "date",
                         placeholder: "Date range to",
-                        onChange: (e: any) => {
-                            setToDate(e); // Update the date range end
-                            setPageIndex(1);
-                        },
+                        value: toDate,
                         minDate: fromDate,
                     },
                 ]}
+                onSearch={(values) => {
+                    setSupplier(values[0] || "");
+                    setStatus(values[1] || "");
+                    setInvoicedDate(values[2]);
+                    setSearchQuery(values[3] || "");
+                    setFromDate(values[4]);
+                    setToDate(values[5]);
+                    setPageIndex(1);
+                }}
+                onClear={() => {
+                    setSupplier("");
+                    setStatus("");
+                    setInvoicedDate(null);
+                    setSearchQuery("");
+                    setFromDate(null);
+                    setToDate(null);
+                    setPageIndex(1);
+                }}
             />
 
             {/* Desktop Table */}

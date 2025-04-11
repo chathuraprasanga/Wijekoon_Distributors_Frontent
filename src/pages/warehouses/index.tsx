@@ -92,10 +92,6 @@ const Warehouses = () => {
                         type: "text",
                         placeholder: "City or Warehouse ID",
                         value: searchQuery,
-                        onChange: (value) => {
-                            setSearchQuery(value);
-                            setPageIndex(1);
-                        },
                     },
                     {
                         type: "select",
@@ -103,13 +99,20 @@ const Warehouses = () => {
                         value: status,
                         options: ["ACTIVE", "INACTIVE"],
                         clearable: true,
-                        onChange: (value) => {
-                            setStatus(value || null);
-                            setPageIndex(1);
-                        },
                     },
                 ]}
+                onSearch={(values) => {
+                    setSearchQuery(values[0] || "");
+                    setStatus(values[1] || null);
+                    setPageIndex(1);
+                }}
+                onClear={() => {
+                    setSearchQuery("");
+                    setStatus(null);
+                    setPageIndex(1);
+                }}
             />
+
 
             {/* Desktop Table */}
             <Box visibleFrom="lg" mx="lg" my="lg" className="overflow-x-auto">
