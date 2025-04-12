@@ -263,7 +263,7 @@ const ViewWarehouse = () => {
                             ])
                         }
                     >
-                        Sales
+                        Add Sales Record
                     </Button>
                     <Button
                         size="xs"

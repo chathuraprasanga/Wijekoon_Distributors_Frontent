@@ -91,19 +91,19 @@ const EditChequePayment = React.lazy(
 const ViewChequePayment = React.lazy(
     () => import("./pages/chequePayments/ViewChequePayments.tsx")
 );
-const BulkInvoicePayment = React.lazy(
-    () => import("./pages/invoices/bulkInvoicePayments/BulkInvoicePayment.tsx")
+const AddBulkInvoicePayment = React.lazy(
+    () => import("./pages/bulkInvoicePayments/AddBulkInvoicePayment.tsx")
 );
 const PreviousBulkInvoicePayments = React.lazy(
     () =>
         import(
-            "./pages/invoices/bulkInvoicePayments/PreviousBulkInvoicePayments.tsx"
+            "./pages/bulkInvoicePayments"
         )
 );
 const ViewBulkInvoicePayments = React.lazy(
     () =>
         import(
-            "./pages/invoices/bulkInvoicePayments/BulkInvoicePaymentView.tsx"
+            "./pages/bulkInvoicePayments/ViewBulkInvoicePayment.tsx"
         )
 );
 const SalesRecords = React.lazy(() => import("./pages/salesRecords/index.tsx"));
@@ -120,15 +120,15 @@ const EditSalesRecord = React.lazy(
 );
 
 const PdfView = React.lazy(() => import("./pages/PdfViewPage.tsx"));
-const Orders = React.lazy(() => import("./pages/salesRecords/orders"));
+const Orders = React.lazy(() => import("./pages/orders"));
 const AddOrder = React.lazy(
-    () => import("./pages/salesRecords/orders/AddOrder.tsx")
+    () => import("./pages/orders/AddOrder.tsx")
 );
 const EditOrder = React.lazy(
-    () => import("./pages/salesRecords/orders/EditOrder.tsx")
+    () => import("./pages/orders/EditOrder.tsx")
 );
 const ViewOrder = React.lazy(
-    () => import("./pages/salesRecords/orders/ViewOrder.tsx")
+    () => import("./pages/orders/ViewOrder.tsx")
 );
 
 const router = createBrowserRouter([
@@ -180,19 +180,19 @@ const router = createBrowserRouter([
             },
             // orders sub
             {
-                path: "sales-records/orders",
+                path: "orders",
                 element: <Orders />,
             },
             {
-                path: "sales-records/orders/add-order",
+                path: "orders/add-order",
                 element: <AddOrder />,
             },
             {
-                path: "sales-records/orders/edit-order/:id",
+                path: "orders/edit-order/:id",
                 element: <EditOrder />,
             },
             {
-                path: "sales-records/orders/view-order/:id",
+                path: "orders/view-order/:id",
                 element: <ViewOrder />,
             },
 
@@ -252,15 +252,15 @@ const router = createBrowserRouter([
             },
             // bulk invoices sub
             {
-                path: "invoices/bulk-invoice-payment",
-                element: <BulkInvoicePayment />,
-            },
-            {
-                path: "invoices/previous-bulk-invoice-payments",
+                path: "bulk-invoice-payments",
                 element: <PreviousBulkInvoicePayments />,
             },
             {
-                path: "invoices/bulk-invoice-payments/:id",
+                path: "bulk-invoice-payments/add-bulk-invoice-payment",
+                element: <AddBulkInvoicePayment />,
+            },
+            {
+                path: "bulk-invoice-payments/view-bulk-invoice-payment/:id",
                 element: <ViewBulkInvoicePayments />,
             },
 

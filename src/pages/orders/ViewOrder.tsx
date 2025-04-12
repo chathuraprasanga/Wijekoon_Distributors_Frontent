@@ -1,14 +1,14 @@
 import { Badge, Box, Button, Group, Table, Text } from "@mantine/core";
 import { IconArrowLeft, IconFile } from "@tabler/icons-react";
-import { useLoading } from "../../../helpers/loadingContext.tsx";
+import { useLoading } from "../../helpers/loadingContext.tsx";
 import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "../../../store/store.ts";
+import { AppDispatch, RootState } from "../../store/store.ts";
 import { useNavigate, useParams } from "react-router";
 import { useEffect } from "react";
-import { DOWNLOAD_TYPES, ORDER_STATUS_COLORS } from "../../../helpers/types.ts";
-import { amountPreview, datePreview } from "../../../helpers/preview.tsx";
+import { DOWNLOAD_TYPES, ORDER_STATUS_COLORS } from "../../helpers/types.ts";
+import { amountPreview, datePreview } from "../../helpers/preview.tsx";
 import { useMediaQuery } from "@mantine/hooks";
-import { getOrder } from "../../../store/orderSlice/orderSlice.ts";
+import { getOrder } from "../../store/orderSlice/orderSlice.ts";
 
 const ViewOrder = () => {
     const isMobile = useMediaQuery("(max-width: 768px)");

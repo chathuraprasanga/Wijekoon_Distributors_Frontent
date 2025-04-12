@@ -23,31 +23,31 @@ import {
 } from "@tabler/icons-react";
 import { useEffect, useMemo, useState } from "react";
 import { useDispatch } from "react-redux";
-import { AppDispatch } from "../../../store/store.ts";
-import { useLoading } from "../../../helpers/loadingContext.tsx";
-import { getSuppliers } from "../../../store/supplierSlice/supplierSlice.ts";
-import toNotify from "../../../helpers/toNotify.tsx";
+import { AppDispatch } from "../../store/store.ts";
+import { useLoading } from "../../helpers/loadingContext.tsx";
+import { getSuppliers } from "../../store/supplierSlice/supplierSlice.ts";
+import toNotify from "../../helpers/toNotify.tsx";
 import {
     addBulkInvoicePayment,
     getInvoices,
-} from "../../../store/invoiceSlice/invoiceSlice.ts";
+} from "../../store/invoiceSlice/invoiceSlice.ts";
 import {
     amountPreview,
     bankPreview,
     datePreview,
-} from "../../../helpers/preview.tsx";
-import { getCheques } from "../../../store/chequeSlice/chequeSlice.ts";
-import { getBankDetails } from "../../../store/bankDetailSlice/bankDetailSlice.ts";
+} from "../../helpers/preview.tsx";
+import { getCheques } from "../../store/chequeSlice/chequeSlice.ts";
+import { getBankDetails } from "../../store/bankDetailSlice/bankDetailSlice.ts";
 import { useDisclosure, useMediaQuery } from "@mantine/hooks";
 import { DatePickerInput } from "@mantine/dates";
 import { isNotEmpty, useForm } from "@mantine/form";
-import { isValidChequeNumber } from "../../../utils/inputValidators.ts";
+import { isValidChequeNumber } from "../../utils/inputValidators.ts";
 import { useNavigate } from "react-router";
 
 const today = new Date(); // Get today's date in local time
 const utcToday = new Date(Date.UTC(today.getFullYear(), today.getMonth(), today.getDate())); // Set the time to 00:00:00 UTC
 
-const BulkInvoicePayment = () => {
+const AddBulkInvoicePayment = () => {
     const navigate = useNavigate();
     const isMobile = useMediaQuery("(max-width: 768px)");
     const today = new Date().toISOString();
@@ -1215,4 +1215,4 @@ const BulkInvoicePayment = () => {
     );
 };
 
-export default BulkInvoicePayment;
+export default AddBulkInvoicePayment;
