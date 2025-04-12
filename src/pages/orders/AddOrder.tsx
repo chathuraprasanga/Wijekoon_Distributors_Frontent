@@ -23,17 +23,17 @@ import { DatePickerInput } from "@mantine/dates";
 import { useDisclosure, useMediaQuery } from "@mantine/hooks";
 import { useForm } from "@mantine/form";
 import { useNavigate } from "react-router";
-import { useLoading } from "../../../helpers/loadingContext.tsx";
-import { AppDispatch, RootState } from "../../../store/store.ts";
+import { useLoading } from "../../helpers/loadingContext.tsx";
+import { AppDispatch, RootState } from "../../store/store.ts";
 import {
     addCustomer,
     getCustomers,
-} from "../../../store/customerSlice/customerSlice.ts";
-import { getProducts } from "../../../store/productSlice/productSlice.ts";
-import { amountPreview } from "../../../helpers/preview.tsx";
-import { addOrder } from "../../../store/orderSlice/orderSlice.ts";
-import toNotify from "../../../helpers/toNotify.tsx";
-import { isValidPhone } from "../../../utils/inputValidators.ts";
+} from "../../store/customerSlice/customerSlice.ts";
+import { getProducts } from "../../store/productSlice/productSlice.ts";
+import { amountPreview } from "../../helpers/preview.tsx";
+import { addOrder } from "../../store/orderSlice/orderSlice.ts";
+import toNotify from "../../helpers/toNotify.tsx";
+import { isValidPhone } from "../../utils/inputValidators.ts";
 
 const AddOrder = () => {
     const { setLoading } = useLoading();

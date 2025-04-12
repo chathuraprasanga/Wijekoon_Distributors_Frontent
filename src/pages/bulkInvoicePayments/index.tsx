@@ -2,8 +2,8 @@ import { useNavigate } from "react-router";
 import { useEffect, useState } from "react";
 import {
     Badge,
-    Box,
-    Card,
+    Box, Button,
+    Card, Flex,
     Group,
     Menu,
     Pagination,
@@ -11,26 +11,25 @@ import {
     Text,
 } from "@mantine/core";
 import {
-    IconArrowLeft,
     IconDatabaseOff,
     IconDotsVertical,
     IconEye,
 } from "@tabler/icons-react";
 import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "../../../store/store.ts";
-import { useLoading } from "../../../helpers/loadingContext.tsx";
-import { getPagedBulkInvoicePayments } from "../../../store/invoiceSlice/invoiceSlice.ts";
+import { AppDispatch, RootState } from "../../store/store.ts";
+import { useLoading } from "../../helpers/loadingContext.tsx";
+import { getPagedBulkInvoicePayments } from "../../store/invoiceSlice/invoiceSlice.ts";
 import {
     amountPreview,
     datePreview,
     pageRange,
-} from "../../../helpers/preview.tsx";
+} from "../../helpers/preview.tsx";
 
-import { getSuppliers } from "../../../store/supplierSlice/supplierSlice.ts";
-import { PAYMENT_STATUS_COLORS } from "../../../helpers/types.ts";
-import { DynamicSearchBar } from "../../../components/DynamicSearchBar.tsx";
+import { getSuppliers } from "../../store/supplierSlice/supplierSlice.ts";
+import { PAYMENT_STATUS_COLORS } from "../../helpers/types.ts";
+import { DynamicSearchBar } from "../../components/DynamicSearchBar.tsx";
 
-const PreviousBulkInvoicePayments = () => {
+const BulkInvoicePayments = () => {
     const { setLoading } = useLoading();
     const dispatch = useDispatch<AppDispatch | any>();
     const navigate = useNavigate();
@@ -86,15 +85,21 @@ const PreviousBulkInvoicePayments = () => {
         <>
             {/* Header */}
             <Box display="flex" p="lg" className="items-center justify-between">
-                <Group display="flex">
-                    <IconArrowLeft
-                        className="cursor-pointer"
-                        onClick={() => history.back()}
-                    />
-                    <span className="text-lg font-semibold ml-4">
-                        Bulk Invoice Payments
-                    </span>
-                </Group>
+                <Box>
+                    <Text size="lg" fw={500}>
+                        Bulk Invoice Payements
+                    </Text>
+                </Box>
+                <Flex gap="sm" wrap="wrap">
+                    <Button
+                        size="xs"
+                        onClick={() =>
+                            navigate("/app/bulk-invoice-payments/add-bulk-invoice-payment")
+                        }
+                    >
+                        Add Bulk Invoice Payment
+                    </Button>
+                </Flex>
             </Box>
 
             {/* Search Input */}
@@ -195,7 +200,7 @@ const PreviousBulkInvoicePayments = () => {
                                                 <Menu.Item
                                                     onClick={() => {
                                                         navigate(
-                                                            `/app/invoices/bulk-invoice-payments/${c._id}`
+                                                            `/app/bulk-invoice-payments/view-bulk-invoice-payment/${c._id}`
                                                         );
                                                         sessionStorage.setItem(
                                                             "pageIndex",
@@ -278,7 +283,7 @@ const PreviousBulkInvoicePayments = () => {
                                         <Menu.Item
                                             onClick={() => {
                                                 navigate(
-                                                    `/app/invoices/bulk-invoice-payments/${c._id}`
+                                                    `/app/bulk-invoice-payments/view-bulk-invoice-payment/${c._id}`
                                                 );
                                                 sessionStorage.setItem(
                                                     "pageIndex",
@@ -328,4 +333,4 @@ const PreviousBulkInvoicePayments = () => {
     );
 };
 
-export default PreviousBulkInvoicePayments;
+export default BulkInvoicePayments;

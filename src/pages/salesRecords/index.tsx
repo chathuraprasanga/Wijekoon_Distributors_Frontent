@@ -87,24 +87,6 @@ const SalesRecords = () => {
                     </Text>
                 </Box>
                 <Flex gap="sm" wrap="wrap">
-                    {hasAnyPrivilege(user.role, [
-                        USER_ROLES.SALES_MANAGER,
-                        USER_ROLES.SALES_REP,
-                        USER_ROLES.OWNER,
-                        USER_ROLES.ADMIN,
-                        USER_ROLES.SUPER_ADMIN,
-                    ]) && (
-                        <Button
-                            size="xs"
-                            onClick={() =>
-                                navigate("/app/sales-records/orders")
-                            }
-                            color="violet"
-                        >
-                            Purchase Orders
-                        </Button>
-                    )}
-
                     <Button
                         size="xs"
                         onClick={() =>
