@@ -24,6 +24,8 @@ import {
     IconLayoutDashboard,
     IconMoon,
     IconPackages,
+    IconReceipt,
+    IconReceiptDollar,
     IconSun,
     IconTruck,
     IconUsersGroup,
@@ -35,6 +37,12 @@ import cx from "clsx";
 import classes from "./Demo.module.css";
 import { hasAnyPrivilege } from "../helpers/previlleges.ts";
 import { USER_ROLES } from "../helpers/types.ts";
+import {
+    assetsRoutes,
+    customersRoutes,
+    paymentsRoutes,
+    suppliersRoutes,
+} from "../utils/settings.ts";
 
 const BasicAppShell = () => {
     const { setColorScheme } = useMantineColorScheme();
@@ -58,6 +66,25 @@ const BasicAppShell = () => {
 
     const currentDate = new Date();
     const displayDate = currentDate.toISOString().split("T")[0];
+
+    const getActiveMainRoute = (type: string) => {
+        const location = useLocation();
+
+        const routeMap: Record<string, string[]> = {
+            CUSTOMERS: customersRoutes,
+            SUPPLIERS: suppliersRoutes,
+            PAYMENTS: paymentsRoutes,
+            ASSETS: assetsRoutes,
+        };
+
+        const routes = routeMap[type];
+
+        if (!routes) return false;
+
+        return routes.some((route) =>
+            location.pathname.includes(route.split("/:")[0])
+        );
+    };
 
     return (
         <AppShell
@@ -130,93 +157,216 @@ const BasicAppShell = () => {
                         variant="filled"
                         active={activePath === "dashboard"}
                     />
-                    {hasAnyPrivilege(userDetails.role, [
-                        USER_ROLES.SUPER_ADMIN,
-                        USER_ROLES.ADMIN,
-                        USER_ROLES.OWNER,
-                        USER_ROLES.SALES_REP,
-                        USER_ROLES.SALES_MANAGER,
-                        USER_ROLES.WAREHOUSE_MANAGER,
-                        USER_ROLES.STOCK_KEEPER
-                    ]) && (
-                        <NavLink
-                            onClick={() => handleNavLinkClick("sales-records")}
-                            label="Sales Records"
-                            leftSection={
-                                <IconBuildingStore size="1rem" stroke={1.5} />
-                            }
-                            variant="filled"
-                            active={activePath === "sales-records"}
-                        />
-                    )}
-                    {hasAnyPrivilege(userDetails.role, [
-                        USER_ROLES.SUPER_ADMIN,
-                        USER_ROLES.ADMIN,
-                        USER_ROLES.OWNER,
-                        USER_ROLES.SALES_REP,
-                        USER_ROLES.SALES_MANAGER,
-                        USER_ROLES.DRIVER,
-                        USER_ROLES.WAREHOUSE_MANAGER
-                    ]) && (
-                        <NavLink
-                            onClick={() => handleNavLinkClick("customers")}
-                            label="Customers"
-                            leftSection={
-                                <IconUsersGroup size="1rem" stroke={1.5} />
-                            }
-                            variant="filled"
-                            active={activePath === "customers"}
-                        />
-                    )}
-                    {hasAnyPrivilege(userDetails.role, [
-                        USER_ROLES.SUPER_ADMIN,
-                        USER_ROLES.ADMIN,
-                        USER_ROLES.OWNER,
-                        USER_ROLES.SALES_REP,
-                        USER_ROLES.SALES_MANAGER,
-                        USER_ROLES.WAREHOUSE_MANAGER
-                    ]) && (
-                        <NavLink
-                            onClick={() => handleNavLinkClick("products")}
-                            label="Products"
-                            leftSection={
-                                <IconPackages size="1rem" stroke={1.5} />
-                            }
-                            variant="filled"
-                            active={activePath === "products"}
-                        />
-                    )}
-                    {hasAnyPrivilege(userDetails.role, [
-                        USER_ROLES.SUPER_ADMIN,
-                        USER_ROLES.ADMIN,
-                        USER_ROLES.OWNER,
-                    ]) && (
-                        <NavLink
-                            onClick={() => handleNavLinkClick("suppliers")}
-                            label="Suppliers"
-                            leftSection={<IconTruck size="1rem" stroke={1.5} />}
-                            variant="filled"
-                            active={activePath === "suppliers"}
-                        />
-                    )}
-                    {hasAnyPrivilege(userDetails.role, [
-                        USER_ROLES.SUPER_ADMIN,
-                        USER_ROLES.ADMIN,
-                        USER_ROLES.OWNER,
-                        USER_ROLES.SALES_REP,
-                        USER_ROLES.SALES_MANAGER,
-                        USER_ROLES.WAREHOUSE_MANAGER
-                    ]) && (
-                        <NavLink
-                            onClick={() => handleNavLinkClick("cheques")}
-                            label="Cheques"
-                            leftSection={
-                                <IconCashBanknote size="1rem" stroke={1.5} />
-                            }
-                            variant="filled"
-                            active={activePath === "cheques"}
-                        />
-                    )}
+                    <NavLink
+                        label="Customers"
+                        active={getActiveMainRoute("CUSTOMERS")}
+                        leftSection={
+                            <IconUsersGroup size="1rem" stroke={1.5} />
+                        }
+                        variant="filled"
+                    >
+                        {hasAnyPrivilege(userDetails.role, [
+                            USER_ROLES.SUPER_ADMIN,
+                            USER_ROLES.ADMIN,
+                            USER_ROLES.OWNER,
+                            USER_ROLES.SALES_REP,
+                            USER_ROLES.SALES_MANAGER,
+                            USER_ROLES.DRIVER,
+                            USER_ROLES.WAREHOUSE_MANAGER,
+                        ]) && (
+                            <NavLink
+                                onClick={() => handleNavLinkClick("customers")}
+                                label="Customers"
+                                leftSection={
+                                    <IconUsersGroup size="1rem" stroke={1.5} />
+                                }
+                                variant="light"
+                                active={activePath === "customers"}
+                            />
+                        )}
+                        {hasAnyPrivilege(userDetails.role, [
+                            USER_ROLES.SUPER_ADMIN,
+                            USER_ROLES.ADMIN,
+                            USER_ROLES.OWNER,
+                            USER_ROLES.SALES_REP,
+                            USER_ROLES.SALES_MANAGER,
+                            USER_ROLES.WAREHOUSE_MANAGER,
+                            USER_ROLES.STOCK_KEEPER,
+                        ]) && (
+                            <NavLink
+                                onClick={() => handleNavLinkClick("orders")}
+                                label="Purchase Orders"
+                                leftSection={
+                                    <IconReceipt size="1rem" stroke={1.5} />
+                                }
+                                variant="light"
+                                active={activePath === "orders"}
+                            />
+                        )}
+                        {hasAnyPrivilege(userDetails.role, [
+                            USER_ROLES.SUPER_ADMIN,
+                            USER_ROLES.ADMIN,
+                            USER_ROLES.OWNER,
+                            USER_ROLES.SALES_REP,
+                            USER_ROLES.SALES_MANAGER,
+                            USER_ROLES.WAREHOUSE_MANAGER,
+                            USER_ROLES.STOCK_KEEPER,
+                        ]) && (
+                            <NavLink
+                                onClick={() =>
+                                    handleNavLinkClick("sales-records")
+                                }
+                                label="Sales Records"
+                                leftSection={
+                                    <IconBuildingStore
+                                        size="1rem"
+                                        stroke={1.5}
+                                    />
+                                }
+                                variant="light"
+                                active={activePath === "sales-records"}
+                            />
+                        )}
+                        {hasAnyPrivilege(userDetails.role, [
+                            USER_ROLES.SUPER_ADMIN,
+                            USER_ROLES.ADMIN,
+                            USER_ROLES.OWNER,
+                            USER_ROLES.SALES_REP,
+                            USER_ROLES.SALES_MANAGER,
+                            USER_ROLES.WAREHOUSE_MANAGER,
+                        ]) && (
+                            <NavLink
+                                onClick={() => handleNavLinkClick("cheques")}
+                                label="Cheques"
+                                leftSection={
+                                    <IconCashBanknote
+                                        size="1rem"
+                                        stroke={1.5}
+                                    />
+                                }
+                                variant="light"
+                                active={activePath === "cheques"}
+                            />
+                        )}
+                    </NavLink>
+
+                    <NavLink
+                        label="Suppliers"
+                        active={getActiveMainRoute("SUPPLIERS")}
+                        leftSection={
+                            <IconTruck size="1rem" stroke={1.5} />
+                        }
+                        variant="filled"
+                    >
+                        {hasAnyPrivilege(userDetails.role, [
+                            USER_ROLES.SUPER_ADMIN,
+                            USER_ROLES.ADMIN,
+                            USER_ROLES.OWNER,
+                        ]) && (
+                            <NavLink
+                                onClick={() => handleNavLinkClick("suppliers")}
+                                label="Suppliers"
+                                leftSection={
+                                    <IconTruck size="1rem" stroke={1.5} />
+                                }
+                                variant="light"
+                                active={activePath === "suppliers"}
+                            />
+                        )}
+                        {hasAnyPrivilege(userDetails.role, [
+                            USER_ROLES.SUPER_ADMIN,
+                            USER_ROLES.ADMIN,
+                            USER_ROLES.OWNER,
+                            USER_ROLES.SALES_REP,
+                            USER_ROLES.SALES_MANAGER,
+                            USER_ROLES.WAREHOUSE_MANAGER,
+                        ]) && (
+                            <NavLink
+                                onClick={() => handleNavLinkClick("products")}
+                                label="Products"
+                                leftSection={
+                                    <IconPackages size="1rem" stroke={1.5} />
+                                }
+                                variant="light"
+                                active={activePath === "products"}
+                            />
+                        )}
+                        {hasAnyPrivilege(userDetails.role, [
+                            USER_ROLES.SUPER_ADMIN,
+                            USER_ROLES.ADMIN,
+                            USER_ROLES.OWNER,
+                        ]) && (
+                            <NavLink
+                                onClick={() => handleNavLinkClick("invoices")}
+                                label="Invoices"
+                                leftSection={
+                                    <IconInvoice size="1rem" stroke={1.5} />
+                                }
+                                variant="light"
+                                active={activePath === "invoices"}
+                            />
+                        )}
+                        {hasAnyPrivilege(userDetails.role, [
+                            USER_ROLES.SUPER_ADMIN,
+                            USER_ROLES.ADMIN,
+                            USER_ROLES.OWNER,
+                        ]) && (
+                            <NavLink
+                                onClick={() =>
+                                    handleNavLinkClick("bulk-invoice-payments")
+                                }
+                                label="Bulk Invoice Payments"
+                                leftSection={
+                                    <IconReceiptDollar
+                                        size="1rem"
+                                        stroke={1.5}
+                                    />
+                                }
+                                variant="light"
+                                active={activePath === "bulk-invoice-payments"}
+                            />
+                        )}
+                    </NavLink>
+
+                    <NavLink
+                        label="Assets"
+                        active={getActiveMainRoute("ASSETS")}
+                        leftSection={
+                            <IconBuildingWarehouse size="1rem" stroke={1.5} />
+                        }
+                        variant="filled"
+                    >
+                        {hasAnyPrivilege(userDetails.role, [
+                            USER_ROLES.SUPER_ADMIN,
+                            USER_ROLES.ADMIN,
+                            USER_ROLES.OWNER,
+                            USER_ROLES.WAREHOUSE_MANAGER,
+                            USER_ROLES.STOCK_KEEPER,
+                            USER_ROLES.SALES_MANAGER,
+                        ]) && (
+                            <NavLink
+                                onClick={() => handleNavLinkClick("warehouses")}
+                                label="Warehouses"
+                                leftSection={
+                                    <IconBuildingWarehouse
+                                        size="1rem"
+                                        stroke={1.5}
+                                    />
+                                }
+                                variant="light"
+                                active={activePath === "warehouses"}
+                            />
+                        )}
+                    </NavLink>
+
+                    <NavLink
+                        label="Payments"
+                        active={getActiveMainRoute("PAYMENTS")}
+                        leftSection={
+                            <IconCalendarDollar size="1rem" stroke={1.5} />
+                        }
+                        variant="filled"
+                    >
                     {hasAnyPrivilege(userDetails.role, [
                         USER_ROLES.SUPER_ADMIN,
                         USER_ROLES.ADMIN,
@@ -230,46 +380,11 @@ const BasicAppShell = () => {
                             leftSection={
                                 <IconCalendarDollar size="1rem" stroke={1.5} />
                             }
-                            variant="filled"
+                            variant="light"
                             active={activePath === "cheque-payments"}
                         />
                     )}
-                    {hasAnyPrivilege(userDetails.role, [
-                        USER_ROLES.SUPER_ADMIN,
-                        USER_ROLES.ADMIN,
-                        USER_ROLES.OWNER,
-                    ]) && (
-                        <NavLink
-                            onClick={() => handleNavLinkClick("invoices")}
-                            label="Invoices"
-                            leftSection={
-                                <IconInvoice size="1rem" stroke={1.5} />
-                            }
-                            variant="filled"
-                            active={activePath === "invoices"}
-                        />
-                    )}
-                    {hasAnyPrivilege(userDetails.role, [
-                        USER_ROLES.SUPER_ADMIN,
-                        USER_ROLES.ADMIN,
-                        USER_ROLES.OWNER,
-                        USER_ROLES.WAREHOUSE_MANAGER,
-                        USER_ROLES.STOCK_KEEPER,
-                        USER_ROLES.SALES_MANAGER,
-                    ]) && (
-                        <NavLink
-                            onClick={() => handleNavLinkClick("warehouses")}
-                            label="Warehouses"
-                            leftSection={
-                                <IconBuildingWarehouse
-                                    size="1rem"
-                                    stroke={1.5}
-                                />
-                            }
-                            variant="filled"
-                            active={activePath === "warehouses"}
-                        />
-                    )}
+                    </NavLink>
                 </ScrollArea>
             </AppShell.Navbar>
 

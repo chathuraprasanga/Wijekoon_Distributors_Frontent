@@ -112,7 +112,7 @@ const Products = () => {
                                 navigate("/app/products/add-product")
                             }
                         >
-                            Add Products
+                            Add Product
                         </Button>
                     )}
                 </Flex>

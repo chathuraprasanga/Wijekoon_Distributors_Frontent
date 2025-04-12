@@ -19,18 +19,18 @@ import {
     IconEye,
 } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
-import { useLoading } from "../../../helpers/loadingContext.tsx";
+import { useLoading } from "../../helpers/loadingContext.tsx";
 import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "../../../store/store.ts";
+import { AppDispatch, RootState } from "../../store/store.ts";
 import {
     amountPreview,
     datePreview,
     pageRange,
-} from "../../../helpers/preview.tsx";
-import { ORDER_STATUS_COLORS, USER_ROLES } from "../../../helpers/types.ts";
-import { hasAnyPrivilege } from "../../../helpers/previlleges.ts";
-import { getPagedOrders } from "../../../store/orderSlice/orderSlice.ts";
-import { DynamicSearchBar } from "../../../components/DynamicSearchBar.tsx";
+} from "../../helpers/preview.tsx";
+import { ORDER_STATUS_COLORS, USER_ROLES } from "../../helpers/types.ts";
+import { hasAnyPrivilege } from "../../helpers/previlleges.ts";
+import { getPagedOrders } from "../../store/orderSlice/orderSlice.ts";
+import { DynamicSearchBar } from "../../components/DynamicSearchBar.tsx";
 
 const Orders = () => {
     const { setLoading } = useLoading();
@@ -91,7 +91,7 @@ const Orders = () => {
                     <Button
                         size="xs"
                         onClick={() =>
-                            navigate("/app/sales-records/orders/add-order")
+                            navigate("/app/orders/add-order")
                         }
                     >
                         Add Purchase Order
@@ -208,7 +208,7 @@ const Orders = () => {
                                                     }
                                                     onClick={() =>
                                                         navigate(
-                                                            `/app/sales-records/orders/view-order/${c?._id}`
+                                                            `/app/orders/view-order/${c?._id}`
                                                         )
                                                     }
                                                 >
@@ -232,7 +232,7 @@ const Orders = () => {
                                                     }
                                                     onClick={() =>
                                                         navigate(
-                                                            `/app/sales-records/orders/edit-order/${c._id}`
+                                                            `/app/orders/edit-order/${c._id}`
                                                         )
                                                     }
                                                 >
@@ -312,7 +312,7 @@ const Orders = () => {
                                             rightSection={<IconEye size={16} />}
                                             onClick={() =>
                                                 navigate(
-                                                    `/app/sales-records/orders/view-order/${c?._id}`
+                                                    `/app/orders/view-order/${c?._id}`
                                                 )
                                             }
                                         >
@@ -332,7 +332,7 @@ const Orders = () => {
                                             }
                                             onClick={() =>
                                                 navigate(
-                                                    `/app/sales-records/orders/edit-order/${c._id}`
+                                                    `/app/orders/edit-order/${c._id}`
                                                 )
                                             }
                                         >

@@ -2,16 +2,16 @@ import { useNavigate, useParams } from "react-router";
 import { Box, Button, Group, Table } from "@mantine/core";
 import { IconArrowLeft, IconFile } from "@tabler/icons-react";
 import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "../../../store/store.ts";
-import { useLoading } from "../../../helpers/loadingContext.tsx";
+import { AppDispatch, RootState } from "../../store/store.ts";
+import { useLoading } from "../../helpers/loadingContext.tsx";
 import { useEffect } from "react";
-import toNotify from "../../../helpers/toNotify.tsx";
-import { getBulkInvoicePayment } from "../../../store/invoiceSlice/invoiceSlice.ts";
-import { amountPreview } from "../../../helpers/preview.tsx";
-import { DOWNLOAD_TYPES } from "../../../helpers/types.ts";
+import toNotify from "../../helpers/toNotify.tsx";
+import { getBulkInvoicePayment } from "../../store/invoiceSlice/invoiceSlice.ts";
+import { amountPreview } from "../../helpers/preview.tsx";
+import { DOWNLOAD_TYPES } from "../../helpers/types.ts";
 import { useMediaQuery } from "@mantine/hooks";
 
-const BulkInvoicePaymentView = () => {
+const ViewBulkInvoicePayment = () => {
     const isSmallOrMedium = useMediaQuery("(max-width: 1024px)"); // Disables on sm & md screens
     const navigate = useNavigate();
     const { setLoading } = useLoading();
@@ -258,4 +258,4 @@ const BulkInvoicePaymentView = () => {
     );
 };
 
-export default BulkInvoicePaymentView;
+export default ViewBulkInvoicePayment;
