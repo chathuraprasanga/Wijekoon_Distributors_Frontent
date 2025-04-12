@@ -31,20 +31,6 @@ const authChecker = async () => {
     return null;
 };
 
-// import LoginPage from "./pages/LoginPage.tsx";
-// import AppLayout from "./layouts/AppLayout.tsx";
-// import DashboardPage from "./pages/DashboardPage.tsx";
-// import Customers from "./pages/customers";
-// import Products from "./pages/products";
-// import Suppliers from "./pages/suppliers";
-// import Cheques from "./pages/cheques";
-// import Invoices from "./pages/invoices";
-// import AddCustomer from "./pages/customers/AddCustomer.tsx";
-// import AddProduct from "./pages/products/AddProduct.tsx";
-// import AddSupplier from "./pages/suppliers/AddSupplier.tsx";
-// import AddCheque from "./pages/cheques/AddCheque.tsx";
-// import AddInvoice from "./pages/invoices/AddInvoice.tsx";
-
 const LoginPage = React.lazy(() => import("./pages/LoginPage.tsx"));
 const AppLayout = React.lazy(() => import("./layouts/AppLayout.tsx"));
 const DashboardPage = React.lazy(() => import("./pages/DashboardPage.tsx"));
@@ -112,13 +98,13 @@ const PreviousBulkInvoicePayments = React.lazy(
     () =>
         import(
             "./pages/invoices/bulkInvoicePayments/PreviousBulkInvoicePayments.tsx"
-            )
+        )
 );
 const ViewBulkInvoicePayments = React.lazy(
     () =>
         import(
             "./pages/invoices/bulkInvoicePayments/BulkInvoicePaymentView.tsx"
-            )
+        )
 );
 const SalesRecords = React.lazy(() => import("./pages/salesRecords/index.tsx"));
 const AddSalesRecord = React.lazy(
@@ -135,9 +121,15 @@ const EditSalesRecord = React.lazy(
 
 const PdfView = React.lazy(() => import("./pages/PdfViewPage.tsx"));
 const Orders = React.lazy(() => import("./pages/salesRecords/orders"));
-const AddOrder = React.lazy(() => import("./pages/salesRecords/orders/AddOrder.tsx"));
-const EditOrder = React.lazy(() => import("./pages/salesRecords/orders/EditOrder.tsx"));
-const ViewOrder = React.lazy(() => import("./pages/salesRecords/orders/ViewOrder.tsx"));
+const AddOrder = React.lazy(
+    () => import("./pages/salesRecords/orders/AddOrder.tsx")
+);
+const EditOrder = React.lazy(
+    () => import("./pages/salesRecords/orders/EditOrder.tsx")
+);
+const ViewOrder = React.lazy(
+    () => import("./pages/salesRecords/orders/ViewOrder.tsx")
+);
 
 const router = createBrowserRouter([
     {
@@ -145,49 +137,21 @@ const router = createBrowserRouter([
         element: <AppLayout />,
         loader: AuthLoaderChecker,
         children: [
+            // dashboard route
             {
                 path: "dashboard",
                 element: <DashboardPage />,
             },
+
+            // customers routes
+            // customers sub
             {
                 path: "customers",
                 element: <Customers />,
             },
             {
-                path: "products",
-                element: <Products />,
-            },
-            {
-                path: "suppliers",
-                element: <Suppliers />,
-            },
-            {
-                path: "cheques",
-                element: <Cheques />,
-            },
-            {
-                path: "invoices",
-                element: <Invoices />,
-            },
-            {
                 path: "customers/add-customer",
                 element: <AddCustomer />,
-            },
-            {
-                path: "products/add-product",
-                element: <AddProduct />,
-            },
-            {
-                path: "suppliers/add-supplier",
-                element: <AddSupplier />,
-            },
-            {
-                path: "cheques/add-cheque",
-                element: <AddCheque />,
-            },
-            {
-                path: "invoices/add-invoice",
-                element: <AddInvoice />,
             },
             {
                 path: "customers/edit-customer/:id",
@@ -197,78 +161,7 @@ const router = createBrowserRouter([
                 path: "customers/view-customer/:id",
                 element: <ViewCustomer />,
             },
-            {
-                path: "products/edit-product/:id",
-                element: <EditProduct />,
-            },
-            {
-                path: "products/view-product/:id",
-                element: <ViewProduct />,
-            },
-            {
-                path: "suppliers/edit-supplier/:id",
-                element: <EditSupplier />,
-            },
-            {
-                path: "cheques/edit-cheque/:id",
-                element: <EditCheque />,
-            },
-            {
-                path: "invoices/edit-invoice/:id",
-                element: <EditInvoice />,
-            },
-            {
-                path: "suppliers/view-supplier/:id",
-                element: <ViewSupplier />,
-            },
-            {
-                path: "cheques/view-cheque/:id",
-                element: <ViewCheque />,
-            },
-            {
-                path: "invoices/view-invoice/:id",
-                element: <ViewInvoice />,
-            },
-            {
-                path: "settings",
-                element: <SettingsPage />,
-            },
-            {
-                path: "cheque-payments",
-                element: <ChequePayments />,
-            },
-            {
-                path: "cheque-payments/add-cheque-payment",
-                element: <AddChequePayment />,
-            },
-            {
-                path: "cheque-payments/edit-cheque-payment/:id",
-                element: <EditChequePayment />,
-            },
-            {
-                path: "cheque-payments/view-cheque-payment/:id",
-                element: <ViewChequePayment />,
-            },
-            {
-                path: "invoices/bulk-invoice-payment",
-                element: <BulkInvoicePayment />,
-            },
-            {
-                path: "invoices/previous-bulk-invoice-payments",
-                element: <PreviousBulkInvoicePayments />,
-            },
-            {
-                path: "invoices/bulk-invoice-payments/:id",
-                element: <ViewBulkInvoicePayments />,
-            },
-            {
-                path: "warehouses/view-warehouse/:id",
-                element: <ViewWarehouse />,
-            },
-            {
-                path: "warehouses",
-                element: <Warehouses />,
-            },
+            // sales records sub
             {
                 path: "sales-records",
                 element: <SalesRecords />,
@@ -285,10 +178,7 @@ const router = createBrowserRouter([
                 path: "sales-records/edit-sales-record/:id",
                 element: <EditSalesRecord />,
             },
-            {
-                path: "pdf/view",
-                element: <PdfView />,
-            },
+            // orders sub
             {
                 path: "sales-records/orders",
                 element: <Orders />,
@@ -305,6 +195,135 @@ const router = createBrowserRouter([
                 path: "sales-records/orders/view-order/:id",
                 element: <ViewOrder />,
             },
+
+            // suppliers routes
+            // suppliers sub
+            {
+                path: "suppliers",
+                element: <Suppliers />,
+            },
+            {
+                path: "suppliers/edit-supplier/:id",
+                element: <EditSupplier />,
+            },
+            {
+                path: "suppliers/add-supplier",
+                element: <AddSupplier />,
+            },
+            {
+                path: "suppliers/view-supplier/:id",
+                element: <ViewSupplier />,
+            },
+            // products sub
+            {
+                path: "products",
+                element: <Products />,
+            },
+            {
+                path: "products/edit-product/:id",
+                element: <EditProduct />,
+            },
+            {
+                path: "products/view-product/:id",
+                element: <ViewProduct />,
+            },
+            {
+                path: "products/add-product",
+                element: <AddProduct />,
+            },
+
+            // invoices routes
+            // invoices sub
+            {
+                path: "invoices",
+                element: <Invoices />,
+            },
+            {
+                path: "invoices/add-invoice",
+                element: <AddInvoice />,
+            },
+            {
+                path: "invoices/edit-invoice/:id",
+                element: <EditInvoice />,
+            },
+            {
+                path: "invoices/view-invoice/:id",
+                element: <ViewInvoice />,
+            },
+            // bulk invoices sub
+            {
+                path: "invoices/bulk-invoice-payment",
+                element: <BulkInvoicePayment />,
+            },
+            {
+                path: "invoices/previous-bulk-invoice-payments",
+                element: <PreviousBulkInvoicePayments />,
+            },
+            {
+                path: "invoices/bulk-invoice-payments/:id",
+                element: <ViewBulkInvoicePayments />,
+            },
+
+            // payments route
+            // cheques sub
+            {
+                path: "cheques",
+                element: <Cheques />,
+            },
+            {
+                path: "cheques/add-cheque",
+                element: <AddCheque />,
+            },
+            {
+                path: "cheques/edit-cheque/:id",
+                element: <EditCheque />,
+            },
+            {
+                path: "cheques/view-cheque/:id",
+                element: <ViewCheque />,
+            },
+            // cheque payments sub
+            {
+                path: "cheque-payments",
+                element: <ChequePayments />,
+            },
+            {
+                path: "cheque-payments/add-cheque-payment",
+                element: <AddChequePayment />,
+            },
+            {
+                path: "cheque-payments/edit-cheque-payment/:id",
+                element: <EditChequePayment />,
+            },
+            {
+                path: "cheque-payments/view-cheque-payment/:id",
+                element: <ViewChequePayment />,
+            },
+
+            // assets routes
+            // warehouses sub
+            {
+                path: "warehouses/view-warehouse/:id",
+                element: <ViewWarehouse />,
+            },
+            {
+                path: "warehouses",
+                element: <Warehouses />,
+            },
+
+            // settings routes
+            {
+                path: "settings",
+                element: <SettingsPage />,
+            },
+
+            // PDF routes
+            {
+                path: "pdf/view",
+                element: <PdfView />,
+            },
+
+            // etc.
             {
                 path: "*",
                 element: <Navigate to="/app/dashboard" replace />,
@@ -324,7 +343,10 @@ const router = createBrowserRouter([
 
 createRoot(document.getElementById("root")!).render(
     <Provider store={store}>
-        <MantineProvider defaultColorScheme="light" theme={{ fontFamily: "Ubuntu, sans-serif" }}>
+        <MantineProvider
+            defaultColorScheme="light"
+            theme={{ fontFamily: "Ubuntu, sans-serif" }}
+        >
             <DatesProvider settings={{ timezone: "UTC" }}>
                 <Suspense fallback={<Loading />}>
                     <LoadingProvider>
