@@ -68,7 +68,7 @@ const DashboardPage = () => {
     };
 
     return (
-        <Paper p="md">
+        <Box mt="md">
             {hasAnyPrivilege(user.role, [
                 USER_ROLES.ADMIN,
                 USER_ROLES.SUPER_ADMIN,
@@ -513,7 +513,7 @@ const DashboardPage = () => {
                 )}
                 <Grid.Col span={{ lg: 6, md: 6, sm: 12 }}></Grid.Col>
             </Grid>
-        </Paper>
+        </Box>
     );
 };
 
