@@ -389,24 +389,21 @@ const BasicAppShell = () => {
             </AppShell.Navbar>
 
             <AppShell.Main>
-                {activePath === "dashboard" && (
-                    <>
-                        <Group>
-                            <Text size="xl" fw={500}>
-                                Hello {greetingName}.!
-                            </Text>
-                        </Group>
-                        <Group>
-                            <Text size="xs">{displayDate}</Text>
-                        </Group>
-                    </>
-                )}
-                <Divider mt="sm" />
-
-                <Paper shadow="md" mt="md" withBorder className="h-full w-full">
-                    <Box mt="md" className="h-full w-full">
+                <Paper shadow="md" p="md" withBorder className="h-full w-full">
+                    {activePath === "dashboard" && (
+                        <>
+                            <Group>
+                                <Text size="xl" fw={500}>
+                                    Hello {greetingName}.!
+                                </Text>
+                            </Group>
+                            <Group>
+                                <Text size="xs">{displayDate}</Text>
+                            </Group>
+                            <Divider mt="sm" />
+                        </>
+                    )}
                         <Outlet />
-                    </Box>
                 </Paper>
             </AppShell.Main>
         </AppShell>
