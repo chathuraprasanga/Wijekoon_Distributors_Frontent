@@ -123,28 +123,35 @@ const ViewCheque = () => {
                     w={{ sm: "100%", lg: "50%" }}
                     mt="md"
                 >
-                    {cheque?.chequeStatus === "DEPOSITED" && (
-                        <>
-                            <Button
-                                color="red"
-                                radius="sm"
-                                size="xs"
-                                ml={10}
-                                onClick={() => chequeStatusUpdate("RETURNED")}
-                            >
-                                Returned
-                            </Button>
-                            <Button
-                                color="green"
-                                radius="sm"
-                                size="xs"
-                                ml={10}
-                                onClick={() => chequeStatusUpdate("COMPLETED")}
-                            >
-                                Completed
-                            </Button>
-                        </>
-                    )}
+                    {cheque?.chequeStatus === "DEPOSITED" ||
+                        (cheque?.chequeStatus === "SEND TO SUPPLIER" && (
+                            <>
+                                <Button
+                                    color="red"
+                                    radius="sm"
+                                    size="xs"
+                                    ml={10}
+                                    onClick={() =>
+                                        chequeStatusUpdate("RETURNED")
+                                    }
+                                >
+                                    Returned
+                                </Button>
+                                {cheque?.chequeStatus === "DEPOSITED" && (
+                                    <Button
+                                        color="green"
+                                        radius="sm"
+                                        size="xs"
+                                        ml={10}
+                                        onClick={() =>
+                                            chequeStatusUpdate("COMPLETED")
+                                        }
+                                    >
+                                        Completed
+                                    </Button>
+                                )}
+                            </>
+                        ))}
 
                     {cheque?.chequeStatus === "PENDING" && (
                         <>
