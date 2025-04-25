@@ -264,8 +264,11 @@ const AddSalesRecord = () => {
         setPaymentDetails({ cash: 0, cheques: [], credit: netTotal });
 
         navigate(
-            `/app/sales-records/add-sales-record?warehouseId=${warehouseId}&orderId=${orderId}#payment-details`
+            warehouseId
+                ? `/app/sales-records/add-sales-record?warehouseId=${warehouseId}#payment-details`
+                : `/app/sales-records/add-sales-record?orderId=${orderId}#payment-details`
         );
+
 
         setTimeout(() => {
             paymentDetailsRef.current?.scrollIntoView({
