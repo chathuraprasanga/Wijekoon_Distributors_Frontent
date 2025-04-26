@@ -17,7 +17,6 @@ import {
 } from "@mantine/core";
 import {
     IconArrowLeft,
-    IconClock,
     IconInfoCircle,
     IconTrash,
 } from "@tabler/icons-react";
@@ -443,7 +442,7 @@ const AddBulkInvoicePayment = () => {
                     "SUCCESS"
                 );
                 resetStatus();
-                navigate("/app/invoices");
+                navigate("/app/bulk-invoice-payments");
             } else if (
                 response.type === "invoice/addBulkInvoicePayment/rejected"
             ) {
@@ -509,9 +508,9 @@ const AddBulkInvoicePayment = () => {
                     </span>
                 </Group>
                 <Flex gap="sm" wrap="wrap">
-                    <Button size="xs" leftSection={<IconClock size={16}/>} onClick={() => navigate("/app/invoices/previous-bulk-invoice-payments")}>
-                        Previous Bulk Payments
-                    </Button>
+                    {/*<Button size="xs" leftSection={<IconClock size={16}/>} onClick={() => navigate("/app/invoices/previous-bulk-invoice-payments")}>*/}
+                    {/*    Previous Bulk Payments*/}
+                    {/*</Button>*/}
                 </Flex>
             </Group>
             <Box w={{ sm: "100%", lg: "100%" }} px="lg" py="lg">
