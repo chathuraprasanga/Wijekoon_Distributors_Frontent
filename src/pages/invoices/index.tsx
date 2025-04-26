@@ -339,7 +339,7 @@ const Invoices = () => {
                                                         color="green"
                                                         onClick={() =>
                                                             navigate(
-                                                                "/app/invoices/bulk-invoice-payment"
+                                                                "/app/bulk-invoice-payments/add-bulk-invoice-payment"
                                                             )
                                                         }
                                                         rightSection={
@@ -469,7 +469,7 @@ const Invoices = () => {
                                                 color="green"
                                                 onClick={() =>
                                                     navigate(
-                                                        "/app/invoices/bulk-invoice-payment"
+                                                        "/app/bulk-invoice-payments/add-bulk-invoice-payment"
                                                     )
                                                 }
                                                 rightSection={
