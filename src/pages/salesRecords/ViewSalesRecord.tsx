@@ -6,7 +6,7 @@ import {
     Flex,
     Group,
     Modal,
-    NumberInput,
+    NumberInput, ScrollArea,
     Select,
     Stack,
     Table,
@@ -584,6 +584,7 @@ const ViewSalesRecord = () => {
             </Box>
 
             <Box px={"lg"} pb="lg" w={{ sm: "100%", lg: "75%" }}>
+                <ScrollArea>
                 <Table
                     withTableBorder
                     withColumnBorders
@@ -663,6 +664,7 @@ const ViewSalesRecord = () => {
                         </Table.Tr>
                     </Table.Tbody>
                 </Table>
+                </ScrollArea>
             </Box>
 
             <Box px={"lg"} pb="lg" w={{ sm: "100%", lg: "50%" }}>
