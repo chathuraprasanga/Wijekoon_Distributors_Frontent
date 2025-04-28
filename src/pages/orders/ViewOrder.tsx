@@ -1,4 +1,4 @@
-import { Badge, Box, Button, Group, Table, Text } from "@mantine/core";
+import { Badge, Box, Button, Group, ScrollArea, Table, Text } from "@mantine/core";
 import { IconArrowLeft, IconFile } from "@tabler/icons-react";
 import { useLoading } from "../../helpers/loadingContext.tsx";
 import { useDispatch, useSelector } from "react-redux";
@@ -124,6 +124,7 @@ const ViewOrder = () => {
             </Box>
 
             <Box px={"lg"} pb="lg" w={{ sm: "100%", lg: "75%" }}>
+                <ScrollArea>
                 <Table
                     withTableBorder
                     withColumnBorders
@@ -160,6 +161,7 @@ const ViewOrder = () => {
                         </Table.Tr>
                     </Table.Tbody>
                 </Table>
+                </ScrollArea>
 
                 <Group mt="lg">
                     <Button
