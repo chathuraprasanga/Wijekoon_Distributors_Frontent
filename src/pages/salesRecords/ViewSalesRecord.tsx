@@ -128,6 +128,7 @@ const ViewSalesRecord = () => {
                                                         )
                                                     }
                                                     placeholder="Select Bank"
+                                                    searchable
                                                 />
                                             </Table.Td>
                                             <Table.Td>
@@ -235,6 +236,7 @@ const ViewSalesRecord = () => {
                                             updateCheque(index, "bank", val)
                                         }
                                         placeholder="Select Bank"
+                                        searchable
                                     />
                                     <TextInput
                                         size="xs"

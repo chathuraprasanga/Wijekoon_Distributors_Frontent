@@ -1,5 +1,12 @@
 import { IconArrowLeft } from "@tabler/icons-react";
-import { Box, Button, Group, NumberInput, TextInput, Text } from "@mantine/core";
+import {
+    Box,
+    Button,
+    Group,
+    NumberInput,
+    TextInput,
+    Text, Select,
+} from "@mantine/core";
 import { useNavigate, useParams } from "react-router";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -11,12 +18,15 @@ import {
 import { useLoading } from "../../helpers/loadingContext.tsx";
 import { isNotEmpty, useForm } from "@mantine/form";
 import toNotify from "../../helpers/toNotify.tsx";
+import { getSuppliers } from "../../store/supplierSlice/supplierSlice.ts";
 
 interface ProductEditValues {
-    name: string,
-    productCode: string,
-    size: number,
-    unitPrice: number,
+    name: string;
+    supplier:string,
+    productCode: string;
+    size: number;
+    unitPrice: number;
+    buyingPrice:number;
 }
 
 const EditProduct = () => {
@@ -30,6 +40,7 @@ const EditProduct = () => {
 
     useEffect(() => {
         fetchProduct();
+        fetchSuppliers();
     }, [dispatch, id]);
 
     useEffect(() => {
@@ -43,20 +54,53 @@ const EditProduct = () => {
         setLoading(false);
     };
 
+    const suppliers = useSelector(
+        (state: RootState) => state.supplier.suppliers
+    );
+    const selectableSuppliers = suppliers?.map((s: any) => ({
+        label: s.name,
+        value: s._id,
+    }));
+
+    const fetchSuppliers = async () => {
+        const response = await dispatch(getSuppliers({ status: true }));
+        console.log(response);
+        if (response.type === "supplier/getSuppliers/fulfilled") {
+            setLoading(false);
+        } else if (response.type === "supplier/getSuppliers/rejected") {
+            setLoading(false);
+            toNotify("Error", `${response.payload.error}`, "ERROR");
+        } else {
+            setLoading(false);
+            toNotify(
+                "Something went wrong",
+                `Please contact system admin`,
+                "WARNING"
+            );
+        }
+    };
+
     const productEditForm = useForm<ProductEditValues>({
         mode: "uncontrolled",
         initialValues: {
             name: "",
+            supplier: "",
             productCode: "",
             size: 0,
-            unitPrice: 0.00,
+            unitPrice: 0.0,
+            buyingPrice: 0.0,
         },
         validate: {
-            name: isNotEmpty("Product name is required"),
-            productCode: isNotEmpty("Product code is required"),
-            size: (value) => (value > 0 ? null : "Product size must be greater than 0 KG"),
+            name: (value) => (value.trim() ? null : "Product name is required"),
+            supplier: isNotEmpty("Supplier is required"),
+            productCode: (value) =>
+                value.trim() ? null : "Product code is required",
+            size: (value) =>
+                value > 0 ? null : "Product size must be greater than 0 KG",
             unitPrice: (value) =>
-                value > 0 ? null : "Product price must be greater than Rs. 0",
+                value > 0 ? null : "Product selling price must be greater than Rs. 0",
+            buyingPrice: (value) =>
+                value > 0 ? null : "Product buying price must be greater than Rs. 0",
         },
     });
 
@@ -95,7 +139,7 @@ const EditProduct = () => {
                     </Text>
                 </Group>
             </Group>
-            <Box w={{  sm: "100%", lg: "50%" }} px="lg">
+            <Box w={{ sm: "100%", lg: "50%" }} px="lg">
                 <form onSubmit={productEditForm.onSubmit(handleProductUpdate)}>
                     <TextInput
                         label="Product Name"
@@ -103,6 +147,14 @@ const EditProduct = () => {
                         placeholder="Enter Product Name"
                         key={productEditForm.key("name")}
                         {...productEditForm.getInputProps("name")}
+                    />
+                    <Select
+                        label="Supplier"
+                        withAsterisk
+                        data={selectableSuppliers}
+                        placeholder="Select Supplier"
+                        key={productEditForm.key("supplier")}
+                        {...productEditForm.getInputProps("supplier")}
                     />
                     <TextInput
                         label="Product Code"
@@ -122,22 +174,39 @@ const EditProduct = () => {
                         {...productEditForm.getInputProps("size")}
                     />
                     <NumberInput
-                        label="Unit Price"
-                        placeholder="Enter Product Price"
+                        label="Selling Price"
+                        placeholder="Enter Product Selling Price"
                         withAsterisk
                         decimalSeparator="."
                         decimalScale={2}
                         fixedDecimalScale
                         hideControls
-                        type="text"
                         allowNegative={false}
-                        prefix="Rs. "
+                        prefix="Rs."
                         thousandSeparator=","
                         key={productEditForm.key("unitPrice")}
                         {...productEditForm.getInputProps("unitPrice")}
                     />
+                    <NumberInput
+                        label="Buying Price"
+                        placeholder="Enter Product Buying Price"
+                        withAsterisk
+                        decimalSeparator="."
+                        decimalScale={2}
+                        fixedDecimalScale
+                        hideControls
+                        allowNegative={false}
+                        prefix="Rs."
+                        thousandSeparator=","
+                        key={productEditForm.key("buyingPrice")}
+                        {...productEditForm.getInputProps("buyingPrice")}
+                    />
                     <Group justify="flex-end" display="flex" pb="md" mt="md">
-                        <Button size="xs" type="submit" disabled={!productEditForm.isDirty()}>
+                        <Button
+                            size="xs"
+                            type="submit"
+                            disabled={!productEditForm.isDirty()}
+                        >
                             Submit
                         </Button>
                     </Group>
