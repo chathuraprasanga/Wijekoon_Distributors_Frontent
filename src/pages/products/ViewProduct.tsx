@@ -49,6 +49,10 @@ const ViewProduct = () => {
                         <div>{product?.name}</div>
                     </div>
                     <div className="flex flex-row">
+                        <div className="w-1/4">Supplier:</div>
+                        <div>{product?.supplier?.name || "-"}</div>
+                    </div>
+                    <div className="flex flex-row">
                         <div className="w-1/4">Code:</div>
                         <div>{product?.productCode}</div>
                     </div>
@@ -57,12 +61,16 @@ const ViewProduct = () => {
                         <div>{product?.size} KG</div>
                     </div>
                     <div className="flex flex-row">
-                        <div className="w-1/4">Unit Price:</div>
+                        <div className="w-1/4">Selling Price:</div>
                         <div>{amountPreview(product?.unitPrice)}</div>
+                    </div>
+                    <div className="flex flex-row">
+                        <div className="w-1/4">Buying Price:</div>
+                        <div>{amountPreview(product?.buyingPrice)}</div>
                     </div>
                     <div className="flex items-end mt-4">
                         <Badge
-                            color={BASIC_STATUS_COLORS[product.status as keyof typeof BASIC_STATUS_COLORS] || "gray"}
+                            color={BASIC_STATUS_COLORS[product?.status as keyof typeof BASIC_STATUS_COLORS] || "gray"}
                             radius="xs"
                             size="sm"
                         >
