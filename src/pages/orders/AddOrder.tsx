@@ -213,6 +213,7 @@ const AddOrder = () => {
             phone: "",
             email: "",
             address: "",
+            remarks: "",
         },
         validate: {
             name: (value) =>
@@ -295,6 +296,7 @@ const AddOrder = () => {
                         placeholder="Customer Address"
                         {...customerAddForm.getInputProps("address")}
                     />
+                    <Textarea label="Remark" placeholder="Enter Remarks" {...customerAddForm.getInputProps("remarks")}/>
                     <Button mt="md" fullWidth loading={isLoading} type="submit">
                         Save
                     </Button>

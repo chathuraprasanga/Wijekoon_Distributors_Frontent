@@ -326,6 +326,7 @@ const AddSalesRecord = () => {
                                                     )
                                                 }
                                                 placeholder="Select Bank"
+                                                searchable
                                             />
                                         </Table.Td>
                                         <Table.Td>
@@ -432,6 +433,7 @@ const AddSalesRecord = () => {
                                             updateCheque(index, "bank", val)
                                         }
                                         placeholder="Select Bank"
+                                        searchable
                                     />
                                     <TextInput
                                         size="xs"
@@ -743,6 +745,7 @@ const AddSalesRecord = () => {
             phone: "",
             email: "",
             address: "",
+            remarks: ""
         },
         validate: {
             name: (value) =>
@@ -826,6 +829,8 @@ const AddSalesRecord = () => {
                         placeholder="Customer Address"
                         {...customerAddForm.getInputProps("address")}
                     />
+                    <Textarea label="Remark" placeholder="Enter Remarks" {...customerAddForm.getInputProps("remarks")}/>
+
                     <Button mt="md" fullWidth loading={isLoading} type="submit">
                         Save
                     </Button>
