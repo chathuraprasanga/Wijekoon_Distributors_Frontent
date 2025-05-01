@@ -919,7 +919,12 @@ const AddSalesRecord = () => {
                 <form
                     onSubmit={salesRecordForm.onSubmit(handleSalesRecordSubmit)}
                 >
-                    <Group w="100%">
+                    <Flex
+                        direction={{ base: "column", sm: "column", md: "row" }}
+                        gap="xs"
+                        wrap="wrap"
+                        w="100%"
+                    >
                         <Select
                             label="Customer"
                             placeholder="Select Customer"
@@ -928,33 +933,36 @@ const AddSalesRecord = () => {
                                 value: c._id,
                             }))}
                             withAsterisk
-                            w="45%"
+                            w={{ base: "100%", md: "45%" }}
                             size="xs"
                             disabled={paymentDetailsOpen}
                             {...salesRecordForm.getInputProps("customer")}
                             searchable
                         />
+
                         <DatePickerInput
-                            style={{ width: "45%" }}
                             label="Date"
                             placeholder="Select Date"
                             rightSection={<IconCalendar size={16} />}
                             size="xs"
                             maxDate={new Date()}
                             disabled={paymentDetailsOpen}
+                            w={{ base: "100%", md: "45%" }}
                             {...salesRecordForm.getInputProps("date")}
                             withAsterisk
                         />
+
                         <Text
                             size="xs"
                             className="cursor-pointer"
                             c="blue"
                             td="underline"
+                            mt={{ base: "xs", md: 22 }}
                             onClick={() => customerAddModalHandler.open()}
                         >
                             Create New Customer
                         </Text>
-                    </Group>
+                    </Flex>
 
                     <Box mt="md">
                         {selectedProducts.length > 0 && (
@@ -1028,94 +1036,87 @@ const AddSalesRecord = () => {
                             withColumnBorders={false}
                         >
                             <Table.Tbody>
-                                <Table.Tr>
-                                    <Table.Td w="33%"></Table.Td>
-                                    <Table.Td w="33%">
-                                        <Text size="sm" fw="bold">
-                                            Sub Total
-                                        </Text>
+                                {/* Sub Total */}
+                                <Table.Tr className="flex flex-wrap lg:table-row">
+                                    <Table.Td className="hidden lg:table-cell lg:w-1/3" />
+                                    <Table.Td className="w-1/2 lg:w-1/3">
+                                        <Text size="sm" fw="bold">Sub Total</Text>
                                     </Table.Td>
-                                    <Table.Td w="33%">
+                                    <Table.Td className="w-1/2 lg:w-1/3">
                                         {amountPreview(subTotal)}
                                     </Table.Td>
                                 </Table.Tr>
-                                <Table.Tr>
-                                    <Table.Td w="33%"></Table.Td>
-                                    <Table.Td w="33%">
-                                        <Text size="sm" fw="bold">
-                                            Discount
-                                        </Text>
+
+                                {/* Discount */}
+                                <Table.Tr className="flex flex-wrap lg:table-row">
+                                    <Table.Td className="hidden lg:table-cell lg:w-1/3" />
+                                    <Table.Td className="w-1/2 lg:w-1/3">
+                                        <Text size="sm" fw="bold">Discount</Text>
                                     </Table.Td>
-                                    <Table.Td w="33%">
+                                    <Table.Td className="w-1/2 lg:w-1/3">
                                         <NumberInput
                                             size="xs"
                                             decimalScale={2}
-                                            fixedDecimalScale={true}
+                                            fixedDecimalScale
                                             thousandSeparator=","
                                             hideControls
                                             allowNegative={false}
                                             prefix="Rs. "
                                             disabled={paymentDetailsOpen}
-                                            {...salesRecordForm.getInputProps(
-                                                "discount"
-                                            )}
+                                            {...salesRecordForm.getInputProps("discount")}
                                         />
                                     </Table.Td>
                                 </Table.Tr>
-                                <Table.Tr>
-                                    <Table.Td w="33%"></Table.Td>
-                                    <Table.Td w="33%">
-                                        <Text size="sm" fw="bold">
-                                            Tax
-                                        </Text>
+
+                                {/* Tax */}
+                                <Table.Tr className="flex flex-wrap lg:table-row">
+                                    <Table.Td className="hidden lg:table-cell lg:w-1/3" />
+                                    <Table.Td className="w-1/2 lg:w-1/3">
+                                        <Text size="sm" fw="bold">Tax</Text>
                                     </Table.Td>
-                                    <Table.Td w="33%">
+                                    <Table.Td className="w-1/2 lg:w-1/3">
                                         <NumberInput
                                             size="xs"
                                             decimalScale={2}
-                                            fixedDecimalScale={true}
+                                            fixedDecimalScale
                                             thousandSeparator=","
                                             hideControls
                                             allowNegative={false}
                                             prefix="Rs. "
                                             disabled={paymentDetailsOpen}
-                                            {...salesRecordForm.getInputProps(
-                                                "tax"
-                                            )}
+                                            {...salesRecordForm.getInputProps("tax")}
                                         />
                                     </Table.Td>
                                 </Table.Tr>
-                                <Table.Tr>
-                                    <Table.Td w="33%"></Table.Td>
-                                    <Table.Td w="33%">
-                                        <Text size="sm" fw="bold">
-                                            Other Cost
-                                        </Text>
+
+                                {/* Other Cost */}
+                                <Table.Tr className="flex flex-wrap lg:table-row">
+                                    <Table.Td className="hidden lg:table-cell lg:w-1/3" />
+                                    <Table.Td className="w-1/2 lg:w-1/3">
+                                        <Text size="sm" fw="bold">Other Cost</Text>
                                     </Table.Td>
-                                    <Table.Td w="33%">
+                                    <Table.Td className="w-1/2 lg:w-1/3">
                                         <NumberInput
                                             size="xs"
                                             decimalScale={2}
-                                            fixedDecimalScale={true}
+                                            fixedDecimalScale
                                             thousandSeparator=","
                                             hideControls
                                             allowNegative={false}
                                             prefix="Rs. "
                                             disabled={paymentDetailsOpen}
-                                            {...salesRecordForm.getInputProps(
-                                                "otherCost"
-                                            )}
+                                            {...salesRecordForm.getInputProps("otherCost")}
                                         />
                                     </Table.Td>
                                 </Table.Tr>
-                                <Table.Tr>
-                                    <Table.Td w="33%"></Table.Td>
-                                    <Table.Td w="33%">
-                                        <Text size="sm" fw="bold">
-                                            Net Total
-                                        </Text>
+
+                                {/* Net Total */}
+                                <Table.Tr className="flex flex-wrap lg:table-row">
+                                    <Table.Td className="hidden lg:table-cell lg:w-1/3" />
+                                    <Table.Td className="w-1/2 lg:w-1/3">
+                                        <Text size="sm" fw="bold">Net Total</Text>
                                     </Table.Td>
-                                    <Table.Td w="33%">
+                                    <Table.Td className="w-1/2 lg:w-1/3">
                                         {amountPreview(netTotal)}
                                     </Table.Td>
                                 </Table.Tr>

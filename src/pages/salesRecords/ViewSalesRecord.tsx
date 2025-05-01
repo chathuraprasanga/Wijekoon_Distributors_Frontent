@@ -433,7 +433,7 @@ const ViewSalesRecord = () => {
                         )}
 
                         <Group justify="flex-end" mt="sm">
-                            <Button size="xs" onClick={handleSalesPayments}>Save</Button>
+                            <Button size="xs" fullWidth onClick={handleSalesPayments}>Save</Button>
                         </Group>
                     </Stack>
                 ) : (
@@ -764,51 +764,41 @@ const ViewSalesRecord = () => {
                     withColumnBorders={false}
                 >
                     <Table.Tbody>
-                        <Table.Tr>
-                            <Table.Td w="33%" fw={600}>
-                                Total Amount:{" "}
+                        {/* Total Amount */}
+                        <Table.Tr className="flex flex-wrap lg:table-row">
+                            <Table.Td className="w-1/2 lg:w-1/3 font-semibold">Total Amount:</Table.Td>
+                            <Table.Td className="w-1/2 lg:w-1/3">
+                                {amountPreview(salesRecord?.paymentDetails?.totalAmount)}
                             </Table.Td>
-                            <Table.Td w="33%">
-                                {amountPreview(
-                                    salesRecord?.paymentDetails?.totalAmount
-                                )}
-                            </Table.Td>
-                            <Table.Td w="33%"></Table.Td>
+                            <Table.Td className="hidden lg:table-cell lg:w-1/3"></Table.Td>
                         </Table.Tr>
-                        <Table.Tr>
-                            <Table.Td w="33%" fw={600}>
-                                Cash Amount:{" "}
+
+                        {/* Cash Amount */}
+                        <Table.Tr className="flex flex-wrap lg:table-row">
+                            <Table.Td className="w-1/2 lg:w-1/3 font-semibold">Cash Amount:</Table.Td>
+                            <Table.Td className="w-1/2 lg:w-1/3">
+                                {amountPreview(salesRecord?.paymentDetails?.cashPayment)}
                             </Table.Td>
-                            <Table.Td w="33%">
-                                {amountPreview(
-                                    salesRecord?.paymentDetails?.cashPayment
-                                )}
-                            </Table.Td>
-                            <Table.Td w="33%"></Table.Td>
+                            <Table.Td className="hidden lg:table-cell lg:w-1/3"></Table.Td>
                         </Table.Tr>
-                        <Table.Tr>
-                            <Table.Td w="33%" fw={600}>
-                                Cheque Amount:{" "}
+
+                        {/* Cheque Amount */}
+                        <Table.Tr className="flex flex-wrap lg:table-row">
+                            <Table.Td className="w-1/2 lg:w-1/3 font-semibold">Cheque Amount:</Table.Td>
+                            <Table.Td className="w-1/2 lg:w-1/3">
+                                {amountPreview(salesRecord?.paymentDetails?.chequePayment)}
                             </Table.Td>
-                            <Table.Td w="33%">
-                                {amountPreview(
-                                    salesRecord?.paymentDetails?.chequePayment
-                                )}
-                            </Table.Td>
-                            <Table.Td w="33%"></Table.Td>
+                            <Table.Td className="hidden lg:table-cell lg:w-1/3"></Table.Td>
                         </Table.Tr>
-                        <Table.Tr>
-                            <Table.Td w="33%" fw={600}>
-                                Credit Amount:{" "}
+
+                        {/* Credit Amount */}
+                        <Table.Tr className="flex flex-wrap lg:table-row">
+                            <Table.Td className="w-1/2 lg:w-1/3 font-semibold">Credit Amount:</Table.Td>
+                            <Table.Td className="w-1/2 lg:w-1/3">
+                                {amountPreview(salesRecord?.paymentDetails?.creditAmount)}
                             </Table.Td>
-                            <Table.Td w="33%">
-                                {amountPreview(
-                                    salesRecord?.paymentDetails?.creditAmount
-                                )}
-                            </Table.Td>
-                            <Table.Td w="33%">
-                                {salesRecord?.paymentDetails?.creditAmount >
-                                    0 && (
+                            <Table.Td className="hidden lg:table-cell lg:w-1/3">
+                                {salesRecord?.paymentDetails?.creditAmount > 0 && (
                                     <Button
                                         size="xs"
                                         onClick={
@@ -816,19 +806,33 @@ const ViewSalesRecord = () => {
                                                 ? makePaymentElementHandler.close
                                                 : makePaymentElementHandler.open
                                         }
-                                        color={
-                                            makePaymentsElementOpen
-                                                ? "red"
-                                                : "blue"
-                                        }
+                                        color={makePaymentsElementOpen ? "red" : "blue"}
                                     >
-                                        {makePaymentsElementOpen
-                                            ? "Close"
-                                            : "New Payment"}
+                                        {makePaymentsElementOpen ? "Close" : "New Payment"}
                                     </Button>
                                 )}
                             </Table.Td>
                         </Table.Tr>
+
+                        {/* Credit Button on small screens (new row) */}
+                        {salesRecord?.paymentDetails?.creditAmount > 0 && (
+                            <Table.Tr className="lg:hidden">
+                                <Table.Td colSpan={2} className="pt-2">
+                                    <Button
+                                        size="xs"
+                                        fullWidth
+                                        onClick={
+                                            makePaymentsElementOpen
+                                                ? makePaymentElementHandler.close
+                                                : makePaymentElementHandler.open
+                                        }
+                                        color={makePaymentsElementOpen ? "red" : "blue"}
+                                    >
+                                        {makePaymentsElementOpen ? "Close" : "New Payment"}
+                                    </Button>
+                                </Table.Td>
+                            </Table.Tr>
+                        )}
                     </Table.Tbody>
                 </Table>
                 <br />

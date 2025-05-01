@@ -14,7 +14,7 @@ import {
     NumberInput,
     Textarea,
     Modal,
-    ActionIcon,
+    ActionIcon, Flex,
 } from "@mantine/core";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store/store.ts";
@@ -314,30 +314,37 @@ const EditSalesRecord = () => {
 
             <Box w={{ sm: "100%", lg: "50%" }} px="lg">
                 <form onSubmit={salesRecordForm.onSubmit(handleUpdateSalesRecord)}>
-                    <Group w="100%">
+                    <Flex
+                        direction={{ base: "column", sm: "column", md: "row" }}
+                        gap="xs"
+                        wrap="wrap"
+                        w="100%"
+                    >
                         <Select
                             label="Customer"
                             placeholder="Select Customer"
-                            data={customers.map((c: any) => ({
+                            data={customers?.map((c: any) => ({
                                 label: c.name,
                                 value: c._id,
                             }))}
                             withAsterisk
-                            style={{ width: "45%" }}
+                            w={{ base: "100%", md: "45%" }}
                             size="xs"
                             {...salesRecordForm.getInputProps("customer")}
+                            searchable
                         />
+
                         <DatePickerInput
-                            style={{ width: "45%" }}
                             label="Date"
                             placeholder="Select Date"
                             rightSection={<IconCalendar size={16} />}
                             size="xs"
                             maxDate={new Date()}
+                            w={{ base: "100%", md: "45%" }}
                             {...salesRecordForm.getInputProps("date")}
                             withAsterisk
                         />
-                    </Group>
+                    </Flex>
 
                     <Box mt="md">
                         {selectedProducts?.length > 0 && (
@@ -383,27 +390,28 @@ const EditSalesRecord = () => {
                             withColumnBorders={false}
                         >
                             <Table.Tbody>
-                                <Table.Tr>
-                                    <Table.Td w="33%"></Table.Td>
-                                    <Table.Td w="33%">
-                                        <Text size="sm" fw="bold">
-                                            Sub Total
-                                        </Text>
+                                {/* Sub Total */}
+                                <Table.Tr className="flex flex-wrap lg:table-row">
+                                    <Table.Td className="hidden lg:table-cell lg:w-1/3" />
+                                    <Table.Td className="w-1/2 lg:w-1/3">
+                                        <Text size="sm" fw="bold">Sub Total</Text>
                                     </Table.Td>
-                                    <Table.Td w="33%">{amountPreview(subTotal)}</Table.Td>
+                                    <Table.Td className="w-1/2 lg:w-1/3">
+                                        {amountPreview(subTotal)}
+                                    </Table.Td>
                                 </Table.Tr>
-                                <Table.Tr>
-                                    <Table.Td w="33%"></Table.Td>
-                                    <Table.Td w="33%">
-                                        <Text size="sm" fw="bold">
-                                            Discount
-                                        </Text>
+
+                                {/* Discount */}
+                                <Table.Tr className="flex flex-wrap lg:table-row">
+                                    <Table.Td className="hidden lg:table-cell lg:w-1/3" />
+                                    <Table.Td className="w-1/2 lg:w-1/3">
+                                        <Text size="sm" fw="bold">Discount</Text>
                                     </Table.Td>
-                                    <Table.Td w="33%">
+                                    <Table.Td className="w-1/2 lg:w-1/3">
                                         <NumberInput
                                             size="xs"
                                             decimalScale={2}
-                                            fixedDecimalScale={true}
+                                            fixedDecimalScale
                                             thousandSeparator=","
                                             hideControls
                                             allowNegative={false}
@@ -412,18 +420,18 @@ const EditSalesRecord = () => {
                                         />
                                     </Table.Td>
                                 </Table.Tr>
-                                <Table.Tr>
-                                    <Table.Td w="33%"></Table.Td>
-                                    <Table.Td w="33%">
-                                        <Text size="sm" fw="bold">
-                                            Tax
-                                        </Text>
+
+                                {/* Tax */}
+                                <Table.Tr className="flex flex-wrap lg:table-row">
+                                    <Table.Td className="hidden lg:table-cell lg:w-1/3" />
+                                    <Table.Td className="w-1/2 lg:w-1/3">
+                                        <Text size="sm" fw="bold">Tax</Text>
                                     </Table.Td>
-                                    <Table.Td w="33%">
+                                    <Table.Td className="w-1/2 lg:w-1/3">
                                         <NumberInput
                                             size="xs"
                                             decimalScale={2}
-                                            fixedDecimalScale={true}
+                                            fixedDecimalScale
                                             thousandSeparator=","
                                             hideControls
                                             allowNegative={false}
@@ -432,18 +440,18 @@ const EditSalesRecord = () => {
                                         />
                                     </Table.Td>
                                 </Table.Tr>
-                                <Table.Tr>
-                                    <Table.Td w="33%"></Table.Td>
-                                    <Table.Td w="33%">
-                                        <Text size="sm" fw="bold">
-                                            Other Cost
-                                        </Text>
+
+                                {/* Other Cost */}
+                                <Table.Tr className="flex flex-wrap lg:table-row">
+                                    <Table.Td className="hidden lg:table-cell lg:w-1/3" />
+                                    <Table.Td className="w-1/2 lg:w-1/3">
+                                        <Text size="sm" fw="bold">Other Cost</Text>
                                     </Table.Td>
-                                    <Table.Td w="33%">
+                                    <Table.Td className="w-1/2 lg:w-1/3">
                                         <NumberInput
                                             size="xs"
                                             decimalScale={2}
-                                            fixedDecimalScale={true}
+                                            fixedDecimalScale
                                             thousandSeparator=","
                                             hideControls
                                             allowNegative={false}
@@ -452,14 +460,16 @@ const EditSalesRecord = () => {
                                         />
                                     </Table.Td>
                                 </Table.Tr>
-                                <Table.Tr>
-                                    <Table.Td w="33%"></Table.Td>
-                                    <Table.Td w="33%">
-                                        <Text size="sm" fw="bold">
-                                            Net Total
-                                        </Text>
+
+                                {/* Net Total */}
+                                <Table.Tr className="flex flex-wrap lg:table-row">
+                                    <Table.Td className="hidden lg:table-cell lg:w-1/3" />
+                                    <Table.Td className="w-1/2 lg:w-1/3">
+                                        <Text size="sm" fw="bold">Net Total</Text>
                                     </Table.Td>
-                                    <Table.Td w="33%">{amountPreview(netTotal)}</Table.Td>
+                                    <Table.Td className="w-1/2 lg:w-1/3">
+                                        {amountPreview(netTotal)}
+                                    </Table.Td>
                                 </Table.Tr>
                             </Table.Tbody>
                         </Table>

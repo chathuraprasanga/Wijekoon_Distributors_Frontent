@@ -12,7 +12,6 @@ import {
 } from "@mantine/core";
 import { useNavigate } from "react-router";
 import {
-    IconArrowLeft,
     IconDatabaseOff,
     IconDotsVertical,
     IconEdit,
@@ -78,10 +77,6 @@ const Orders = () => {
             <Box display="flex" p="lg" className="items-center justify-between">
                 <Box>
                     <Group className="flex items-center">
-                        <IconArrowLeft
-                            className="cursor-pointer"
-                            onClick={() => history.back()}
-                        />
                         <Text fw={500} ml="md" size="lg">
                             Purchase Orders
                         </Text>
