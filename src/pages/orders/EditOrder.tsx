@@ -132,7 +132,7 @@ const EditOrder = () => {
                     </Table.Tr>
                 </Table.Thead>
                 <Table.Tbody>
-                    {products.map((p: any, i: any) => (
+                    {products?.map((p: any, i: any) => (
                         <Table.Tr key={i}>
                             <Table.Td>{p.name}</Table.Td>
                             <Table.Td>{p.productCode}</Table.Td>
@@ -269,15 +269,15 @@ const EditOrder = () => {
             new Date(metadata?.expectedDate).getTime();
 
         const areProductsChanged =
-            selectedProducts?.length !== metadata.products?.length ||
+            selectedProducts?.length !== metadata?.products?.length ||
             selectedProducts?.some(
                 (p, index) =>
-                    p.id !== metadata.products[index].id ||
-                    p.amount !== metadata.products[index].amount
+                    p.id !== metadata?.products[index].id ||
+                    p.amount !== metadata?.products[index].amount
             );
 
         return (
-            customer !== metadata.customer ||
+            customer !== metadata?.customer ||
             isDateChanged ||
             notes !== metadata.notes ||
             areProductsChanged
