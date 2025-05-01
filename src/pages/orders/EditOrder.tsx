@@ -15,7 +15,7 @@ import {
     Textarea,
     Modal,
     ActionIcon,
-    TextInput,
+    TextInput, Flex,
 } from "@mantine/core";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useMemo, useState } from "react";
@@ -381,7 +381,13 @@ const EditOrder = () => {
 
             <Box w={{ sm: "100%", lg: "50%" }} px="lg">
                 <form onSubmit={orderForm.onSubmit(handleUpdateOrder)}>
-                    <Group w="100%">
+                    <Flex
+                        direction={{ base: "column", sm: "column", md: "row" }}
+                        wrap="wrap"
+                        gap="xs"
+                        w="100%"
+                        align="flex-start"
+                    >
                         <Select
                             label="Customer"
                             placeholder="Select Customer"
@@ -390,31 +396,34 @@ const EditOrder = () => {
                                 value: c._id,
                             }))}
                             withAsterisk
-                            w="45%"
+                            w={{ base: "100%", md: "45%" }}
                             size="xs"
-                            {...orderForm.getInputProps("customer")}
                             searchable
+                            {...orderForm.getInputProps("customer")}
                         />
+
                         <DatePickerInput
-                            style={{ width: "45%" }}
-                            label="Date"
-                            placeholder="Select Date"
+                            label="Expected Date"
+                            placeholder="Select Expected Date"
                             rightSection={<IconCalendar size={16} />}
                             size="xs"
-                            maxDate={new Date()}
+                            minDate={new Date()}
+                            w={{ base: "100%", md: "45%" }}
                             {...orderForm.getInputProps("expectedDate")}
                             withAsterisk
                         />
+
                         <Text
                             size="xs"
                             className="cursor-pointer"
                             c="blue"
                             td="underline"
+                            mt={{ base: "xs", md: 22 }}
                             onClick={() => customerAddModalHandler.open()}
                         >
                             Create New Customer
                         </Text>
-                    </Group>
+                    </Flex>
 
                     <Box mt="md">
                         {selectedProducts?.length > 0 && (

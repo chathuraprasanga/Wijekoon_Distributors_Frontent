@@ -174,6 +174,7 @@ const ViewOrder = () => {
                                 `/app/sales-records/add-sales-record?orderId=${order._id}`
                             )
                         }
+                        fullWidth={isMobile ? true : false}
                     >
                         Create Sales Record
                     </Button>
