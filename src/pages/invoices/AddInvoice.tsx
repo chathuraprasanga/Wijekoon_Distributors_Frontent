@@ -2,6 +2,7 @@ import { IconArrowLeft } from "@tabler/icons-react";
 import {
     Box,
     Button,
+    Checkbox,
     Group,
     NumberInput,
     Select,
@@ -22,8 +23,11 @@ const AddInvoice = () => {
     const { setLoading } = useLoading();
     const dispatch = useDispatch<AppDispatch | any>();
     const navigate = useNavigate();
-    const [selectableSuppliers, setSelectableSuppliers] = useState<any[]>([])
-    const supplierData =  selectableSuppliers.map((data:any) => {return {label: data.name, value: data._id }})
+    const [selectableSuppliers, setSelectableSuppliers] = useState<any[]>([]);
+    const [isCompanyCreated, setIsCompanyCreated] = useState(false);
+    const supplierData = selectableSuppliers.map((data: any) => {
+        return { label: data.name, value: data._id };
+    });
 
     useEffect(() => {
         fetchSuppliers();
@@ -48,16 +52,22 @@ const AddInvoice = () => {
     };
 
     const invoiceAddFrom = useForm({
-        mode: "uncontrolled",
         initialValues: {
             supplier: "",
-            invoiceDate:  null,
+            invoiceDate: null,
             invoiceNumber: "",
+            isCompanyInvoice: false,
             amount: 0,
         },
         validate: {
             supplier: isNotEmpty("Supplier name is required"),
-            invoiceNumber: isNotEmpty("Invoice number is required"),
+            invoiceDate: isNotEmpty("Invoice date is required"),
+            invoiceNumber: (value) => {
+                if (!isCompanyCreated && !value) {
+                    return "Invoice number is required";
+                }
+                return null;
+            },
             amount: (value) => {
                 if (!value) {
                     return "Amount is required";
@@ -67,13 +77,12 @@ const AddInvoice = () => {
                 }
                 return null;
             },
-            invoiceDate: isNotEmpty("Invoice date is required"),
         },
     });
 
     const handleInvoiceAdd = async (values: typeof invoiceAddFrom.values) => {
         setLoading(true);
-        const response = await dispatch(addInvoice(values));
+        const response = await dispatch(addInvoice({ ...values, isCompanyCreated }));
         if (response.type === "invoice/addInvoice/fulfilled") {
             setLoading(false);
             toNotify("Success", "Invoice added successfully", "SUCCESS");
@@ -128,8 +137,15 @@ const AddInvoice = () => {
                         label="Invoice Number"
                         placeholder="Enter Invoice Number"
                         withAsterisk
+                        disabled={isCompanyCreated}
                         key={invoiceAddFrom.key("invoiceNumber")}
                         {...invoiceAddFrom.getInputProps("invoiceNumber")}
+                    />
+                    <Checkbox
+                        mt="xs"
+                        checked={isCompanyCreated}
+                        label="Create Invoice By Our End"
+                        onChange={() => setIsCompanyCreated(!isCompanyCreated)}
                     />
                     <NumberInput
                         hideControls

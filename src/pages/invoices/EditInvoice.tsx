@@ -1,7 +1,7 @@
 import { IconArrowLeft } from "@tabler/icons-react";
 import {
     Box,
-    Button,
+    Button, Checkbox,
     Group,
     NumberInput,
     Select,
@@ -13,7 +13,10 @@ import { AppDispatch, RootState } from "../../store/store.ts";
 import { useNavigate, useParams } from "react-router";
 import { isNotEmpty, useForm } from "@mantine/form";
 import toNotify from "../../helpers/toNotify.tsx";
-import { getInvoice, updateInvoice } from "../../store/invoiceSlice/invoiceSlice.ts";
+import {
+    getInvoice,
+    updateInvoice,
+} from "../../store/invoiceSlice/invoiceSlice.ts";
 import { useEffect, useState } from "react";
 import { getSuppliers } from "../../store/supplierSlice/supplierSlice.ts";
 import { DatePickerInput } from "@mantine/dates";
@@ -27,6 +30,7 @@ const EditInvoice = () => {
     const selectedInvoice = useSelector(
         (state: RootState) => state.invoice.selectedInvoice
     );
+    const [isCompanyCreated, setIsCompanyCreated] = useState(false);
     const [selectedSuppliers, setSelectedSuppliers] = useState<any[]>([]);
     const supplierData = selectedSuppliers.map((data: any) => {
         return { label: data.name, value: data._id };
@@ -60,10 +64,13 @@ const EditInvoice = () => {
 
     useEffect(() => {
         if (selectedInvoice) {
+            setIsCompanyCreated(selectedInvoice?.isCompanyCreated || false);
             invoiceEditFrom.setValues({
                 ...selectedInvoice,
                 supplier: selectedInvoice.supplier?._id || "", // Use only the customer ID
-                invoiceDate: new Date(selectedInvoice?.invoiceDate || new Date()),
+                invoiceDate: new Date(
+                    selectedInvoice?.invoiceDate || new Date()
+                ),
             });
             invoiceEditFrom.resetDirty();
         }
@@ -81,7 +88,7 @@ const EditInvoice = () => {
             supplier: "",
             invoiceDate: new Date(),
             invoiceNumber: "",
-            amount: 0.00,
+            amount: 0.0,
         },
         validate: {
             supplier: isNotEmpty("Supplier name is required"),
@@ -155,8 +162,15 @@ const EditInvoice = () => {
                         label="Invoice Number"
                         placeholder="Enter Invoice Number"
                         withAsterisk
+                        disabled={isCompanyCreated}
                         key={invoiceEditFrom.key("invoiceNumber")}
                         {...invoiceEditFrom.getInputProps("invoiceNumber")}
+                    />
+                    <Checkbox
+                        mt="xs"
+                        checked={isCompanyCreated}
+                        label="Create Invoice By Our End"
+                        onChange={() => setIsCompanyCreated(!isCompanyCreated)}
                     />
                     <NumberInput
                         hideControls
@@ -173,7 +187,11 @@ const EditInvoice = () => {
                         {...invoiceEditFrom.getInputProps("amount")}
                     />
                     <Group justify="flex-end" display="flex" pb="md" mt="md">
-                        <Button size="xs" type="submit" disabled={!invoiceEditFrom.isDirty()}>
+                        <Button
+                            size="xs"
+                            type="submit"
+                            disabled={!invoiceEditFrom.isDirty()}
+                        >
                             Submit
                         </Button>
                     </Group>
