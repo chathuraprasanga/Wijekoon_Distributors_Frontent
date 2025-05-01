@@ -948,40 +948,44 @@ const SettingsPage = () => {
                     </Text>
                 </Box>
             </Box>
-            <Box px="lg" mb="lg" className="gap-1">
-                <div className="flex flex-wrap sm:flex-nowrap items-start sm:items-center mb-2">
-                    <Text className="w-1/4">Username:</Text>
-                    <Text className="w-2/4">{user?.username}</Text>
+            <Box px="lg" mb="lg" className="space-y-1">
+                {/* Username + Change Password */}
+                <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+                    <Text className="w-full sm:w-1/4 text-sm">Username:</Text>
+                    <Text className="w-full sm:w-2/4 text-sm">{user?.username}</Text>
                     <Button
                         size="xs"
                         variant="light"
-                        className="w-full sm:w-auto mt-2 sm:mt-0 sm:ml-2"
+                        className="w-full sm:w-auto sm:ml-auto"
                         onClick={passwordChangeHandler.open}
                     >
                         Change Password
                     </Button>
                 </div>
                 <hr />
-                <div className="flex flex-row sm:flex-row items-start sm:items-center mb-2">
-                    <Text className="w-1/4">Mobile Number:</Text>
-                    <Text className="w-3/4">{user?.phone}</Text>
-                </div>
-                <hr />
-                <div className="flex flex-row sm:flex-row items-start sm:items-center mb-2">
-                    <Text className="w-1/4">Email:</Text>
-                    <Text className="w-3/4">{user?.email}</Text>
-                </div>
-                <hr />
-                <div className="flex flex-row sm:flex-row  items-start sm:items-center mb-2">
-                    <Text className="w-1/4">Role:</Text>
-                    <Text className="w-3/4">
-                        {rolePreview(user?.role) || "-"}
-                    </Text>
+
+                {/* Mobile Number */}
+                <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+                    <Text className="w-full sm:w-1/4 text-sm">Mobile Number:</Text>
+                    <Text className="w-full sm:w-3/4 text-sm">{user?.phone}</Text>
                 </div>
                 <hr />
 
-                <div className="flex flex-row sm:flex-row  items-start sm:items-center mb-2"></div>
+                {/* Email */}
+                <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+                    <Text className="w-full sm:w-1/4 text-sm">Email:</Text>
+                    <Text className="w-full sm:w-3/4 text-sm">{user?.email}</Text>
+                </div>
+                <hr />
+
+                {/* Role */}
+                <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+                    <Text className="w-full sm:w-1/4 text-sm">Role:</Text>
+                    <Text className="w-full sm:w-3/4 text-sm">{rolePreview(user?.role) || "-"}</Text>
+                </div>
+                <hr />
             </Box>
+
             {hasAnyPrivilege(role, [
                 USER_ROLES.OWNER,
                 USER_ROLES.ADMIN,

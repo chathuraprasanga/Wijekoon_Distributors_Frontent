@@ -6,7 +6,8 @@ import {
     Flex,
     Group,
     Modal,
-    NumberInput, ScrollArea,
+    NumberInput,
+    ScrollArea,
     Select,
     Stack,
     Table,
@@ -376,21 +377,86 @@ const ViewSalesRecord = () => {
     const makePaymentsElement = () => {
         return (
             <div id="payment-details">
-                <Group p="lg">
-                    <Text fw={"bold"}>Payment Details</Text>
+                <Group p={{ base: "sm", sm: "lg" }}>
+                    <Text fw="bold" size="sm">
+                        Payment Details
+                    </Text>
                 </Group>
 
-                <Box px="lg">
+                {isMobile ? (
+                    // 🟦 Mobile View: Stacked layout
+                    <Stack gap="sm" px="sm" py="sm">
+                        <Box>
+                            <Text size="sm" fw={500}>Cash Amount</Text>
+                            <NumberInput
+                                size="xs"
+                                hideControls
+                                allowNegative={false}
+                                prefix="Rs. "
+                                decimalScale={2}
+                                fixedDecimalScale
+                                thousandSeparator=","
+                                placeholder="Enter Cash Amount"
+                                onChange={(val: any) =>
+                                    setPaymentDetails((prev) => ({
+                                        ...prev,
+                                        cash: Number(val) || 0,
+                                    }))
+                                }
+                            />
+                        </Box>
+
+                        <Box>
+                            <Group justify="space-between">
+                                <Text size="sm" fw={500}>Cheque Amount</Text>
+                                <Button
+                                    size="compact-xs"
+                                    variant="light"
+                                    onClick={() => chequeAddModalOpenedGHandler.open()}
+                                >
+                                    Manage Cheques
+                                </Button>
+                            </Group>
+                            <Text size="sm" mt="xs">{amountPreview(chequeTotal)}</Text>
+                        </Box>
+
+                        <Box>
+                            <Text size="sm" fw={500}>Credit Amount</Text>
+                            <Text size="sm">{amountPreview(credit)}</Text>
+                        </Box>
+
+                        {credit < 0 && (
+                            <Flex align="center" gap="xs">
+                                <IconInfoCircle color="red" size={16} />
+                                <Text c="red" size="xs">Customer is paying more than credit</Text>
+                            </Flex>
+                        )}
+
+                        <Group justify="flex-end" mt="sm">
+                            <Button size="xs" onClick={handleSalesPayments}>Save</Button>
+                        </Group>
+                    </Stack>
+                ) : (
+
+                <Box px={{ base: "sm", sm: "lg" }}>
                     <Table
                         withTableBorder={false}
                         withRowBorders={false}
                         withColumnBorders={false}
+                        striped={false}
+                        highlightOnHover={false}
+                        horizontalSpacing="xs"
+                        verticalSpacing="xs"
                     >
                         <Table.Tbody>
+                            {/* Cash Amount */}
                             <Table.Tr>
-                                <Table.Td>Cash Amount</Table.Td>
-                                <Table.Td></Table.Td>
-                                <Table.Td>
+                                <Table.Td className="text-sm w-1/3">
+                                    Cash Amount
+                                </Table.Td>
+                                <Table.Td className="text-sm w-1/3">
+                                </Table.Td>
+                                <Table.Td className="w-2/3">
                                     <NumberInput
                                         size="xs"
                                         hideControls
@@ -409,37 +475,54 @@ const ViewSalesRecord = () => {
                                     />
                                 </Table.Td>
                             </Table.Tr>
+
+                            {/* Cheque Amount */}
                             <Table.Tr>
-                                <Table.Td>Cheque Amount</Table.Td>
-                                <Table.Td>
+                                <Table.Td className="text-sm w-1/3">
+                                    Cheque Amount
+                                </Table.Td>
+                                <Table.Td className="w-1/3">
                                     <Button
                                         size="compact-xs"
                                         variant="light"
                                         onClick={() =>
                                             chequeAddModalOpenedGHandler.open()
                                         }
+                                        fullWidth
                                     >
                                         Manage Cheques
                                     </Button>
                                 </Table.Td>
-                                <Table.Td>
+                                <Table.Td className="text-sm w-1/3">
                                     {amountPreview(chequeTotal)}
                                 </Table.Td>
                             </Table.Tr>
+
+                            {/* Credit Amount */}
                             <Table.Tr>
-                                <Table.Td>Credit Amount</Table.Td>
-                                <Table.Td></Table.Td>
-                                <Table.Td>{amountPreview(credit)}</Table.Td>
+                                <Table.Td className="text-sm w-1/3">
+                                    Credit Amount
+                                </Table.Td>
+                                <Table.Td className="w-1/3"></Table.Td>
+                                <Table.Td className="text-sm w-1/3">
+                                    {amountPreview(credit)}
+                                </Table.Td>
                             </Table.Tr>
+
+                            {/* Warning Row */}
                             <Table.Tr>
                                 <Table.Td colSpan={3}>
                                     {credit < 0 && (
-                                        <Flex className="flex-row">
+                                        <Flex
+                                            align="center"
+                                            gap="xs"
+                                            className="mt-2"
+                                        >
                                             <IconInfoCircle
                                                 color="red"
                                                 size={16}
                                             />
-                                            <Text c="red" size="xs" ml={"xs"}>
+                                            <Text c="red" size="xs">
                                                 Customer is paying more than
                                                 credit
                                             </Text>
@@ -449,16 +532,13 @@ const ViewSalesRecord = () => {
                             </Table.Tr>
                         </Table.Tbody>
                     </Table>
-                    <Group my="md">
-                        <Button
-                            size="xs"
-                            className="ml-auto"
-                            onClick={() => handleSalesPayments()}
-                        >
+
+                    <Group my="md" justify="flex-end">
+                        <Button size="xs" onClick={handleSalesPayments}>
                             Save
                         </Button>
                     </Group>
-                </Box>
+                </Box>)}
             </div>
         );
     };
@@ -587,85 +667,93 @@ const ViewSalesRecord = () => {
 
             <Box px={"lg"} pb="lg" w={{ sm: "100%", lg: "75%" }}>
                 <ScrollArea>
-                <Table
-                    withTableBorder
-                    withColumnBorders
-                    highlightOnHover
-                    striped
-                >
-                    <Table.Thead>
-                        <Table.Tr>
-                            <Table.Th w="20">Product</Table.Th>
-                            <Table.Th w="15">Size</Table.Th>
-                            <Table.Th w="20">Unit Price</Table.Th>
-                            <Table.Th w="20">Quantity</Table.Th>
-                            <Table.Th w="25">Amount</Table.Th>
-                        </Table.Tr>
-                    </Table.Thead>
-                    <Table.Tbody>
-                        {salesRecord?.orderDetails?.map((o: any, i: number) => (
-                            <Table.Tr key={i}>
-                                <Table.Td>{o?.product?.name}</Table.Td>
-                                <Table.Td>{o?.product?.size} KG</Table.Td>
+                    <Table
+                        withTableBorder
+                        withColumnBorders
+                        highlightOnHover
+                        striped
+                    >
+                        <Table.Thead>
+                            <Table.Tr>
+                                <Table.Th w="20">Product</Table.Th>
+                                <Table.Th w="15">Size</Table.Th>
+                                <Table.Th w="20">Unit Price</Table.Th>
+                                <Table.Th w="20">Quantity</Table.Th>
+                                <Table.Th w="25">Amount</Table.Th>
+                            </Table.Tr>
+                        </Table.Thead>
+                        <Table.Tbody>
+                            {salesRecord?.orderDetails?.map(
+                                (o: any, i: number) => (
+                                    <Table.Tr key={i}>
+                                        <Table.Td>{o?.product?.name}</Table.Td>
+                                        <Table.Td>
+                                            {o?.product?.size} KG
+                                        </Table.Td>
+                                        <Table.Td>
+                                            {amountPreview(
+                                                o?.product?.unitPrice
+                                            )}
+                                        </Table.Td>
+                                        <Table.Td>{o?.amount}</Table.Td>
+                                        <Table.Td>
+                                            {amountPreview(o?.lineTotal)}
+                                        </Table.Td>
+                                    </Table.Tr>
+                                )
+                            )}
+                            <Table.Tr>
+                                <Table.Td colSpan={3}></Table.Td>
+                                <Table.Td>Sub Total: </Table.Td>
                                 <Table.Td>
-                                    {amountPreview(o?.product?.unitPrice)}
-                                </Table.Td>
-                                <Table.Td>{o?.amount}</Table.Td>
-                                <Table.Td>
-                                    {amountPreview(o?.lineTotal)}
+                                    {amountPreview(
+                                        salesRecord?.amountDetails?.subTotal
+                                    )}
                                 </Table.Td>
                             </Table.Tr>
-                        ))}
-                        <Table.Tr>
-                            <Table.Td colSpan={3}></Table.Td>
-                            <Table.Td>Sub Total: </Table.Td>
-                            <Table.Td>
-                                {amountPreview(
-                                    salesRecord?.amountDetails?.subTotal
-                                )}
-                            </Table.Td>
-                        </Table.Tr>
-                        <Table.Tr>
-                            <Table.Td colSpan={3}></Table.Td>
-                            <Table.Td fw={600}>Discount: </Table.Td>
-                            <Table.Td>
-                                {amountPreview(
-                                    salesRecord?.amountDetails?.discount
-                                )}
-                            </Table.Td>
-                        </Table.Tr>
-                        <Table.Tr>
-                            <Table.Td colSpan={3}></Table.Td>
-                            <Table.Td fw={600}>Tax: </Table.Td>
-                            <Table.Td>
-                                {amountPreview(salesRecord?.amountDetails?.tax)}
-                            </Table.Td>
-                        </Table.Tr>
-                        <Table.Tr>
-                            <Table.Td colSpan={3}></Table.Td>
-                            <Table.Td fw={600}>Other Cost: </Table.Td>
-                            <Table.Td>
-                                {amountPreview(
-                                    salesRecord?.amountDetails?.otherCost
-                                )}
-                            </Table.Td>
-                        </Table.Tr>
-                        <Table.Tr>
-                            <Table.Td colSpan={3}></Table.Td>
-                            <Table.Td fw={600}>Net Total: </Table.Td>
-                            <Table.Td>
-                                {amountPreview(
-                                    salesRecord?.amountDetails?.netTotal
-                                )}
-                            </Table.Td>
-                        </Table.Tr>
-                        <Table.Tr fw={600}>
-                            <Table.Td colSpan={5}>
-                                Notes: {salesRecord?.notes}
-                            </Table.Td>
-                        </Table.Tr>
-                    </Table.Tbody>
-                </Table>
+                            <Table.Tr>
+                                <Table.Td colSpan={3}></Table.Td>
+                                <Table.Td fw={600}>Discount: </Table.Td>
+                                <Table.Td>
+                                    {amountPreview(
+                                        salesRecord?.amountDetails?.discount
+                                    )}
+                                </Table.Td>
+                            </Table.Tr>
+                            <Table.Tr>
+                                <Table.Td colSpan={3}></Table.Td>
+                                <Table.Td fw={600}>Tax: </Table.Td>
+                                <Table.Td>
+                                    {amountPreview(
+                                        salesRecord?.amountDetails?.tax
+                                    )}
+                                </Table.Td>
+                            </Table.Tr>
+                            <Table.Tr>
+                                <Table.Td colSpan={3}></Table.Td>
+                                <Table.Td fw={600}>Other Cost: </Table.Td>
+                                <Table.Td>
+                                    {amountPreview(
+                                        salesRecord?.amountDetails?.otherCost
+                                    )}
+                                </Table.Td>
+                            </Table.Tr>
+                            <Table.Tr>
+                                <Table.Td colSpan={3}></Table.Td>
+                                <Table.Td fw={600}>Net Total: </Table.Td>
+                                <Table.Td>
+                                    {amountPreview(
+                                        salesRecord?.amountDetails?.netTotal
+                                    )}
+                                </Table.Td>
+                            </Table.Tr>
+                            <Table.Tr fw={600}>
+                                <Table.Td colSpan={5}>
+                                    Notes: {salesRecord?.notes}
+                                </Table.Td>
+                            </Table.Tr>
+                        </Table.Tbody>
+                    </Table>
                 </ScrollArea>
             </Box>
 
