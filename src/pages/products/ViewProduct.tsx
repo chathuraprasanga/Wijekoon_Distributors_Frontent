@@ -4,7 +4,7 @@ import { AppDispatch, RootState } from "../../store/store.ts";
 import { useLoading } from "../../helpers/loadingContext.tsx";
 import { useParams } from "react-router";
 import { useEffect } from "react";
-import { Badge, Box, Card, Group, Text } from "@mantine/core";
+import { Badge, Box, Card, Flex, Group, Text,Stack } from "@mantine/core";
 import { getProduct } from "../../store/productSlice/productSlice.ts";
 import { amountPreview } from "../../helpers/preview.tsx";
 import { BASIC_STATUS_COLORS } from "../../helpers/types.ts";
@@ -43,40 +43,50 @@ const ViewProduct = () => {
                 </Group>
             </Group>
             <Box mx="md" my="md">
-                <Card shadow="md" withBorder w={{sm: "100%", lg: "50%"}} >
-                    <div className="flex flex-row">
-                        <div className="w-1/4">Name:</div>
-                        <div>{product?.name}</div>
-                    </div>
-                    <div className="flex flex-row">
-                        <div className="w-1/4">Supplier:</div>
-                        <div>{product?.supplier?.name || "-"}</div>
-                    </div>
-                    <div className="flex flex-row">
-                        <div className="w-1/4">Code:</div>
-                        <div>{product?.productCode}</div>
-                    </div>
-                    <div className="flex flex-row">
-                        <div className="w-1/4">Size:</div>
-                        <div>{product?.size} KG</div>
-                    </div>
-                    <div className="flex flex-row">
-                        <div className="w-1/4">Selling Price:</div>
-                        <div>{amountPreview(product?.unitPrice)}</div>
-                    </div>
-                    <div className="flex flex-row">
-                        <div className="w-1/4">Buying Price:</div>
-                        <div>{amountPreview(product?.buyingPrice)}</div>
-                    </div>
-                    <div className="flex items-end mt-4">
-                        <Badge
-                            color={BASIC_STATUS_COLORS[product?.status as keyof typeof BASIC_STATUS_COLORS] || "gray"}
-                            radius="xs"
-                            size="sm"
-                        >
-                            {product?.status ? "ACTIVE" : "INACTIVE"}
-                        </Badge>
-                    </div>
+                <Card shadow="md" withBorder w={{ base: "100%", lg: "50%" }}>
+                    <Stack gap={"xs"}>
+                        <Flex justify="space-between" wrap="wrap">
+                            <Text w={{ base: "100%", sm: "25%" }} fw={500}>Name:</Text>
+                            <Text>{product?.name}</Text>
+                        </Flex>
+
+                        <Flex justify="space-between" wrap="wrap">
+                            <Text w={{ base: "100%", sm: "25%" }} fw={500}>Supplier:</Text>
+                            <Text>{product?.supplier?.name || "-"}</Text>
+                        </Flex>
+
+                        <Flex justify="space-between" wrap="wrap">
+                            <Text w={{ base: "100%", sm: "25%" }} fw={500}>Code:</Text>
+                            <Text>{product?.productCode}</Text>
+                        </Flex>
+
+                        <Flex justify="space-between" wrap="wrap">
+                            <Text w={{ base: "100%", sm: "25%" }} fw={500}>Size:</Text>
+                            <Text>{product?.size} KG</Text>
+                        </Flex>
+
+                        <Flex justify="space-between" wrap="wrap">
+                            <Text w={{ base: "100%", sm: "25%" }} fw={500}>Selling Price:</Text>
+                            <Text>{amountPreview(product?.unitPrice)}</Text>
+                        </Flex>
+
+                        <Flex justify="space-between" wrap="wrap">
+                            <Text w={{ base: "100%", sm: "25%" }} fw={500}>Buying Price:</Text>
+                            <Text>{amountPreview(product?.buyingPrice)}</Text>
+                        </Flex>
+
+                        <Flex justify="flex-start" mt="sm">
+                            <Badge
+                                color={
+                                    BASIC_STATUS_COLORS[product?.status as keyof typeof BASIC_STATUS_COLORS] || "gray"
+                                }
+                                radius="xs"
+                                size="sm"
+                            >
+                                {product?.status ? "ACTIVE" : "INACTIVE"}
+                            </Badge>
+                        </Flex>
+                    </Stack>
                 </Card>
             </Box>
         </>

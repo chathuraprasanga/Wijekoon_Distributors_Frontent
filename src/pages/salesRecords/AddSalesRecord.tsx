@@ -1,6 +1,6 @@
 import {
     IconArrowLeft,
-    IconCalendar,
+    IconCalendar, IconInfoCircle,
     IconTableMinus,
     IconTablePlus,
     IconTrash,
@@ -17,7 +17,7 @@ import {
     Modal,
     ActionIcon,
     TextInput,
-    Stack,
+    Stack, Flex,
 } from "@mantine/core";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store/store.ts";
@@ -560,6 +560,61 @@ const AddSalesRecord = () => {
                     <Text fw={"bold"}>Payment Details</Text>
                 </Group>
 
+                {isMobile ? (
+                    // 🟦 Mobile View: Stacked layout
+                    <Stack gap="sm" px="sm" py="sm">
+                        <Box>
+                            <Text size="sm" fw={500}>Cash Amount</Text>
+                            <NumberInput
+                                size="xs"
+                                hideControls
+                                allowNegative={false}
+                                prefix="Rs. "
+                                decimalScale={2}
+                                fixedDecimalScale
+                                thousandSeparator=","
+                                placeholder="Enter Cash Amount"
+                                onChange={(val: any) =>
+                                    setPaymentDetails((prev) => ({
+                                        ...prev,
+                                        cash: Number(val) || 0,
+                                    }))
+                                }
+                            />
+                        </Box>
+
+                        <Box>
+                            <Group justify="space-between">
+                                <Text size="sm" fw={500}>Cheque Amount</Text>
+                                <Button
+                                    size="compact-xs"
+                                    variant="light"
+                                    onClick={() => chequeAddModalOpenedGHandler.open()}
+                                >
+                                    Manage Cheques
+                                </Button>
+                            </Group>
+                            <Text size="sm" mt="xs">{amountPreview(chequeTotal)}</Text>
+                        </Box>
+
+                        <Box>
+                            <Text size="sm" fw={500}>Credit Amount</Text>
+                            <Text size="sm">{amountPreview(credit)}</Text>
+                        </Box>
+
+                        {credit < 0 && (
+                            <Flex align="center" gap="xs">
+                                <IconInfoCircle color="red" size={16} />
+                                <Text c="red" size="xs">Customer is paying more than credit</Text>
+                            </Flex>
+                        )}
+
+                        <Group justify="flex-end" mt="sm">
+                            <Button size="xs" onClick={handleSaveSalesRecord}>Save</Button>
+                        </Group>
+                    </Stack>
+                ) : (
+
                 <Box w={{ sm: "100%", lg: "50%" }} px="lg">
                     <Table>
                         <Table.Tbody>
@@ -629,7 +684,7 @@ const AddSalesRecord = () => {
                             Save
                         </Button>
                     </Group>
-                </Box>
+                </Box>)}
             </div>
         );
     };
