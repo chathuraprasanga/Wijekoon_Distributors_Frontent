@@ -18,7 +18,6 @@ import "@mantine/dates/styles.css";
 
 import { AuthLoaderChecker } from "./utils/authChecker.ts";
 import { Notifications } from "@mantine/notifications";
-// import Loading from "./components/Loading.tsx";
 const Loading = React.lazy(() => import("./components/Loading.tsx"));
 import { LoadingProvider } from "./helpers/loadingContext.tsx";
 import { DatesProvider } from "@mantine/dates";
@@ -130,6 +129,14 @@ const EditOrder = React.lazy(
 const ViewOrder = React.lazy(
     () => import("./pages/orders/ViewOrder.tsx")
 );
+const Employees = React.lazy(
+    () => import("./pages/employees")
+);
+const Vehicles = React.lazy(() => import("./pages/vehicles"));
+const AddVehicle = React.lazy(() => import("./pages/vehicles/AddVehicle.tsx"));
+const EditVehicle = React.lazy(() => import("./pages/vehicles/EditVehicle.tsx"));
+const ViewVehicle = React.lazy(() => import("./pages/vehicles/ViewVehicle.tsx"));
+const Expenses = React.lazy(() => import("./pages/expenses"));
 
 const router = createBrowserRouter([
     {
@@ -299,6 +306,10 @@ const router = createBrowserRouter([
                 path: "cheque-payments/view-cheque-payment/:id",
                 element: <ViewChequePayment />,
             },
+            {
+                path: "expenses",
+                element: <Expenses />,
+            },
 
             // assets routes
             // warehouses sub
@@ -309,6 +320,26 @@ const router = createBrowserRouter([
             {
                 path: "warehouses",
                 element: <Warehouses />,
+            },
+            {
+                path: "employees",
+                element: <Employees />,
+            },
+            {
+                path: "vehicles",
+                element: <Vehicles />,
+            },
+            {
+                path: "vehicles/add-vehicle",
+                element: <AddVehicle />,
+            },
+            {
+                path: "vehicles/edit-vehicle/:id",
+                element: <EditVehicle />,
+            },
+            {
+                path: "vehicles/view-vehicle/:id",
+                element: <ViewVehicle />,
             },
 
             // settings routes
