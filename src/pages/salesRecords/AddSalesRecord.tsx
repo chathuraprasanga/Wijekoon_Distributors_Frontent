@@ -122,6 +122,7 @@ const AddSalesRecord = () => {
             date: null,
             discount: 0,
             tax: 0,
+            otherDecrements:0,
             otherCost: 0,
             notes: "",
         },
@@ -218,10 +219,10 @@ const AddSalesRecord = () => {
             prev.map((p, i) =>
                 i === index
                     ? {
-                          ...p,
-                          amount: amount || 0,
-                          lineTotal: (p.product.unitPrice || 0) * (amount || 0),
-                      }
+                        ...p,
+                        amount: amount || 0,
+                        lineTotal: (p.unitPrice ?? p.product.unitPrice) * (amount || 0),
+                    }
                     : p
             )
         );
@@ -235,13 +236,15 @@ const AddSalesRecord = () => {
     const netTotal = useMemo(
         () =>
             subTotal -
-            (salesRecordForm.values.discount || 0) +
+            (salesRecordForm.values.discount || 0) -
+            (salesRecordForm.values.otherDecrements || 0) +
             (salesRecordForm.values.tax || 0) +
             (salesRecordForm.values.otherCost || 0),
         [
             subTotal,
             salesRecordForm.values.discount,
             salesRecordForm.values.tax,
+            salesRecordForm.values.otherDecrements,
             salesRecordForm.values.otherCost,
         ]
     );
@@ -689,7 +692,17 @@ const AddSalesRecord = () => {
         );
     };
 
-    console.log(orderId);
+    const handleUnitPriceChange = (index: number, newUnitPrice: number) => {
+        setSelectedProducts((prev) => {
+            const updated = [...prev];
+            const amount = updated[index].amount || 0;
+
+            updated[index].unitPrice = newUnitPrice;
+            updated[index].lineTotal = newUnitPrice * amount;
+
+            return updated;
+        });
+    };
 
     const handleSaveSalesRecord = async () => {
         setLoading(true);
@@ -709,6 +722,7 @@ const AddSalesRecord = () => {
                 discount: salesRecordForm.values.discount,
                 tax: salesRecordForm.values.tax,
                 otherCost: salesRecordForm.values.otherCost,
+                otherDecrements: salesRecordForm.values.otherDecrements,
                 netTotal: netTotal,
                 notes: salesRecordForm.values.notes,
                 payments: {
@@ -915,7 +929,7 @@ const AddSalesRecord = () => {
                 <Text fw={"bold"}>Order Details</Text>
             </Group>
 
-            <Box w={{ sm: "100%", lg: "50%" }} px="lg">
+            <Box w={{ sm: "100%", lg: "75%" }} px="lg">
                 <form
                     onSubmit={salesRecordForm.onSubmit(handleSalesRecordSubmit)}
                 >
@@ -969,7 +983,8 @@ const AddSalesRecord = () => {
                             <Table>
                                 <Table.Thead>
                                     <Table.Tr>
-                                        <Table.Th w="50%">Product</Table.Th>
+                                        <Table.Th w="25%">Product</Table.Th>
+                                        <Table.Th w="25%">Unit Price</Table.Th>
                                         <Table.Th w="25%">Amount</Table.Th>
                                         <Table.Th w="25%">Line Total</Table.Th>
                                     </Table.Tr>
@@ -979,6 +994,20 @@ const AddSalesRecord = () => {
                                         <Table.Tr key={i}>
                                             <Table.Td>
                                                 {p.product.name}
+                                            </Table.Td>
+                                            <Table.Td>
+                                                <NumberInput
+                                                    size="xs"
+                                                    hideControls
+                                                    value={p.unitPrice ?? p.product.unitPrice}
+                                                    onChange={(v: any) => handleUnitPriceChange(i, v)}
+                                                    disabled={paymentDetailsOpen}
+                                                    prefix="Rs. "
+                                                    decimalScale={2}
+                                                    fixedDecimalScale
+                                                    thousandSeparator=","
+                                                    allowNegative={false}
+                                                />
                                             </Table.Td>
                                             <Table.Td>
                                                 <NumberInput
@@ -1085,6 +1114,27 @@ const AddSalesRecord = () => {
                                             prefix="Rs. "
                                             disabled={paymentDetailsOpen}
                                             {...salesRecordForm.getInputProps("tax")}
+                                        />
+                                    </Table.Td>
+                                </Table.Tr>
+
+                                {/* Other Cost */}
+                                <Table.Tr className="flex flex-wrap lg:table-row">
+                                    <Table.Td className="hidden lg:table-cell lg:w-1/3" />
+                                    <Table.Td className="w-1/2 lg:w-1/3">
+                                        <Text size="sm" fw="bold">Other Decrements</Text>
+                                    </Table.Td>
+                                    <Table.Td className="w-1/2 lg:w-1/3">
+                                        <NumberInput
+                                            size="xs"
+                                            decimalScale={2}
+                                            fixedDecimalScale
+                                            thousandSeparator=","
+                                            hideControls
+                                            allowNegative={false}
+                                            prefix="Rs. "
+                                            disabled={paymentDetailsOpen}
+                                            {...salesRecordForm.getInputProps("otherDecrements")}
                                         />
                                     </Table.Td>
                                 </Table.Tr>
