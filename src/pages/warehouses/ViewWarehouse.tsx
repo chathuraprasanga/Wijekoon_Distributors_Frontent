@@ -37,6 +37,9 @@ const ViewWarehouse = () => {
     const [stockUpdatedProducts, setStockUpdatedProducts] = useState<any[]>([]);
     const [stockUpdateModalOpened, handleStockUpdateModal] =
         useDisclosure(false);
+    console.log(stockUpdateModalOpened);
+    const [dispatchModalOpened, handleDispatchModal] =
+        useDisclosure(false);
     const [products, setProducts] = useState<any[]>([]);
     const [isLoading, setIsLoading] = useState(false);
 
@@ -103,7 +106,7 @@ const ViewWarehouse = () => {
 
         return (
             <Modal
-                opened={stockUpdateModalOpened}
+                opened={dispatchModalOpened}
                 onClose={() => {
                     handleStockUpdateModal.close();
                     setSelectedProducts([]);
@@ -232,6 +235,105 @@ const ViewWarehouse = () => {
         }
     };
 
+    const dispatchModal = () => {
+        // Check if at least one product has amount === 0
+        const isSubmitDisabled = stockUpdatedProducts.some(
+            (item) => item.amount === 0
+        );
+
+        return (
+            <Modal
+                opened={dispatchModalOpened}
+                onClose={() => {
+                    handleDispatchModal.close();
+                    setSelectedProducts([]);
+                    setStockUpdatedProducts([]); // Reset stock updates on close
+                }}
+                title={<Text size="lg">Stock Update</Text>}
+                size="sm"
+            >
+                {/* Display Selectable Chips */}
+                <div className="flex flex-row flex-wrap gap-2">
+                    {products?.map((product: any) => (
+                        <Chip
+                            key={product._id}
+                            style={{ margin: "4px" }}
+                            checked={selectedProducts.some(
+                                (p) => p._id === product._id
+                            )}
+                            onClick={() => handleChipClick(product)}
+                        >
+                            {product.product.name}
+                        </Chip>
+                    ))}
+                </div>
+
+                {/* Form for Stock Update */}
+                <form className="mt-4">
+                    <div>
+                        {selectedProducts?.map((p: any, i: number) => {
+                            const stockItem = stockUpdatedProducts.find(
+                                (item) => item.id === p._id
+                            );
+
+                            return (
+                                <div
+                                    key={i}
+                                    className="flex flex-row items-center gap-2"
+                                >
+                                    <div className="w-1/2">
+                                        {p.product.name}
+                                    </div>
+                                    <div className="w-1/2">
+                                        <NumberInput
+                                            size="xs"
+                                            hideControls
+                                            mt="sm"
+                                            allowNegative={false}
+                                            value={stockItem?.amount ?? 0} // Ensure default value
+                                            onChange={(value: any) => {
+                                                setStockUpdatedProducts(
+                                                    (prev) =>
+                                                        prev.map((item) =>
+                                                            item.id === p._id
+                                                                ? {
+                                                                    ...item,
+                                                                    amount:
+                                                                        value ||
+                                                                        0,
+                                                                }
+                                                                : item
+                                                        )
+                                                );
+                                            }}
+                                        />
+                                        {stockItem?.amount === 0 && (
+                                            <Text c="red" size="xs">
+                                                Updated amount cannot be 0
+                                            </Text>
+                                        )}
+                                    </div>
+                                </div>
+                            );
+                        })}
+
+                        <Button
+                            mt="md"
+                            fullWidth
+                            onClick={handleStockUpdate}
+                            disabled={
+                                isSubmitDisabled || selectedProducts.length < 1
+                            }
+                            loading={isLoading}
+                        >
+                            Submit
+                        </Button>
+                    </div>
+                </form>
+            </Modal>
+        );
+    };
+
     return (
         <>
             <Group p="lg" display="flex" justify="space-between" align="center">
@@ -277,8 +379,25 @@ const ViewWarehouse = () => {
                                 USER_ROLES.STOCK_KEEPER,
                             ])
                         }
+                        color="grape"
                     >
                         Update Stocks
+                    </Button>
+                    <Button
+                        size="xs"
+                        onClick={handleDispatchModal.open}
+                        disabled={
+                            !hasAnyPrivilege(role, [
+                                USER_ROLES.ADMIN,
+                                USER_ROLES.SUPER_ADMIN,
+                                USER_ROLES.OWNER,
+                                USER_ROLES.WAREHOUSE_MANAGER,
+                                USER_ROLES.STOCK_KEEPER,
+                            ])
+                        }
+
+                    >
+                        Dispatch
                     </Button>
                 </Group>
             </Group>
@@ -329,6 +448,7 @@ const ViewWarehouse = () => {
                 </Card>
             </Box>
             {stockUpdateModal()}
+            {dispatchModal()}
         </>
     );
 };
