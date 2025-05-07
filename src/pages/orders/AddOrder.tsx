@@ -326,7 +326,7 @@ const AddOrder = () => {
                 <Text fw={"bold"}>Order Details</Text>
             </Group>
 
-            <Box w={{ sm: "100%", lg: "50%" }} px="lg">
+            <Box w={{ sm: "100%", lg: "75%" }} px="lg">
                 <form onSubmit={orderForm.onSubmit(handleSaveOrder)}>
                     <Flex
                         direction={{ base: "column", sm: "column", md: "row" }}
@@ -343,7 +343,7 @@ const AddOrder = () => {
                                 value: c._id,
                             }))}
                             withAsterisk
-                            w={{ base: "100%", md: "45%" }}
+                            w={{ base: "100%", md: "49%" }}
                             size="xs"
                             searchable
                             {...orderForm.getInputProps("customer")}
@@ -355,7 +355,7 @@ const AddOrder = () => {
                             rightSection={<IconCalendar size={16} />}
                             size="xs"
                             minDate={new Date()}
-                            w={{ base: "100%", md: "45%" }}
+                            w={{ base: "100%", md: "49%" }}
                             {...orderForm.getInputProps("expectedDate")}
                             withAsterisk
                         />
