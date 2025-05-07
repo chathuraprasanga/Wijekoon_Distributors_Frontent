@@ -35,11 +35,12 @@ const ViewWarehouse = () => {
     const navigate = useNavigate();
     const [selectedProducts, setSelectedProducts] = useState<any[]>([]);
     const [stockUpdatedProducts, setStockUpdatedProducts] = useState<any[]>([]);
+    const [stockDispatchProducts, setStockDispatchProducts] = useState<any[]>(
+        []
+    );
     const [stockUpdateModalOpened, handleStockUpdateModal] =
         useDisclosure(false);
-    console.log(stockUpdateModalOpened);
-    const [dispatchModalOpened, handleDispatchModal] =
-        useDisclosure(false);
+    const [dispatchModalOpened, handleDispatchModal] = useDisclosure(false);
     const [products, setProducts] = useState<any[]>([]);
     const [isLoading, setIsLoading] = useState(false);
 
@@ -77,24 +78,42 @@ const ViewWarehouse = () => {
         setLoading(false);
     };
 
-    const handleChipClick = (product: any) => {
+    const handleChipClick = (product: any, type: string) => {
         const isSelected = selectedProducts.some((p) => p._id === product._id);
-
-        if (isSelected) {
-            // Remove product from selected list
-            setSelectedProducts((prev) =>
-                prev.filter((p) => p._id !== product._id)
-            );
-            setStockUpdatedProducts((prev) =>
-                prev.filter((prod) => prod.id !== product._id)
-            );
+        if (type === "STOCK_UPDATE") {
+            if (isSelected) {
+                // Remove product from selected list
+                setSelectedProducts((prev) =>
+                    prev.filter((p) => p._id !== product._id)
+                );
+                setStockUpdatedProducts((prev) =>
+                    prev.filter((prod) => prod.id !== product._id)
+                );
+            } else {
+                // Add product to selected list
+                setSelectedProducts((prev) => [...prev, product]);
+                setStockUpdatedProducts((prev) => [
+                    ...prev,
+                    { id: product._id, amount: 0 },
+                ]);
+            }
         } else {
-            // Add product to selected list
-            setSelectedProducts((prev) => [...prev, product]);
-            setStockUpdatedProducts((prev) => [
-                ...prev,
-                { id: product._id, amount: 0 },
-            ]);
+            if (isSelected) {
+                // Remove product from selected list
+                setSelectedProducts((prev) =>
+                    prev.filter((p) => p._id !== product._id)
+                );
+                setStockDispatchProducts((prev) =>
+                    prev.filter((prod) => prod.id !== product._id)
+                );
+            } else {
+                // Add product to selected list
+                setSelectedProducts((prev) => [...prev, product]);
+                setStockDispatchProducts((prev) => [
+                    ...prev,
+                    { id: product._id, amount: 0 },
+                ]);
+            }
         }
     };
 
@@ -106,7 +125,7 @@ const ViewWarehouse = () => {
 
         return (
             <Modal
-                opened={dispatchModalOpened}
+                opened={stockUpdateModalOpened}
                 onClose={() => {
                     handleStockUpdateModal.close();
                     setSelectedProducts([]);
@@ -124,7 +143,9 @@ const ViewWarehouse = () => {
                             checked={selectedProducts.some(
                                 (p) => p._id === product._id
                             )}
-                            onClick={() => handleChipClick(product)}
+                            onClick={() =>
+                                handleChipClick(product, "STOCK_UPDATE")
+                            }
                         >
                             {product.product.name}
                         </Chip>
@@ -200,7 +221,10 @@ const ViewWarehouse = () => {
     const handleStockUpdate = async () => {
         setIsLoading(true);
         try {
-            const payload = { id: warehouse._id, values: stockUpdatedProducts };
+            const payload = {
+                id: warehouse._id,
+                values: { data: stockUpdatedProducts, type: "increment" },
+            };
             const response = await dispatch(
                 updateStockDetailsForWarehouse(payload)
             );
@@ -217,7 +241,7 @@ const ViewWarehouse = () => {
                 response.type ===
                 "warehouse/updateStockDetailsForWarehouse/rejected"
             ) {
-                toNotify("Error", "Stock updated successfully", "ERROR");
+                toNotify("Error", "Stock updated failed", "ERROR");
             } else {
                 toNotify("Warning", "Please contact system admin", "WARNING");
                 setStockUpdatedProducts([]);
@@ -237,7 +261,7 @@ const ViewWarehouse = () => {
 
     const dispatchModal = () => {
         // Check if at least one product has amount === 0
-        const isSubmitDisabled = stockUpdatedProducts.some(
+        const isSubmitDisabled = stockDispatchProducts.some(
             (item) => item.amount === 0
         );
 
@@ -247,9 +271,9 @@ const ViewWarehouse = () => {
                 onClose={() => {
                     handleDispatchModal.close();
                     setSelectedProducts([]);
-                    setStockUpdatedProducts([]); // Reset stock updates on close
+                    setStockDispatchProducts([]); // Reset stock updates on close
                 }}
-                title={<Text size="lg">Stock Update</Text>}
+                title={<Text size="lg">Stock Dispatch</Text>}
                 size="sm"
             >
                 {/* Display Selectable Chips */}
@@ -261,7 +285,9 @@ const ViewWarehouse = () => {
                             checked={selectedProducts.some(
                                 (p) => p._id === product._id
                             )}
-                            onClick={() => handleChipClick(product)}
+                            onClick={() =>
+                                handleChipClick(product, "STOCK_DIPATCH")
+                            }
                         >
                             {product.product.name}
                         </Chip>
@@ -272,7 +298,7 @@ const ViewWarehouse = () => {
                 <form className="mt-4">
                     <div>
                         {selectedProducts?.map((p: any, i: number) => {
-                            const stockItem = stockUpdatedProducts.find(
+                            const stockItem = stockDispatchProducts.find(
                                 (item) => item.id === p._id
                             );
 
@@ -292,16 +318,16 @@ const ViewWarehouse = () => {
                                             allowNegative={false}
                                             value={stockItem?.amount ?? 0} // Ensure default value
                                             onChange={(value: any) => {
-                                                setStockUpdatedProducts(
+                                                setStockDispatchProducts(
                                                     (prev) =>
                                                         prev.map((item) =>
                                                             item.id === p._id
                                                                 ? {
-                                                                    ...item,
-                                                                    amount:
-                                                                        value ||
-                                                                        0,
-                                                                }
+                                                                      ...item,
+                                                                      amount:
+                                                                          value ||
+                                                                          0,
+                                                                  }
                                                                 : item
                                                         )
                                                 );
@@ -320,7 +346,7 @@ const ViewWarehouse = () => {
                         <Button
                             mt="md"
                             fullWidth
-                            onClick={handleStockUpdate}
+                            onClick={handleStockDispatch}
                             disabled={
                                 isSubmitDisabled || selectedProducts.length < 1
                             }
@@ -332,6 +358,47 @@ const ViewWarehouse = () => {
                 </form>
             </Modal>
         );
+    };
+
+    const handleStockDispatch = async () => {
+        setIsLoading(true);
+        try {
+            const payload = {
+                id: warehouse._id,
+                values: { data: stockDispatchProducts, type: "decrement" },
+            };
+            const response = await dispatch(
+                updateStockDetailsForWarehouse(payload)
+            );
+            if (
+                response.type ===
+                "warehouse/updateStockDetailsForWarehouse/fulfilled"
+            ) {
+                toNotify("Success", "Stock updated successfully", "SUCCESS");
+                fetchSelectedWarehouse();
+                setStockDispatchProducts([]);
+                setSelectedProducts([]);
+                handleDispatchModal.close();
+            } else if (
+                response.type ===
+                "warehouse/updateStockDetailsForWarehouse/rejected"
+            ) {
+                toNotify("Error", "Stock updated failed", "ERROR");
+            } else {
+                toNotify("Warning", "Please contact system admin", "WARNING");
+                setStockDispatchProducts([]);
+                setSelectedProducts([]);
+                handleDispatchModal.close();
+            }
+        } catch (e) {
+            console.error(e);
+            toNotify("Warning", "Please contact system admin", "WARNING");
+            setStockDispatchProducts([]);
+            setSelectedProducts([]);
+            handleDispatchModal.close();
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     return (
@@ -395,7 +462,6 @@ const ViewWarehouse = () => {
                                 USER_ROLES.STOCK_KEEPER,
                             ])
                         }
-
                     >
                         Dispatch
                     </Button>

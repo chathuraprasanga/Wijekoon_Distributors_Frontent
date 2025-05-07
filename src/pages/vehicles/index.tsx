@@ -117,7 +117,7 @@ const Vehicles = () => {
                 fields={[
                     {
                         type: "text",
-                        placeholder: "Name, Phone, Email",
+                        placeholder: "Brand, Number",
                         value: searchQuery,
                     },
                     {
