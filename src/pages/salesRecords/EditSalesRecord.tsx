@@ -14,7 +14,8 @@ import {
     NumberInput,
     Textarea,
     Modal,
-    ActionIcon, Flex,
+    ActionIcon,
+    Flex,
 } from "@mantine/core";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store/store.ts";
@@ -80,6 +81,7 @@ const EditSalesRecord = () => {
             discount: 0,
             tax: 0,
             otherCost: 0,
+            otherDecrements: 0,
             notes: "",
         },
         validate: {
@@ -91,12 +93,14 @@ const EditSalesRecord = () => {
     useEffect(() => {
         salesRecordForm.setValues({
             customer: metadata?.customer || "",
-            date: metadata?.date && !isNaN(new Date(metadata.date).getTime())
-                ? new Date(metadata.date)
-                : new Date(),
+            date:
+                metadata?.date && !isNaN(new Date(metadata.date).getTime())
+                    ? new Date(metadata.date)
+                    : new Date(),
             discount: metadata?.discount || 0,
             tax: metadata?.tax || 0,
             otherCost: metadata?.otherCost || 0,
+            otherDecrements: metadata?.otherDecrements || 0,
             notes: metadata?.notes || "",
         });
         setSelectedProducts(metadata?.products || []);
@@ -133,7 +137,16 @@ const EditSalesRecord = () => {
         setSelectedProducts((prev) => {
             const exists = prev?.some((p) => p.product._id === product._id);
             if (!exists) {
-                return [...prev, { product, amount: 0, lineTotal: 0 }];
+                return [
+                    ...prev,
+                    {
+                        product,
+                        amount: 0,
+                        lineTotal: 0,
+                        unitPrice: product.unitPrice,
+                        isNew: true,
+                    },
+                ];
             }
             return prev;
         });
@@ -149,7 +162,11 @@ const EditSalesRecord = () => {
         <Modal
             opened={productSelectModalOpened}
             onClose={productSelectModalHandler.close}
-            title={<Text size={"lg"} fw={"bold"}>Select Products</Text>}
+            title={
+                <Text size={"lg"} fw={"bold"}>
+                    Select Products
+                </Text>
+            }
             size={isMobile ? "100%" : "50%"}
         >
             <Table>
@@ -210,17 +227,36 @@ const EditSalesRecord = () => {
         </Modal>
     );
 
-    const calculateLineTotal = (index: number, amount: number) => {
+    const handleUnitPriceChange = (index: number, newPrice: number) => {
         setSelectedProducts((prev) =>
             prev.map((p, i) =>
                 i === index
                     ? {
-                        ...p,
-                        amount: amount || 0,
-                        lineTotal: (p.product.unitPrice || 0) * (amount || 0),
-                    }
+                          ...p,
+                          unitPrice: newPrice,
+                          lineTotal: newPrice * (p.amount || 0),
+                      }
                     : p
             )
+        );
+    };
+
+    const calculateLineTotal = (index: number, amount: number) => {
+        setSelectedProducts((prev) =>
+            prev.map((p, i) => {
+                const unitPrice =
+                    p.unitPrice !== undefined
+                        ? p.unitPrice
+                        : p.product.unitPrice;
+
+                return i === index
+                    ? {
+                          ...p,
+                          amount: amount || 0,
+                          lineTotal: unitPrice * (amount || 0),
+                      }
+                    : p;
+            })
         );
     };
 
@@ -232,12 +268,14 @@ const EditSalesRecord = () => {
     const netTotal = useMemo(
         () =>
             subTotal -
-            (salesRecordForm.values.discount || 0) +
+            (salesRecordForm.values.discount || 0) -
+            (salesRecordForm.values.otherDecrements || 0) +
             (salesRecordForm.values.tax || 0) +
             (salesRecordForm.values.otherCost || 0),
         [
             subTotal,
             salesRecordForm.values.discount,
+            salesRecordForm.values.otherDecrements,
             salesRecordForm.values.tax,
             salesRecordForm.values.otherCost,
         ]
@@ -249,7 +287,9 @@ const EditSalesRecord = () => {
             const formDate = salesRecordForm.values?.date;
             const dateObj = new Date(formDate);
             const isoDate =
-                formDate && !isNaN(dateObj.getTime()) ? dateObj.toISOString() : null;
+                formDate && !isNaN(dateObj.getTime())
+                    ? dateObj.toISOString()
+                    : null;
 
             const payload = {
                 id: id,
@@ -262,6 +302,7 @@ const EditSalesRecord = () => {
                     discount: salesRecordForm.values?.discount,
                     tax: salesRecordForm.values?.tax,
                     otherCost: salesRecordForm.values?.otherCost,
+                    otherDecrements: salesRecordForm.values?.otherDecrements,
                     netTotal: netTotal,
                     notes: salesRecordForm.values?.notes,
                 },
@@ -312,8 +353,10 @@ const EditSalesRecord = () => {
                 <Text fw={"bold"}>Order Details</Text>
             </Group>
 
-            <Box w={{ sm: "100%", lg: "50%" }} px="lg">
-                <form onSubmit={salesRecordForm.onSubmit(handleUpdateSalesRecord)}>
+            <Box w={{ sm: "100%", lg: "75%" }} px="lg">
+                <form
+                    onSubmit={salesRecordForm.onSubmit(handleUpdateSalesRecord)}
+                >
                     <Flex
                         direction={{ base: "column", sm: "column", md: "row" }}
                         gap="xs"
@@ -351,7 +394,8 @@ const EditSalesRecord = () => {
                             <Table>
                                 <Table.Thead>
                                     <Table.Tr>
-                                        <Table.Th w="50%">Product</Table.Th>
+                                        <Table.Th w="25%">Product</Table.Th>
+                                        <Table.Th w="25%">Unit Price</Table.Th>
                                         <Table.Th w="25%">Amount</Table.Th>
                                         <Table.Th w="25%">Line Total</Table.Th>
                                     </Table.Tr>
@@ -359,16 +403,47 @@ const EditSalesRecord = () => {
                                 <Table.Tbody>
                                     {selectedProducts?.map((p, i) => (
                                         <Table.Tr key={i}>
-                                            <Table.Td>{p.product.name}</Table.Td>
+                                            <Table.Td>
+                                                {p.product.name}
+                                            </Table.Td>
+                                            <Table.Td>
+                                                <NumberInput
+                                                    size="xs"
+                                                    decimalScale={2}
+                                                    fixedDecimalScale
+                                                    thousandSeparator=","
+                                                    hideControls
+                                                    allowNegative={false}
+                                                    prefix="Rs. "
+                                                    value={
+                                                        p.unitPrice !==
+                                                        undefined
+                                                            ? p.unitPrice
+                                                            : p.product
+                                                                  .unitPrice
+                                                    }
+                                                    onChange={(val) =>
+                                                        handleUnitPriceChange(
+                                                            i,
+                                                            Number(val)
+                                                        )
+                                                    }
+                                                    disabled={!p.isNew}
+                                                />
+                                            </Table.Td>
                                             <Table.Td>
                                                 <NumberInput
                                                     size="xs"
                                                     hideControls
                                                     value={p.amount}
-                                                    onChange={(v: any) => calculateLineTotal(i, v)}
+                                                    onChange={(v: any) =>
+                                                        calculateLineTotal(i, v)
+                                                    }
                                                 />
                                             </Table.Td>
-                                            <Table.Td>{amountPreview(p.lineTotal)}</Table.Td>
+                                            <Table.Td>
+                                                {amountPreview(p.lineTotal)}
+                                            </Table.Td>
                                         </Table.Tr>
                                     ))}
                                 </Table.Tbody>
@@ -394,7 +469,9 @@ const EditSalesRecord = () => {
                                 <Table.Tr className="flex flex-wrap lg:table-row">
                                     <Table.Td className="hidden lg:table-cell lg:w-1/3" />
                                     <Table.Td className="w-1/2 lg:w-1/3">
-                                        <Text size="sm" fw="bold">Sub Total</Text>
+                                        <Text size="sm" fw="bold">
+                                            Sub Total
+                                        </Text>
                                     </Table.Td>
                                     <Table.Td className="w-1/2 lg:w-1/3">
                                         {amountPreview(subTotal)}
@@ -405,7 +482,9 @@ const EditSalesRecord = () => {
                                 <Table.Tr className="flex flex-wrap lg:table-row">
                                     <Table.Td className="hidden lg:table-cell lg:w-1/3" />
                                     <Table.Td className="w-1/2 lg:w-1/3">
-                                        <Text size="sm" fw="bold">Discount</Text>
+                                        <Text size="sm" fw="bold">
+                                            Discount
+                                        </Text>
                                     </Table.Td>
                                     <Table.Td className="w-1/2 lg:w-1/3">
                                         <NumberInput
@@ -416,7 +495,10 @@ const EditSalesRecord = () => {
                                             hideControls
                                             allowNegative={false}
                                             prefix="Rs. "
-                                            {...salesRecordForm.getInputProps("discount")}
+                                            disabled
+                                            {...salesRecordForm.getInputProps(
+                                                "discount"
+                                            )}
                                         />
                                     </Table.Td>
                                 </Table.Tr>
@@ -425,7 +507,9 @@ const EditSalesRecord = () => {
                                 <Table.Tr className="flex flex-wrap lg:table-row">
                                     <Table.Td className="hidden lg:table-cell lg:w-1/3" />
                                     <Table.Td className="w-1/2 lg:w-1/3">
-                                        <Text size="sm" fw="bold">Tax</Text>
+                                        <Text size="sm" fw="bold">
+                                            Tax
+                                        </Text>
                                     </Table.Td>
                                     <Table.Td className="w-1/2 lg:w-1/3">
                                         <NumberInput
@@ -436,7 +520,34 @@ const EditSalesRecord = () => {
                                             hideControls
                                             allowNegative={false}
                                             prefix="Rs. "
-                                            {...salesRecordForm.getInputProps("tax")}
+                                            disabled
+                                            {...salesRecordForm.getInputProps(
+                                                "tax"
+                                            )}
+                                        />
+                                    </Table.Td>
+                                </Table.Tr>
+
+                                {/* Other decrement */}
+                                <Table.Tr className="flex flex-wrap lg:table-row">
+                                    <Table.Td className="hidden lg:table-cell lg:w-1/3" />
+                                    <Table.Td className="w-1/2 lg:w-1/3">
+                                        <Text size="sm" fw="bold">
+                                            Other Decrements
+                                        </Text>
+                                    </Table.Td>
+                                    <Table.Td className="w-1/2 lg:w-1/3">
+                                        <NumberInput
+                                            size="xs"
+                                            decimalScale={2}
+                                            fixedDecimalScale
+                                            thousandSeparator=","
+                                            hideControls
+                                            allowNegative={false}
+                                            prefix="Rs. "
+                                            {...salesRecordForm.getInputProps(
+                                                "otherDecrements"
+                                            )}
                                         />
                                     </Table.Td>
                                 </Table.Tr>
@@ -445,7 +556,9 @@ const EditSalesRecord = () => {
                                 <Table.Tr className="flex flex-wrap lg:table-row">
                                     <Table.Td className="hidden lg:table-cell lg:w-1/3" />
                                     <Table.Td className="w-1/2 lg:w-1/3">
-                                        <Text size="sm" fw="bold">Other Cost</Text>
+                                        <Text size="sm" fw="bold">
+                                            Other Cost
+                                        </Text>
                                     </Table.Td>
                                     <Table.Td className="w-1/2 lg:w-1/3">
                                         <NumberInput
@@ -456,7 +569,9 @@ const EditSalesRecord = () => {
                                             hideControls
                                             allowNegative={false}
                                             prefix="Rs. "
-                                            {...salesRecordForm.getInputProps("otherCost")}
+                                            {...salesRecordForm.getInputProps(
+                                                "otherCost"
+                                            )}
                                         />
                                     </Table.Td>
                                 </Table.Tr>
@@ -465,7 +580,9 @@ const EditSalesRecord = () => {
                                 <Table.Tr className="flex flex-wrap lg:table-row">
                                     <Table.Td className="hidden lg:table-cell lg:w-1/3" />
                                     <Table.Td className="w-1/2 lg:w-1/3">
-                                        <Text size="sm" fw="bold">Net Total</Text>
+                                        <Text size="sm" fw="bold">
+                                            Net Total
+                                        </Text>
                                     </Table.Td>
                                     <Table.Td className="w-1/2 lg:w-1/3">
                                         {amountPreview(netTotal)}
@@ -490,7 +607,9 @@ const EditSalesRecord = () => {
                             type="submit"
                             disabled={
                                 selectedProducts?.length === 0 ||
-                                selectedProducts?.some((p) => !p.amount || p.amount <= 0) ||
+                                selectedProducts?.some(
+                                    (p) => !p.amount || p.amount <= 0
+                                ) ||
                                 !isFormEdited() // Disable when the form is NOT edited
                             }
                         >
