@@ -1,6 +1,7 @@
 import {
     IconArrowLeft,
-    IconCalendar, IconInfoCircle,
+    IconCalendar,
+    IconInfoCircle,
     IconTableMinus,
     IconTablePlus,
     IconTrash,
@@ -17,7 +18,9 @@ import {
     Modal,
     ActionIcon,
     TextInput,
-    Stack, Flex,
+    Stack,
+    Flex,
+    ScrollArea,
 } from "@mantine/core";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store/store.ts";
@@ -122,7 +125,7 @@ const AddSalesRecord = () => {
             date: null,
             discount: 0,
             tax: 0,
-            otherDecrements:0,
+            otherDecrements: 0,
             otherCost: 0,
             notes: "",
         },
@@ -153,7 +156,11 @@ const AddSalesRecord = () => {
         <Modal
             opened={productSelectModalOpened}
             onClose={productSelectModalHandler.close}
-            title={<Text size={"lg"} fw={"bold"}>Select Products</Text>}
+            title={
+                <Text size={"lg"} fw={"bold"}>
+                    Select Products
+                </Text>
+            }
             size={isMobile ? "100%" : "50%"}
         >
             <Table>
@@ -219,10 +226,12 @@ const AddSalesRecord = () => {
             prev.map((p, i) =>
                 i === index
                     ? {
-                        ...p,
-                        amount: amount || 0,
-                        lineTotal: (p.unitPrice ?? p.product.unitPrice) * (amount || 0),
-                    }
+                          ...p,
+                          amount: amount || 0,
+                          lineTotal:
+                              (p.unitPrice ?? p.product.unitPrice) *
+                              (amount || 0),
+                      }
                     : p
             )
         );
@@ -272,7 +281,6 @@ const AddSalesRecord = () => {
                 : `/app/sales-records/add-sales-record?orderId=${orderId}#payment-details`
         );
 
-
         setTimeout(() => {
             paymentDetailsRef.current?.scrollIntoView({
                 behavior: "smooth",
@@ -286,7 +294,11 @@ const AddSalesRecord = () => {
             <Modal
                 opened={chequeAddModalOpened}
                 onClose={chequeAddModalOpenedGHandler.close}
-                title={<Text size={"lg"} fw={"bold"}>Add Customer Cheques</Text>}
+                title={
+                    <Text size={"lg"} fw={"bold"}>
+                        Add Customer Cheques
+                    </Text>
+                }
                 size={isMobile ? "100%" : "70%"}
                 styles={{
                     body: {
@@ -567,7 +579,9 @@ const AddSalesRecord = () => {
                     // 🟦 Mobile View: Stacked layout
                     <Stack gap="sm" px="sm" py="sm">
                         <Box>
-                            <Text size="sm" fw={500}>Cash Amount</Text>
+                            <Text size="sm" fw={500}>
+                                Cash Amount
+                            </Text>
                             <NumberInput
                                 size="xs"
                                 hideControls
@@ -588,106 +602,120 @@ const AddSalesRecord = () => {
 
                         <Box>
                             <Group justify="space-between">
-                                <Text size="sm" fw={500}>Cheque Amount</Text>
+                                <Text size="sm" fw={500}>
+                                    Cheque Amount
+                                </Text>
                                 <Button
                                     size="compact-xs"
                                     variant="light"
-                                    onClick={() => chequeAddModalOpenedGHandler.open()}
+                                    onClick={() =>
+                                        chequeAddModalOpenedGHandler.open()
+                                    }
                                 >
                                     Manage Cheques
                                 </Button>
                             </Group>
-                            <Text size="sm" mt="xs">{amountPreview(chequeTotal)}</Text>
+                            <Text size="sm" mt="xs">
+                                {amountPreview(chequeTotal)}
+                            </Text>
                         </Box>
 
                         <Box>
-                            <Text size="sm" fw={500}>Credit Amount</Text>
+                            <Text size="sm" fw={500}>
+                                Credit Amount
+                            </Text>
                             <Text size="sm">{amountPreview(credit)}</Text>
                         </Box>
 
                         {credit < 0 && (
                             <Flex align="center" gap="xs">
                                 <IconInfoCircle color="red" size={16} />
-                                <Text c="red" size="xs">Customer is paying more than credit</Text>
+                                <Text c="red" size="xs">
+                                    Customer is paying more than credit
+                                </Text>
                             </Flex>
                         )}
 
                         <Group justify="flex-end" mt="sm">
-                            <Button size="xs" onClick={handleSaveSalesRecord}>Save</Button>
+                            <Button size="xs" onClick={handleSaveSalesRecord}>
+                                Save
+                            </Button>
                         </Group>
                     </Stack>
                 ) : (
-
-                <Box w={{ sm: "100%", lg: "50%" }} px="lg">
-                    <Table>
-                        <Table.Tbody>
-                            <Table.Tr>
-                                <Table.Td>Total Amount</Table.Td>
-                                <Table.Td></Table.Td>
-                                <Table.Td>{amountPreview(netTotal)}</Table.Td>
-                            </Table.Tr>
-                            <Table.Tr>
-                                <Table.Td>Cash Amount</Table.Td>
-                                <Table.Td></Table.Td>
-                                <Table.Td>
-                                    <NumberInput
-                                        size="xs"
-                                        hideControls
-                                        allowNegative={false}
-                                        prefix="Rs. "
-                                        decimalScale={2}
-                                        fixedDecimalScale
-                                        thousandSeparator=","
-                                        value={paymentDetails.cash}
-                                        onChange={(val: any) =>
-                                            setPaymentDetails((prev) => ({
-                                                ...prev,
-                                                cash: Number(val) || 0,
-                                            }))
-                                        }
-                                    />
-                                </Table.Td>
-                            </Table.Tr>
-                            <Table.Tr>
-                                <Table.Td>Cheque Amount</Table.Td>
-                                <Table.Td>
-                                    <Button
-                                        size="compact-xs"
-                                        variant="light"
-                                        onClick={
-                                            chequeAddModalOpenedGHandler.open
-                                        }
-                                    >
-                                        Manage Cheques
-                                    </Button>
-                                </Table.Td>
-                                <Table.Td>
-                                    {amountPreview(chequeTotal)}
-                                </Table.Td>
-                            </Table.Tr>
-                            <Table.Tr>
-                                <Table.Td>Credit Amount</Table.Td>
-                                <Table.Td></Table.Td>
-                                <Table.Td>{amountPreview(credit)}</Table.Td>
-                            </Table.Tr>
-                        </Table.Tbody>
-                    </Table>
-                    {credit < 0 && (
-                        <Text size="xs" c="red">
-                            Credit amount should not be negative
-                        </Text>
-                    )}
-                    <Group my="md">
-                        <Button
-                            size="xs"
-                            className="ml-auto"
-                            disabled={credit < 0}
-                            onClick={() => handleSaveSalesRecord()}
-                        >
-                            Save
-                        </Button>
-                    </Group>
-                </Box>)}
+                    <Box w={{ sm: "100%", lg: "50%" }} px="lg">
+                        <Table>
+                            <Table.Tbody>
+                                <Table.Tr>
+                                    <Table.Td>Total Amount</Table.Td>
+                                    <Table.Td></Table.Td>
+                                    <Table.Td>
+                                        {amountPreview(netTotal)}
+                                    </Table.Td>
+                                </Table.Tr>
+                                <Table.Tr>
+                                    <Table.Td>Cash Amount</Table.Td>
+                                    <Table.Td></Table.Td>
+                                    <Table.Td>
+                                        <NumberInput
+                                            size="xs"
+                                            hideControls
+                                            allowNegative={false}
+                                            prefix="Rs. "
+                                            decimalScale={2}
+                                            fixedDecimalScale
+                                            thousandSeparator=","
+                                            value={paymentDetails.cash}
+                                            onChange={(val: any) =>
+                                                setPaymentDetails((prev) => ({
+                                                    ...prev,
+                                                    cash: Number(val) || 0,
+                                                }))
+                                            }
+                                        />
+                                    </Table.Td>
+                                </Table.Tr>
+                                <Table.Tr>
+                                    <Table.Td>Cheque Amount</Table.Td>
+                                    <Table.Td>
+                                        <Button
+                                            size="compact-xs"
+                                            variant="light"
+                                            onClick={
+                                                chequeAddModalOpenedGHandler.open
+                                            }
+                                        >
+                                            Manage Cheques
+                                        </Button>
+                                    </Table.Td>
+                                    <Table.Td>
+                                        {amountPreview(chequeTotal)}
+                                    </Table.Td>
+                                </Table.Tr>
+                                <Table.Tr>
+                                    <Table.Td>Credit Amount</Table.Td>
+                                    <Table.Td></Table.Td>
+                                    <Table.Td>{amountPreview(credit)}</Table.Td>
+                                </Table.Tr>
+                            </Table.Tbody>
+                        </Table>
+                        {credit < 0 && (
+                            <Text size="xs" c="red">
+                                Credit amount should not be negative
+                            </Text>
+                        )}
+                        <Group my="md">
+                            <Button
+                                size="xs"
+                                className="ml-auto"
+                                disabled={credit < 0}
+                                onClick={() => handleSaveSalesRecord()}
+                            >
+                                Save
+                            </Button>
+                        </Group>
+                    </Box>
+                )}
             </div>
         );
     };
@@ -814,7 +842,7 @@ const AddSalesRecord = () => {
             phone: "",
             email: "",
             address: "",
-            remarks: ""
+            remarks: "",
         },
         validate: {
             name: (value) =>
@@ -871,7 +899,11 @@ const AddSalesRecord = () => {
                     customerAddModalHandler.close();
                     customerAddForm.reset();
                 }}
-                title={<Text size={"lg"} fw={"bold"}>Add Customer</Text>}
+                title={
+                    <Text size={"lg"} fw={"bold"}>
+                        Add Customer
+                    </Text>
+                }
             >
                 <form
                     onSubmit={customerAddForm.onSubmit(customerAddFormHandler)}
@@ -898,7 +930,11 @@ const AddSalesRecord = () => {
                         placeholder="Customer Address"
                         {...customerAddForm.getInputProps("address")}
                     />
-                    <Textarea label="Remark" placeholder="Enter Remarks" {...customerAddForm.getInputProps("remarks")}/>
+                    <Textarea
+                        label="Remark"
+                        placeholder="Enter Remarks"
+                        {...customerAddForm.getInputProps("remarks")}
+                    />
 
                     <Button mt="md" fullWidth loading={isLoading} type="submit">
                         Save
@@ -980,63 +1016,91 @@ const AddSalesRecord = () => {
 
                     <Box mt="md">
                         {selectedProducts.length > 0 && (
-                            <Table>
-                                <Table.Thead>
-                                    <Table.Tr>
-                                        <Table.Th w="25%">Product</Table.Th>
-                                        <Table.Th w="25%">Unit Price</Table.Th>
-                                        <Table.Th w="25%">Amount</Table.Th>
-                                        <Table.Th w="25%">Line Total</Table.Th>
-                                    </Table.Tr>
-                                </Table.Thead>
-                                <Table.Tbody>
-                                    {selectedProducts?.map((p, i) => (
-                                        <Table.Tr key={i}>
-                                            <Table.Td>
-                                                {p.product.name}
-                                            </Table.Td>
-                                            <Table.Td>
-                                                <NumberInput
-                                                    size="xs"
-                                                    hideControls
-                                                    value={p.unitPrice ?? p.product.unitPrice}
-                                                    onChange={(v: any) => handleUnitPriceChange(i, v)}
-                                                    disabled={paymentDetailsOpen}
-                                                    prefix="Rs. "
-                                                    decimalScale={2}
-                                                    fixedDecimalScale
-                                                    thousandSeparator=","
-                                                    allowNegative={false}
-                                                />
-                                            </Table.Td>
-                                            <Table.Td>
-                                                <NumberInput
-                                                    size="xs"
-                                                    hideControls
-                                                    value={p.amount}
-                                                    onChange={(v: any) =>
-                                                        calculateLineTotal(i, v)
-                                                    }
-                                                    max={p.product.count}
-                                                    disabled={
-                                                        paymentDetailsOpen
-                                                    }
-                                                    error={
-                                                        p.amount >
-                                                        p.product.count
-                                                            ? `Warehouse only have ${p.product.count} bags`
-                                                            : ""
-                                                    }
-                                                />
-                                            </Table.Td>
-
-                                            <Table.Td>
-                                                {amountPreview(p.lineTotal)}
-                                            </Table.Td>
+                            <ScrollArea>
+                                <Table style={{ minWidth: "800px" }}>
+                                    <Table.Thead>
+                                        <Table.Tr>
+                                            <Table.Th style={{ width: "25%" }}>
+                                                Product
+                                            </Table.Th>
+                                            <Table.Th style={{ width: "25%" }}>
+                                                Unit Price
+                                            </Table.Th>
+                                            <Table.Th style={{ width: "25%" }}>
+                                                Amount
+                                            </Table.Th>
+                                            <Table.Th style={{ width: "25%" }}>
+                                                Line Total
+                                            </Table.Th>
                                         </Table.Tr>
-                                    ))}
-                                </Table.Tbody>
-                            </Table>
+                                    </Table.Thead>
+                                    <Table.Tbody>
+                                        {selectedProducts?.map((p, i) => (
+                                            <Table.Tr key={i}>
+                                                <Table.Td>
+                                                    {p.product.name}
+                                                </Table.Td>
+                                                <Table.Td>
+                                                    <NumberInput
+                                                        style={{
+                                                            width: "100%",
+                                                        }}
+                                                        size="xs"
+                                                        hideControls
+                                                        value={
+                                                            p.unitPrice ??
+                                                            p.product.unitPrice
+                                                        }
+                                                        onChange={(v: any) =>
+                                                            handleUnitPriceChange(
+                                                                i,
+                                                                v
+                                                            )
+                                                        }
+                                                        disabled={
+                                                            paymentDetailsOpen
+                                                        }
+                                                        prefix="Rs. "
+                                                        decimalScale={2}
+                                                        fixedDecimalScale
+                                                        thousandSeparator=","
+                                                        allowNegative={false}
+                                                    />
+                                                </Table.Td>
+                                                <Table.Td>
+                                                    <NumberInput
+                                                        style={{
+                                                            width: "100%",
+                                                        }}
+                                                        size="xs"
+                                                        hideControls
+                                                        value={p.amount}
+                                                        onChange={(v: any) =>
+                                                            calculateLineTotal(
+                                                                i,
+                                                                v
+                                                            )
+                                                        }
+                                                        max={p.product.count}
+                                                        disabled={
+                                                            paymentDetailsOpen
+                                                        }
+                                                        error={
+                                                            p.amount >
+                                                            p.product.count
+                                                                ? `Warehouse only have ${p.product.count} bags`
+                                                                : ""
+                                                        }
+                                                    />
+                                                </Table.Td>
+                                                <Table.Td>
+                                                    {amountPreview(p.lineTotal)}
+                                                </Table.Td>
+                                            </Table.Tr>
+                                        ))}
+                                    </Table.Tbody>
+                                </Table>
+                            </ScrollArea>
                         )}
                         <Button
                             size="xs"
@@ -1069,7 +1133,9 @@ const AddSalesRecord = () => {
                                 <Table.Tr className="flex flex-wrap lg:table-row">
                                     <Table.Td className="hidden lg:table-cell lg:w-1/3" />
                                     <Table.Td className="w-1/2 lg:w-1/3">
-                                        <Text size="sm" fw="bold">Sub Total</Text>
+                                        <Text size="sm" fw="bold">
+                                            Sub Total
+                                        </Text>
                                     </Table.Td>
                                     <Table.Td className="w-1/2 lg:w-1/3">
                                         {amountPreview(subTotal)}
@@ -1080,7 +1146,9 @@ const AddSalesRecord = () => {
                                 <Table.Tr className="flex flex-wrap lg:table-row">
                                     <Table.Td className="hidden lg:table-cell lg:w-1/3" />
                                     <Table.Td className="w-1/2 lg:w-1/3">
-                                        <Text size="sm" fw="bold">Discount</Text>
+                                        <Text size="sm" fw="bold">
+                                            Discount
+                                        </Text>
                                     </Table.Td>
                                     <Table.Td className="w-1/2 lg:w-1/3">
                                         <NumberInput
@@ -1092,7 +1160,9 @@ const AddSalesRecord = () => {
                                             allowNegative={false}
                                             prefix="Rs. "
                                             disabled={paymentDetailsOpen}
-                                            {...salesRecordForm.getInputProps("discount")}
+                                            {...salesRecordForm.getInputProps(
+                                                "discount"
+                                            )}
                                         />
                                     </Table.Td>
                                 </Table.Tr>
@@ -1101,7 +1171,9 @@ const AddSalesRecord = () => {
                                 <Table.Tr className="flex flex-wrap lg:table-row">
                                     <Table.Td className="hidden lg:table-cell lg:w-1/3" />
                                     <Table.Td className="w-1/2 lg:w-1/3">
-                                        <Text size="sm" fw="bold">Tax</Text>
+                                        <Text size="sm" fw="bold">
+                                            Tax
+                                        </Text>
                                     </Table.Td>
                                     <Table.Td className="w-1/2 lg:w-1/3">
                                         <NumberInput
@@ -1113,7 +1185,9 @@ const AddSalesRecord = () => {
                                             allowNegative={false}
                                             prefix="Rs. "
                                             disabled={paymentDetailsOpen}
-                                            {...salesRecordForm.getInputProps("tax")}
+                                            {...salesRecordForm.getInputProps(
+                                                "tax"
+                                            )}
                                         />
                                     </Table.Td>
                                 </Table.Tr>
@@ -1122,7 +1196,9 @@ const AddSalesRecord = () => {
                                 <Table.Tr className="flex flex-wrap lg:table-row">
                                     <Table.Td className="hidden lg:table-cell lg:w-1/3" />
                                     <Table.Td className="w-1/2 lg:w-1/3">
-                                        <Text size="sm" fw="bold">Other Decrements</Text>
+                                        <Text size="sm" fw="bold">
+                                            Other Decrements
+                                        </Text>
                                     </Table.Td>
                                     <Table.Td className="w-1/2 lg:w-1/3">
                                         <NumberInput
@@ -1134,7 +1210,9 @@ const AddSalesRecord = () => {
                                             allowNegative={false}
                                             prefix="Rs. "
                                             disabled={paymentDetailsOpen}
-                                            {...salesRecordForm.getInputProps("otherDecrements")}
+                                            {...salesRecordForm.getInputProps(
+                                                "otherDecrements"
+                                            )}
                                         />
                                     </Table.Td>
                                 </Table.Tr>
@@ -1143,7 +1221,9 @@ const AddSalesRecord = () => {
                                 <Table.Tr className="flex flex-wrap lg:table-row">
                                     <Table.Td className="hidden lg:table-cell lg:w-1/3" />
                                     <Table.Td className="w-1/2 lg:w-1/3">
-                                        <Text size="sm" fw="bold">Other Cost</Text>
+                                        <Text size="sm" fw="bold">
+                                            Other Cost
+                                        </Text>
                                     </Table.Td>
                                     <Table.Td className="w-1/2 lg:w-1/3">
                                         <NumberInput
@@ -1155,7 +1235,9 @@ const AddSalesRecord = () => {
                                             allowNegative={false}
                                             prefix="Rs. "
                                             disabled={paymentDetailsOpen}
-                                            {...salesRecordForm.getInputProps("otherCost")}
+                                            {...salesRecordForm.getInputProps(
+                                                "otherCost"
+                                            )}
                                         />
                                     </Table.Td>
                                 </Table.Tr>
@@ -1164,7 +1246,9 @@ const AddSalesRecord = () => {
                                 <Table.Tr className="flex flex-wrap lg:table-row">
                                     <Table.Td className="hidden lg:table-cell lg:w-1/3" />
                                     <Table.Td className="w-1/2 lg:w-1/3">
-                                        <Text size="sm" fw="bold">Net Total</Text>
+                                        <Text size="sm" fw="bold">
+                                            Net Total
+                                        </Text>
                                     </Table.Td>
                                     <Table.Td className="w-1/2 lg:w-1/3">
                                         {amountPreview(netTotal)}
