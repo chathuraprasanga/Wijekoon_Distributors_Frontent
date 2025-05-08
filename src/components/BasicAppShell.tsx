@@ -19,9 +19,11 @@ import {
     IconBuildingStore,
     IconBuildingWarehouse,
     IconCalendarDollar,
+    IconCar,
     IconCashBanknote,
     IconInvoice,
-    IconLayoutDashboard,
+    IconLayoutDashboard, IconMessageDollar,
+    IconMoodSearch,
     IconMoon,
     IconPackages,
     IconReceipt,
@@ -253,9 +255,7 @@ const BasicAppShell = () => {
                     <NavLink
                         label="Suppliers"
                         active={getActiveMainRoute("SUPPLIERS")}
-                        leftSection={
-                            <IconTruck size="1rem" stroke={1.5} />
-                        }
+                        leftSection={<IconTruck size="1rem" stroke={1.5} />}
                         variant="filled"
                     >
                         {hasAnyPrivilege(userDetails.role, [
@@ -357,33 +357,86 @@ const BasicAppShell = () => {
                                 active={activePath === "warehouses"}
                             />
                         )}
+                        {hasAnyPrivilege(userDetails.role, [
+                            USER_ROLES.SUPER_ADMIN,
+                            USER_ROLES.ADMIN,
+                            USER_ROLES.OWNER,
+                        ]) && (
+                            <NavLink
+                                onClick={() => handleNavLinkClick("employees")}
+                                label="Employees"
+                                leftSection={
+                                    <IconMoodSearch size="1rem" stroke={1.5} />
+                                }
+                                variant="light"
+                                active={activePath === "employees"}
+                            />
+                        )}
+                        {hasAnyPrivilege(userDetails.role, [
+                            USER_ROLES.SUPER_ADMIN,
+                            USER_ROLES.ADMIN,
+                            USER_ROLES.OWNER,
+                        ]) && (
+                            <NavLink
+                                onClick={() => handleNavLinkClick("vehicles")}
+                                label="Vehicles"
+                                leftSection={
+                                    <IconCar size="1rem" stroke={1.5} />
+                                }
+                                variant="light"
+                                active={activePath === "vehicles"}
+                            />
+                        )}
                     </NavLink>
 
                     <NavLink
-                        label="Payments"
+                        label="Finance"
                         active={getActiveMainRoute("PAYMENTS")}
                         leftSection={
                             <IconCalendarDollar size="1rem" stroke={1.5} />
                         }
                         variant="filled"
                     >
-                    {hasAnyPrivilege(userDetails.role, [
-                        USER_ROLES.SUPER_ADMIN,
-                        USER_ROLES.ADMIN,
-                        USER_ROLES.OWNER,
-                    ]) && (
-                        <NavLink
-                            onClick={() =>
-                                handleNavLinkClick("cheque-payments")
-                            }
-                            label="Cheque Payments"
-                            leftSection={
-                                <IconCalendarDollar size="1rem" stroke={1.5} />
-                            }
-                            variant="light"
-                            active={activePath === "cheque-payments"}
-                        />
-                    )}
+                        {hasAnyPrivilege(userDetails.role, [
+                            USER_ROLES.SUPER_ADMIN,
+                            USER_ROLES.ADMIN,
+                            USER_ROLES.OWNER,
+                        ]) && (
+                            <NavLink
+                                onClick={() =>
+                                    handleNavLinkClick("cheque-payments")
+                                }
+                                label="Cheque Payments"
+                                leftSection={
+                                    <IconCalendarDollar
+                                        size="1rem"
+                                        stroke={1.5}
+                                    />
+                                }
+                                variant="light"
+                                active={activePath === "cheque-payments"}
+                            />
+                        )}
+                        {hasAnyPrivilege(userDetails.role, [
+                            USER_ROLES.SUPER_ADMIN,
+                            USER_ROLES.ADMIN,
+                            USER_ROLES.OWNER,
+                        ]) && (
+                            <NavLink
+                                onClick={() =>
+                                    handleNavLinkClick("expenses")
+                                }
+                                label="Expenses"
+                                leftSection={
+                                    <IconMessageDollar
+                                        size="1rem"
+                                        stroke={1.5}
+                                    />
+                                }
+                                variant="light"
+                                active={activePath === "expenses"}
+                            />
+                        )}
                     </NavLink>
                 </ScrollArea>
             </AppShell.Navbar>
@@ -403,7 +456,7 @@ const BasicAppShell = () => {
                             <Divider mt="sm" />
                         </>
                     )}
-                        <Outlet />
+                    <Outlet />
                 </Paper>
             </AppShell.Main>
         </AppShell>

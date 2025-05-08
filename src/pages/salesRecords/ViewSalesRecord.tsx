@@ -692,7 +692,7 @@ const ViewSalesRecord = () => {
                                         </Table.Td>
                                         <Table.Td>
                                             {amountPreview(
-                                                o?.product?.unitPrice
+                                                o?.lineTotal / o?.amount
                                             )}
                                         </Table.Td>
                                         <Table.Td>{o?.amount}</Table.Td>
@@ -726,6 +726,15 @@ const ViewSalesRecord = () => {
                                 <Table.Td>
                                     {amountPreview(
                                         salesRecord?.amountDetails?.tax
+                                    )}
+                                </Table.Td>
+                            </Table.Tr>
+                            <Table.Tr>
+                                <Table.Td colSpan={3}></Table.Td>
+                                <Table.Td fw={600}>Other Decrements: </Table.Td>
+                                <Table.Td>
+                                    {amountPreview(
+                                        salesRecord?.amountDetails?.otherDecrements
                                     )}
                                 </Table.Td>
                             </Table.Tr>
