@@ -254,6 +254,9 @@ const SalesRecords = () => {
                     salesRecords.map((c: any, i: number) => (
                         <Card key={i} shadow="sm" withBorder mx="xs" my="lg">
                             <Text className="font-semibold">
+                                Date: {datePreview(c.createdAt)}
+                            </Text>
+                            <Text className="font-semibold">
                                 Order Id: {c?.orderId}
                             </Text>
                             <Text>Customer: {c?.customer?.name}</Text>
