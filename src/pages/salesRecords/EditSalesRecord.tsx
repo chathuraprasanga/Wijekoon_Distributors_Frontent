@@ -15,7 +15,7 @@ import {
     Textarea,
     Modal,
     ActionIcon,
-    Flex,
+    Flex, ScrollArea,
 } from "@mantine/core";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store/store.ts";
@@ -51,6 +51,7 @@ const EditSalesRecord = () => {
         (state: RootState) => state.salesRecords.selectedSalesRecord
     );
     const metadata = salesRecord?.metadata;
+
 
     useEffect(() => {
         if (id) {
@@ -391,63 +392,52 @@ const EditSalesRecord = () => {
 
                     <Box mt="md">
                         {selectedProducts?.length > 0 && (
-                            <Table>
-                                <Table.Thead>
-                                    <Table.Tr>
-                                        <Table.Th w="25%">Product</Table.Th>
-                                        <Table.Th w="25%">Unit Price</Table.Th>
-                                        <Table.Th w="25%">Amount</Table.Th>
-                                        <Table.Th w="25%">Line Total</Table.Th>
-                                    </Table.Tr>
-                                </Table.Thead>
-                                <Table.Tbody>
-                                    {selectedProducts?.map((p, i) => (
-                                        <Table.Tr key={i}>
-                                            <Table.Td>
-                                                {p.product.name}
-                                            </Table.Td>
-                                            <Table.Td>
-                                                <NumberInput
-                                                    size="xs"
-                                                    decimalScale={2}
-                                                    fixedDecimalScale
-                                                    thousandSeparator=","
-                                                    hideControls
-                                                    allowNegative={false}
-                                                    prefix="Rs. "
-                                                    value={
-                                                        p.unitPrice !==
-                                                        undefined
-                                                            ? p.unitPrice
-                                                            : p.product
-                                                                  .unitPrice
-                                                    }
-                                                    onChange={(val) =>
-                                                        handleUnitPriceChange(
-                                                            i,
-                                                            Number(val)
-                                                        )
-                                                    }
-                                                    disabled={!p.isNew}
-                                                />
-                                            </Table.Td>
-                                            <Table.Td>
-                                                <NumberInput
-                                                    size="xs"
-                                                    hideControls
-                                                    value={p.amount}
-                                                    onChange={(v: any) =>
-                                                        calculateLineTotal(i, v)
-                                                    }
-                                                />
-                                            </Table.Td>
-                                            <Table.Td>
-                                                {amountPreview(p.lineTotal)}
-                                            </Table.Td>
+                            <ScrollArea>
+                                <Table style={{ minWidth: "800px" }}>
+                                    <Table.Thead>
+                                        <Table.Tr>
+                                            <Table.Th style={{ width: "300px" }}>Product</Table.Th>
+                                            <Table.Th style={{ width: "200px" }}>Unit Price</Table.Th>
+                                            <Table.Th style={{ width: "150px" }}>Amount</Table.Th>
+                                            <Table.Th style={{ width: "150px" }}>Line Total</Table.Th>
                                         </Table.Tr>
-                                    ))}
-                                </Table.Tbody>
-                            </Table>
+                                    </Table.Thead>
+                                    <Table.Tbody>
+                                        {selectedProducts?.map((p, i) => (
+                                            <Table.Tr key={i}>
+                                                <Table.Td>{p.product.name}</Table.Td>
+                                                <Table.Td>
+                                                    <NumberInput
+                                                        style={{ width: "100%" }}
+                                                        size="xs"
+                                                        decimalScale={2}
+                                                        fixedDecimalScale
+                                                        thousandSeparator=","
+                                                        hideControls
+                                                        allowNegative={false}
+                                                        prefix="Rs. "
+                                                        value={
+                                                            p.unitPrice !== undefined ? p.unitPrice : p.product.unitPrice
+                                                        }
+                                                        onChange={(val) => handleUnitPriceChange(i, Number(val))}
+                                                        disabled={!p.isNew}
+                                                    />
+                                                </Table.Td>
+                                                <Table.Td>
+                                                    <NumberInput
+                                                        style={{ width: "100%" }}
+                                                        size="xs"
+                                                        hideControls
+                                                        value={p.amount}
+                                                        onChange={(v: any) => calculateLineTotal(i, v)}
+                                                    />
+                                                </Table.Td>
+                                                <Table.Td>{amountPreview(p.lineTotal)}</Table.Td>
+                                            </Table.Tr>
+                                        ))}
+                                    </Table.Tbody>
+                                </Table>
+                            </ScrollArea>
                         )}
                         <Button
                             size="xs"

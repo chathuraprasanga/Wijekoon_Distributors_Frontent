@@ -15,7 +15,8 @@ import {
     Textarea,
     Modal,
     ActionIcon,
-    TextInput, Flex,
+    TextInput,
+    Flex, ScrollArea,
 } from "@mantine/core";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useMemo, useState } from "react";
@@ -30,10 +31,7 @@ import {
     getCustomers,
 } from "../../store/customerSlice/customerSlice.ts";
 import { amountPreview } from "../../helpers/preview.tsx";
-import {
-    getOrder,
-    updateOrder,
-} from "../../store/orderSlice/orderSlice.ts";
+import { getOrder, updateOrder } from "../../store/orderSlice/orderSlice.ts";
 import toNotify from "../../helpers/toNotify.tsx";
 import { isValidPhone } from "../../utils/inputValidators.ts";
 import { getProducts } from "../../store/productSlice/productSlice.ts";
@@ -118,7 +116,11 @@ const EditOrder = () => {
         <Modal
             opened={productSelectModalOpened}
             onClose={productSelectModalHandler.close}
-            title={<Text size="lg" fw="bold">Select Products</Text>}
+            title={
+                <Text size="lg" fw="bold">
+                    Select Products
+                </Text>
+            }
             size={isMobile ? "100%" : "50%"}
         >
             <Table>
@@ -323,7 +325,11 @@ const EditOrder = () => {
                     customerAddModalHandler.close();
                     customerAddForm.reset();
                 }}
-                title={<Text size={"lg"} fw={"bold"} >Add Customer</Text>}
+                title={
+                    <Text size={"lg"} fw={"bold"}>
+                        Add Customer
+                    </Text>
+                }
             >
                 <form
                     onSubmit={customerAddForm.onSubmit(customerAddFormHandler)}
@@ -427,45 +433,52 @@ const EditOrder = () => {
 
                     <Box mt="md">
                         {selectedProducts?.length > 0 && (
-                            <Table>
-                                <Table.Thead>
-                                    <Table.Tr>
-                                        <Table.Th w="50%">Product</Table.Th>
-                                        <Table.Th w="25%">Amount</Table.Th>
-                                        <Table.Th w="25%">Line Total</Table.Th>
-                                    </Table.Tr>
-                                </Table.Thead>
-                                <Table.Tbody>
-                                    {selectedProducts.map((p, i) => (
-                                        <Table.Tr key={i}>
-                                            <Table.Td>
-                                                {p.product.name}
-                                            </Table.Td>
-                                            <Table.Td>
-                                                <NumberInput
-                                                    size="xs"
-                                                    hideControls
-                                                    value={p.amount}
-                                                    onChange={(v: any) =>
-                                                        calculateLineTotal(i, v)
-                                                    }
-                                                    max={p.product.count}
-                                                    error={
-                                                        p.amount >
-                                                        p.product.count
-                                                            ? `Warehouse only have ${p.product.count} bags`
-                                                            : ""
-                                                    }
-                                                />
-                                            </Table.Td>
-
-                                            <Table.Td>
-                                                {amountPreview(p.lineTotal)}
-                                            </Table.Td>
+                            <ScrollArea>
+                                <Table>
+                                    <Table.Thead>
+                                        <Table.Tr>
+                                            <Table.Th w="50%">Product</Table.Th>
+                                            <Table.Th w="25%">Amount</Table.Th>
+                                            <Table.Th w="25%">
+                                                Line Total
+                                            </Table.Th>
                                         </Table.Tr>
-                                    ))}
-                                </Table.Tbody>
-                            </Table>
+                                    </Table.Thead>
+                                    <Table.Tbody>
+                                        {selectedProducts.map((p, i) => (
+                                            <Table.Tr key={i}>
+                                                <Table.Td>
+                                                    {p.product.name}
+                                                </Table.Td>
+                                                <Table.Td>
+                                                    <NumberInput
+                                                        size="xs"
+                                                        hideControls
+                                                        value={p.amount}
+                                                        onChange={(v: any) =>
+                                                            calculateLineTotal(
+                                                                i,
+                                                                v
+                                                            )
+                                                        }
+                                                        max={p.product.count}
+                                                        error={
+                                                            p.amount >
+                                                            p.product.count
+                                                                ? `Warehouse only have ${p.product.count} bags`
+                                                                : ""
+                                                        }
+                                                    />
+                                                </Table.Td>
+
+                                                <Table.Td>
+                                                    {amountPreview(p.lineTotal)}
+                                                </Table.Td>
+                                            </Table.Tr>
+                                        ))}
+                                    </Table.Tbody>
+                                </Table>
+                            </ScrollArea>
                         )}
                         <Button
                             size="xs"
